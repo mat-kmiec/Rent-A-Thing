@@ -1,11 +1,11 @@
-# 📦 Rent-A-Thing: Uniwersalny System Wypożyczalni
+#  Rent-A-Thing: Uniwersalny System Wypożyczalni
 
 > **Projekt zaliczeniowy: Programowanie Zaawansowane**
 > Aplikacja webowa (MVC) do zarządzania magazynem i procesem wypożyczania.
 
 ---
 
-## 👥 Autorzy (Grupa Projektowa)
+##  Autorzy (Grupa Projektowa)
 
 1.  **Mateusz Kmieć**
 2.  **Michał Jastrzębski**
@@ -13,14 +13,14 @@
 
 ---
 
-## 1. 🎯 Przeznaczenie aplikacji
+## 1.  Przeznaczenie aplikacji
 **Rent-A-Thing** to kompletna aplikacja internetowa służąca do obsługi wypożyczalni wielobranżowych. System pozwala na zarządzanie cyklem życia wypożyczenia – od rezerwacji przedmiotu przez użytkownika, poprzez weryfikację dostępności, aż po zwrot i powiadomienia mailowe.
 
 Projekt został zrealizowany w architekturze (MVC), gdzie logika biznesowa (Backend) jest ściśle zintegrowana z warstwą prezentacji (Frontend w Thymeleaf), co zapewnia szybkość działania i spójność danych.
 
 ## 2. Funkcjonalności
 
-## 2. 🚀 Funkcjonalności Systemu
+## 2.  Funkcjonalności Systemu
 
 Aplikacja została podzielona na logiczne moduły, do których dostęp regulowany jest poprzez system ról (`ROLE_USER`, `ROLE_ADMIN`).
 
