@@ -18,7 +18,6 @@
 
 Projekt został zrealizowany w architekturze (MVC), gdzie logika biznesowa (Backend) jest ściśle zintegrowana z warstwą prezentacji (Frontend w Thymeleaf), co zapewnia szybkość działania i spójność danych.
 
-## 2. Funkcjonalności
 
 ## 2.  Funkcjonalności Systemu
 
@@ -43,7 +42,7 @@ Interfejs klienta wykonany w technologii **Server-Side Rendering (Thymeleaf)**, 
     * Wgląd w historię swoich wypożyczeń (aktywne i archiwalne).
     * Możliwość edycji danych osobowych.
 
-### Moduł Administratora (Back-Office)
+### Moduł Administratora
 Dedykowany panel sterowania dostępny tylko dla użytkowników uprzywilejowanych, służący do zarządzania zasobami firmy.
 
 * **Zarządzanie Magazynem (Inventory CRUD):**
@@ -69,8 +68,6 @@ System wspiera proces komunikacji z klientem, wykorzystując asynchroniczne mech
 ---
 
 ## 3.  Stack Technologiczny
-
-
 
 | Obszar | Technologia | Zależność w Maven |
 |--------|-------------|-------------------|
