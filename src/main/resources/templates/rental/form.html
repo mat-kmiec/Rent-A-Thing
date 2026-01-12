@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="pl" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Finalizacja Rezerwacji | Rent-A-Thing</title>
+    
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" th:href="@{/css/home.css}" href="../css/style.css">
+    
+    <style>
+        .summary-card {
+            position: sticky;
+            top: 100px;
+            z-index: 10;
+        }
+
+        .custom-radio-card {
+            border: 1px solid #dee2e6;
+            border-radius: 12px;
+            padding: 15px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            position: relative;
+        }
+        
+        .custom-radio-card:hover {
+            border-color: var(--primary-color);
+            background-color: rgba(13, 71, 161, 0.02);
+        }
+
+        .form-check-input:checked + .custom-radio-card {
+            border-color: var(--primary-color);
+            background-color: rgba(13, 71, 161, 0.05);
+            box-shadow: 0 4px 12px rgba(13, 71, 161, 0.1);
+        }
+        
+        .form-check-input {
+            position: absolute;
+            opacity: 0;
+            z-index: -1;
+        }
+
+        .form-control, .form-select {
+            padding: 0.75rem 1rem;
+            border-radius: 8px;
+        }
+        .form-control:focus, .form-select:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 0.25rem rgba(13, 71, 161, 0.15);
+        }
+    </style>
+</head>
+<body class="d-flex flex-column min-vh-100 bg-light">
+
+    <nav class="navbar navbar-expand-lg fixed-top navbar-light bg-white shadow-sm py-3">
+        <div class="container">
+            <a class="navbar-brand fw-bold text-primary fs-3" href="/">
+                <i class="fa-solid fa-layer-group"></i> Rent-A-Thing
+            </a>
+            <div class="d-flex align-items-center ms-auto">
+                <span class="text-muted small me-2 d-none d-md-inline">Potrzebujesz pomocy?</span>
+                <a href="#" class="fw-bold text-dark text-decoration-none d-none d-md-inline">Skontaktuj się</a>
+            </div>
+        </div>
+    </nav>
+
+    <section class="py-5">
+        <div class="container">
+            
+            <div class="mb-4">
+                <a href="/catalog/details" class="text-decoration-none text-muted small">
+                    <i class="fa-solid fa-arrow-left me-1"></i> Wróć do oferty
+                </a>
+                <h2 class="fw-bold mt-2">Sfinalizuj rezerwację</h2>
+            </div>
+
+            <form th:action="@{/rental/confirm}" method="post" id="bookingForm">
+                <div class="row g-5">
+                    
+                    <div class="col-lg-8">
+                        
+                        <div class="card border-0 shadow-sm rounded-4 mb-4">
+                            <div class="card-header bg-white border-bottom p-4">
+                                <h5 class="fw-bold mb-0 text-primary"><i class="fa-regular fa-calendar-check me-2"></i> Termin i Dostawa</h5>
+                            </div>
+                            <div class="card-body p-4">
+                                <div class="row g-3 mb-4">
+                                    <div class="col-md-6">
+                                        <label class="form-label small text-muted fw-bold">ODBIÓR</label>
+                                        <input type="date" class="form-control bg-light border-0" id="startDate" required>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label small text-muted fw-bold">ZWROT</label>
+                                        <input type="date" class="form-control bg-light border-0" id="endDate" required>
+                                    </div>
+                                </div>
+
+                                <label class="form-label small text-muted fw-bold mb-3">SPOSÓB ODBIORU</label>
+                                <div class="row g-3">
+                                    <div class="col-md-6">
+                                        <label class="w-100 cursor-pointer">
+                                            <input type="radio" name="delivery" value="0" class="form-check-input" checked onchange="updateTotal()">
+                                            <div class="custom-radio-card d-flex align-items-center">
+                                                <i class="fa-solid fa-shop fs-4 text-primary me-3"></i>
+                                                <div>
+                                                    <div class="fw-bold text-dark">Odbiór Osobisty</div>
+                                                    <small class="text-muted">ul. Magazynowa 5, W-wa</small>
+                                                </div>
+                                                <div class="ms-auto fw-bold text-success">0 zł</div>
+                                            </div>
+                                        </label>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="w-100 cursor-pointer">
+                                            <input type="radio" name="delivery" value="25" class="form-check-input" onchange="updateTotal()">
+                                            <div class="custom-radio-card d-flex align-items-center">
+                                                <i class="fa-solid fa-truck-fast fs-4 text-primary me-3"></i>
+                                                <div>
+                                                    <div class="fw-bold text-dark">Kurier DPD</div>
+                                                    <small class="text-muted">Dostawa w 24h</small>
+                                                </div>
+                                                <div class="ms-auto fw-bold text-dark">+25 zł</div>
+                                            </div>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card border-0 shadow-sm rounded-4 mb-4">
+                            <div class="card-header bg-white border-bottom p-4">
+                                <h5 class="fw-bold mb-0 text-primary"><i class="fa-regular fa-address-card me-2"></i> Twoje Dane</h5>
+                            </div>
+                            <div class="card-body p-4">
+                                <div class="row g-3">
+                                    <div class="col-md-6">
+                                        <label class="form-label">Imię</label>
+                                        <input type="text" class="form-control" placeholder="Jan" required>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label">Nazwisko</label>
+                                        <input type="text" class="form-control" placeholder="Kowalski" required>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label">Email</label>
+                                        <input type="email" class="form-control" placeholder="jan@example.com" required>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label">Telefon</label>
+                                        <input type="tel" class="form-control" placeholder="+48 000 000 000" required>
+                                    </div>
+                                    <div class="col-12">
+                                        <label class="form-label">Ulica i numer</label>
+                                        <input type="text" class="form-control" placeholder="ul. Prosta 1/2" required>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label class="form-label">Kod pocztowy</label>
+                                        <input type="text" class="form-control" placeholder="00-000" required>
+                                    </div>
+                                    <div class="col-md-8">
+                                        <label class="form-label">Miasto</label>
+                                        <input type="text" class="form-control" placeholder="Warszawa" required>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card border-0 shadow-sm rounded-4 mb-4">
+                            <div class="card-header bg-white border-bottom p-4">
+                                <h5 class="fw-bold mb-0 text-primary"><i class="fa-regular fa-credit-card me-2"></i> Płatność</h5>
+                            </div>
+                            <div class="card-body p-4">
+                                <div class="d-flex flex-column gap-3">
+                                    <label class="w-100 cursor-pointer">
+                                        <input type="radio" name="payment" class="form-check-input" checked>
+                                        <div class="custom-radio-card d-flex align-items-center">
+                                            <i class="fa-brands fa-cc-visa fs-4 text-primary me-3"></i>
+                                            <div class="fw-bold text-dark">Karta Płatnicza (Online)</div>
+                                        </div>
+                                    </label>
+                                    <label class="w-100 cursor-pointer">
+                                        <input type="radio" name="payment" class="form-check-input">
+                                        <div class="custom-radio-card d-flex align-items-center">
+                                            <i class="fa-solid fa-mobile-screen fs-4 text-primary me-3"></i>
+                                            <div class="fw-bold text-dark">BLIK</div>
+                                        </div>
+                                    </label>
+                                    <label class="w-100 cursor-pointer">
+                                        <input type="radio" name="payment" class="form-check-input">
+                                        <div class="custom-radio-card d-flex align-items-center">
+                                            <i class="fa-solid fa-wallet fs-4 text-primary me-3"></i>
+                                            <div class="fw-bold text-dark">Przy odbiorze</div>
+                                        </div>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="d-flex align-items-start gap-2 mb-4">
+                            <input class="form-check-input mt-1" type="checkbox" id="terms" required>
+                            <label class="form-check-label small text-muted" for="terms">
+                                Oświadczam, że zapoznałem się z <a href="#">Regulaminem</a> i akceptuję warunki wypożyczenia.
+                            </label>
+                        </div>
+
+                    </div>
+
+                    <div class="col-lg-4">
+                        <div class="card border-0 shadow rounded-4 summary-card">
+                            <div class="card-header bg-primary text-white p-4 rounded-top-4">
+                                <h5 class="fw-bold mb-0">Podsumowanie</h5>
+                            </div>
+                            <div class="card-body p-4">
+                                <div class="d-flex gap-3 mb-4">
+                                    <img src="https://images.unsplash.com/photo-1516035069371-29a1b244cc32?auto=format&fit=crop&w=150&q=80" 
+                                         class="rounded-3 object-fit-cover" 
+                                         style="width: 70px; height: 70px;" 
+                                         alt="Produkt">
+                                    <div>
+                                        <h6 class="fw-bold mb-1">Sony Alpha a7 III</h6>
+                                        <small class="text-muted d-block">Stawka: <span id="dailyRate">120.00</span> zł/doba</small>
+                                    </div>
+                                </div>
+
+                                <hr class="border-secondary opacity-10">
+
+                                <div class="d-flex justify-content-between mb-2">
+                                    <span class="text-muted">Dni wypożyczenia</span>
+                                    <span class="fw-bold" id="daysCount">0</span>
+                                </div>
+                                <div class="d-flex justify-content-between mb-2">
+                                    <span class="text-muted">Koszt wypożyczenia</span>
+                                    <span><span id="rentalCost">0.00</span> zł</span>
+                                </div>
+                                <div class="d-flex justify-content-between mb-3">
+                                    <span class="text-muted">Dostawa</span>
+                                    <span><span id="deliveryCost">0.00</span> zł</span>
+                                </div>
+
+                                <hr class="border-secondary opacity-10 my-4">
+
+                                <div class="d-flex justify-content-between align-items-center mb-4">
+                                    <span class="h5 mb-0 fw-bold">Do zapłaty</span>
+                                    <span class="h3 mb-0 fw-bold text-primary"><span id="totalCost">0.00</span> zł</span>
+                                </div>
+
+                                <button type="submit" class="btn btn-primary w-100 py-3 rounded-pill fw-bold shadow-sm hover-up">
+                                    Potwierdzam i Płacę
+                                </button>
+                                
+                                <div class="text-center mt-3">
+                                    <small class="text-muted"><i class="fa-solid fa-lock me-1"></i> Bezpieczna transakcja SSL</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </form>
+        </div>
+    </section>
+
+    <footer class="bg-dark text-white pt-5 pb-3 text-center text-lg-start mt-auto">
+        <div class="container">
+            <div class="text-center text-white-50 small">
+                &copy; 2024 Rent-A-Thing.
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+        const rate = 120.00;
+        const startDateInput = document.getElementById('startDate');
+        const endDateInput = document.getElementById('endDate');
+        const deliveryRadios = document.querySelectorAll('input[name="delivery"]');
+        
+        function updateTotal() {
+            const start = new Date(startDateInput.value);
+            const end = new Date(endDateInput.value);
+
+            let deliveryPrice = 0;
+            deliveryRadios.forEach(radio => {
+                if(radio.checked) deliveryPrice = parseFloat(radio.value);
+            });
+
+            if (startDateInput.value && endDateInput.value && end >= start) {
+                const diffTime = Math.abs(end - start);
+                let diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)); 
+                if (diffDays === 0) diffDays = 1;
+
+                const rentalTotal = diffDays * rate;
+                const grandTotal = rentalTotal + deliveryPrice;
+
+
+                document.getElementById('daysCount').innerText = diffDays;
+                document.getElementById('rentalCost').innerText = rentalTotal.toFixed(2);
+                document.getElementById('deliveryCost').innerText = deliveryPrice.toFixed(2);
+                document.getElementById('totalCost').innerText = grandTotal.toFixed(2);
+            } else {
+
+                document.getElementById('daysCount').innerText = "0";
+                document.getElementById('rentalCost').innerText = "0.00";
+                document.getElementById('deliveryCost').innerText = deliveryPrice.toFixed(2);
+                document.getElementById('totalCost').innerText = deliveryPrice.toFixed(2);
+            }
+        }
+
+
+        startDateInput.addEventListener('change', updateTotal);
+        endDateInput.addEventListener('change', updateTotal);
+
+        const today = new Date();
+        const tomorrow = new Date(today);
+        tomorrow.setDate(tomorrow.getDate() + 1);
+        
+        startDateInput.valueAsDate = today;
+        endDateInput.valueAsDate = tomorrow;
+
+        updateTotal();
+    </script>
+</body>
+</html>

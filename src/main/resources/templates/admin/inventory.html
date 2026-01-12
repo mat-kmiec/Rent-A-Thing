@@ -1,0 +1,670 @@
+<!DOCTYPE html>
+<html lang="pl" xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Magazyn | Panel Administratora</title>
+
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <link rel="stylesheet" th:href="@{/css/home.css}" href="../css/style.css" />
+    <link
+      rel="stylesheet"
+      th:href="@{/css/admin.css}"
+      href="../css/admin.css"
+    />
+  </head>
+  <body class="bg-light">
+    <nav
+      class="navbar navbar-expand-lg fixed-top navbar-dark bg-dark shadow py-3"
+    >
+      <div class="container-fluid px-4">
+        <a
+          class="navbar-brand fw-bold text-white fs-4 d-flex align-items-center"
+          href="/admin/dashboard"
+        >
+          <i class="fa-solid fa-layer-group text-primary me-2"></i>
+          Rent-A-Thing
+          <span class="badge bg-primary fs-xs ms-2 text-uppercase ls-1"
+            >Admin</span
+          >
+        </a>
+        <button
+          class="navbar-toggler border-0"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#adminNav"
+        >
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="adminNav">
+          <ul class="navbar-nav ms-4 me-auto align-items-center fw-medium">
+            <li class="nav-item">
+              <a class="nav-link" href="/admin/dashboard">Kokpit</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link active" href="/admin/inventory">Magazyn</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/admin/rentals">Wypożyczenia</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/admin/users">Użytkownicy</a>
+            </li>
+          </ul>
+          <div class="d-flex align-items-center gap-3 text-white mt-3 mt-lg-0">
+            <div class="d-none d-lg-block text-end lh-1">
+              <small class="d-block text-white-50 fs-xs">Administrator</small>
+              <span class="fw-bold">Jan Admin</span>
+            </div>
+            <form th:action="@{/logout}" method="post">
+              <button class="btn btn-outline-light btn-sm rounded-pill px-3">
+                <i class="fa-solid fa-right-from-bracket"></i>
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </nav>
+
+    <main class="py-4">
+      <div class="container-fluid px-4">
+        <div
+          class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center mb-4 gap-3"
+        >
+          <div>
+            <h2 class="fw-bold mb-0 text-dark">Zarządzanie Magazynem</h2>
+            <p class="text-muted small mb-0">
+              Przeglądaj asortyment, edytuj ceny i zarządzaj kategoriami.
+            </p>
+          </div>
+          <div
+            class="d-flex gap-2 w-100 w-md-auto ms-md-auto justify-content-end"
+          >
+            <button
+              class="btn btn-white border shadow-sm rounded-pill flex-fill flex-md-grow-0"
+              data-bs-toggle="modal"
+              data-bs-target="#addCategoryModal"
+            >
+              <i class="fa-solid fa-folder-plus me-2 text-muted"></i> Kategoria
+            </button>
+            <a
+              href="/admin/inventory/add"
+              class="btn btn-primary rounded-pill shadow-sm flex-fill flex-md-grow-0"
+            >
+              <i class="fa-solid fa-box-open me-2"></i> Nowy Przedmiot
+            </a>
+          </div>
+        </div>
+
+        <div class="card border-0 shadow-sm rounded-4 overflow-hidden">
+          <div class="card-header bg-white border-0 px-4 pt-4 pb-0 border-bottom">
+            <ul
+              class="nav nav-tabs card-header-tabs"
+              id="inventoryTabs"
+              role="tablist"
+            >
+              <li class="nav-item" role="presentation">
+                <button
+                  class="nav-link active fw-medium text-dark py-2 px-3"
+                  id="items-tab"
+                  data-bs-toggle="tab"
+                  data-bs-target="#items"
+                  type="button"
+                >
+                  <i class="fa-solid fa-list me-2"></i> Lista Przedmiotów
+                </button>
+              </li>
+              <li class="nav-item" role="presentation">
+                <button
+                  class="nav-link fw-medium text-muted py-2 px-3"
+                  id="categories-tab"
+                  data-bs-toggle="tab"
+                  data-bs-target="#categories"
+                  type="button"
+                >
+                  <i class="fa-solid fa-tags me-2"></i> Kategorie
+                </button>
+              </li>
+            </ul>
+          </div>
+
+          <div class="card-body p-0">
+            <div class="tab-content" id="inventoryTabsContent">
+              <div class="tab-pane fade show active" id="items" role="tabpanel">
+                <div
+                  class="p-3 p-md-4 border-bottom border-light bg-light bg-opacity-25"
+                >
+                  <div class="row g-2">
+                    <div class="col-12 col-md-4">
+                      <div class="input-group">
+                        <span
+                          class="input-group-text bg-white border-end-0 rounded-start-pill ps-3"
+                        >
+                          <i
+                            class="fa-solid fa-magnifying-glass text-muted"
+                          ></i>
+                        </span>
+                        <input
+                          type="text"
+                          class="form-control bg-white border-start-0 rounded-end-pill shadow-none"
+                          placeholder="Szukaj przedmiotu..."
+                        />
+                      </div>
+                    </div>
+                    <div class="col-6 col-md-3">
+                      <select
+                        class="form-select rounded-pill bg-white border shadow-none cursor-pointer"
+                      >
+                        <option selected>Kategoria: Wszystkie</option>
+                        <option value="1">Pojazdy</option>
+                        <option value="2">Elektronika</option>
+                        <option value="3">Narzędzia</option>
+                      </select>
+                    </div>
+                    <div class="col-6 col-md-3">
+                      <select
+                        class="form-select rounded-pill bg-white border shadow-none cursor-pointer"
+                      >
+                        <option selected>Status: Dostępne</option>
+                        <option value="rented">Wypożyczone</option>
+                        <option value="deleted" class="text-danger fw-bold">
+                          Usunięte (Archiwum)
+                        </option>
+                      </select>
+                    </div>
+                    <div class="col-12 col-md-2 d-grid">
+                      <button class="btn btn-outline-primary rounded-pill">
+                        Filtruj
+                      </button>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="table-responsive">
+                  <table
+                    class="table table-hover align-middle mb-0 text-nowrap"
+                  >
+                    <thead class="bg-light text-uppercase small text-muted">
+                      <tr>
+                        <th class="ps-4">Nazwa & Opis</th>
+                        <th class="d-none d-md-table-cell">Kategoria</th>
+                        <th>Cena / Doba</th>
+                        <th>Status</th>
+                        <th class="text-end pe-4">Akcje</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td class="ps-4">
+                          <div class="d-flex align-items-center">
+                            <div
+                              class="avatar-md bg-light rounded-3 d-flex align-items-center justify-content-center me-3 border flex-shrink-0"
+                            >
+                              <i class="fa-solid fa-image text-muted fs-5"></i>
+                            </div>
+                            <div>
+                              <span
+                                class="fw-bold d-block text-dark text-wrap"
+                                style="max-width: 250px"
+                                >Wiertarka Bosch PRO</span
+                              >
+                              <small
+                                class="text-muted d-block text-truncate"
+                                style="max-width: 200px"
+                                >Model udarowy, 800W.</small
+                              >
+                              <small class="d-md-none text-primary"
+                                >Narzędzia</small
+                              >
+                            </div>
+                          </div>
+                        </td>
+                        <td class="d-none d-md-table-cell">
+                          <span
+                            class="badge bg-light text-dark border fw-normal"
+                            >Narzędzia</span
+                          >
+                        </td>
+                        <td class="fw-bold text-dark">45.00 zł</td>
+                        <td>
+                          <span
+                            class="badge bg-success bg-opacity-10 text-success rounded-pill px-2"
+                            >Dostępny</span
+                          >
+                        </td>
+                        <td class="text-end pe-4">
+                          <div class="btn-group">
+                            <a
+                              href="#"
+                              class="btn btn-sm btn-white border shadow-sm rounded-start-pill"
+                              ><i class="fa-solid fa-pen text-muted"></i
+                            ></a>
+                            <button
+                              class="btn btn-sm btn-white border shadow-sm rounded-end-pill text-danger"
+                            >
+                              <i class="fa-solid fa-trash-can"></i>
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td class="ps-4">
+                          <div class="d-flex align-items-center">
+                            <div
+                              class="avatar-md bg-light rounded-3 d-flex align-items-center justify-content-center me-3 border flex-shrink-0"
+                            >
+                              <i
+                                class="fa-solid fa-camera text-primary fs-5"
+                              ></i>
+                            </div>
+                            <div>
+                              <span
+                                class="fw-bold d-block text-dark text-wrap"
+                                style="max-width: 250px"
+                                >Sony Alpha a7 III</span
+                              >
+                              <small class="text-muted">Body + Obiektyw</small>
+                              <small class="d-md-none text-primary d-block"
+                                >Elektronika</small
+                              >
+                            </div>
+                          </div>
+                        </td>
+                        <td class="d-none d-md-table-cell">
+                          <span
+                            class="badge bg-light text-dark border fw-normal"
+                            >Elektronika</span
+                          >
+                        </td>
+                        <td class="fw-bold text-dark">120.00 zł</td>
+                        <td>
+                          <span
+                            class="badge bg-warning bg-opacity-10 text-warning text-dark rounded-pill px-2"
+                            >Wypożyczony</span
+                          >
+                        </td>
+                        <td class="text-end pe-4">
+                          <div class="btn-group">
+                            <a
+                              href="#"
+                              class="btn btn-sm btn-white border shadow-sm rounded-start-pill"
+                              ><i class="fa-solid fa-pen text-muted"></i
+                            ></a>
+                            <button
+                              class="btn btn-sm btn-white border shadow-sm rounded-end-pill text-muted"
+                              disabled
+                            >
+                              <i class="fa-solid fa-trash-can"></i>
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+
+                <div
+                  class="card-footer bg-white border-top border-light py-3 px-4"
+                >
+                  <div
+                    class="d-flex flex-column flex-md-row justify-content-between align-items-center gap-3"
+                  >
+                    <small class="text-muted">Strona 1 z 5</small>
+                    <nav>
+                      <ul class="pagination pagination-sm mb-0">
+                        <li class="page-item disabled">
+                          <a class="page-link" href="#"
+                            ><i class="fa-solid fa-chevron-left"></i
+                          ></a>
+                        </li>
+                        <li class="page-item active">
+                          <a class="page-link" href="#">1</a>
+                        </li>
+                        <li class="page-item">
+                          <a class="page-link" href="#">2</a>
+                        </li>
+                        <li class="page-item">
+                          <a class="page-link" href="#"
+                            ><i class="fa-solid fa-chevron-right"></i
+                          ></a>
+                        </li>
+                      </ul>
+                    </nav>
+                  </div>
+                </div>
+              </div>
+
+              <div class="tab-pane fade" id="categories" role="tabpanel">
+                <div
+                  class="p-3 p-md-4 border-bottom border-light bg-light bg-opacity-25"
+                >
+                  <div class="row g-2 align-items-center">
+                    <div class="col-12 col-md-6">
+                      <div class="input-group">
+                        <span
+                          class="input-group-text bg-white border-end-0 rounded-start-pill ps-3"
+                        >
+                          <i
+                            class="fa-solid fa-magnifying-glass text-muted"
+                          ></i>
+                        </span>
+                        <input
+                          type="text"
+                          class="form-control bg-white border-start-0 rounded-end-pill shadow-none"
+                          placeholder="Szukaj kategorii..."
+                        />
+                      </div>
+                    </div>
+                    <div class="col-6 col-md-4">
+                      <select
+                        class="form-select rounded-pill bg-white border shadow-none cursor-pointer"
+                      >
+                        <option selected>Sortuj: Popularność</option>
+                        <option value="name_asc">Nazwa (A-Z)</option>
+                        <option value="count_desc">
+                          Najwięcej przedmiotów
+                        </option>
+                      </select>
+                    </div>
+                    <div class="col-6 col-md-2 text-end">
+                      <span class="text-muted small fw-medium">Łącznie: 3</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="table-responsive">
+                  <table
+                    class="table table-hover align-middle mb-0 text-nowrap"
+                  >
+                    <thead class="bg-light text-uppercase small text-muted">
+                      <tr>
+                        <th class="ps-4" style="width: 100px">Zdjęcie</th>
+                        <th>Nazwa</th>
+                        <th class="d-none d-md-table-cell">Opis</th>
+                        <th class="text-center">Przedmiotów</th>
+                        <th class="text-end pe-4">Akcje</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td class="ps-4">
+                          <div class="category-img-wrapper border rounded-3">
+                            <img
+                              src="https://images.unsplash.com/photo-1549317661-bd32c8ce0db2?auto=format&fit=crop&w=150&q=80"
+                              alt="Pojazdy"
+                              class="img-fluid rounded-3"
+                            />
+                          </div>
+                        </td>
+                        <td>
+                          <div class="d-flex align-items-center">
+                            <span
+                              class="icon-box-sm bg-primary bg-opacity-10 text-primary rounded-circle me-2"
+                            >
+                              <i class="fa-solid fa-car"></i>
+                            </span>
+                            <span class="fw-bold text-dark">Pojazdy</span>
+                          </div>
+                        </td>
+                        <td class="d-none d-md-table-cell">
+                          <span
+                            class="text-muted small text-wrap d-block"
+                            style="max-width: 350px"
+                          >
+                            Samochody osobowe, dostawcze, przyczepy i lawety.
+                          </span>
+                        </td>
+                        <td class="text-center">
+                          <span
+                            class="badge bg-light text-dark border rounded-pill px-3"
+                            >12</span
+                          >
+                        </td>
+                        <td class="text-end pe-4">
+                          <div class="btn-group">
+                            <button
+                              class="btn btn-sm btn-white border shadow-sm rounded-start-pill"
+                              title="Edytuj"
+                            >
+                              <i class="fa-solid fa-pen text-muted"></i>
+                            </button>
+                            <button
+                              class="btn btn-sm btn-white border shadow-sm rounded-end-pill text-danger"
+                              title="Usuń"
+                            >
+                              <i class="fa-solid fa-trash-can"></i>
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+
+                      <tr>
+                        <td class="ps-4">
+                          <div class="category-img-wrapper border rounded-3">
+                            <img
+                              src="https://images.unsplash.com/photo-1550009158-9ebf69173e03?auto=format&fit=crop&w=150&q=80"
+                              alt="Elektronika"
+                              class="img-fluid rounded-3"
+                            />
+                          </div>
+                        </td>
+                        <td>
+                          <div class="d-flex align-items-center">
+                            <span
+                              class="icon-box-sm bg-warning bg-opacity-10 text-warning rounded-circle me-2"
+                            >
+                              <i class="fa-solid fa-laptop"></i>
+                            </span>
+                            <span class="fw-bold text-dark">Elektronika</span>
+                          </div>
+                        </td>
+                        <td class="d-none d-md-table-cell">
+                          <span
+                            class="text-muted small text-wrap d-block"
+                            style="max-width: 350px"
+                          >
+                            Drony, kamery, laptopy, rzutniki i sprzęt audio.
+                          </span>
+                        </td>
+                        <td class="text-center">
+                          <span
+                            class="badge bg-light text-dark border rounded-pill px-3"
+                            >45</span
+                          >
+                        </td>
+                        <td class="text-end pe-4">
+                          <div class="btn-group">
+                            <button
+                              class="btn btn-sm btn-white border shadow-sm rounded-start-pill"
+                            >
+                              <i class="fa-solid fa-pen text-muted"></i>
+                            </button>
+                            <button
+                              class="btn btn-sm btn-white border shadow-sm rounded-end-pill text-danger"
+                            >
+                              <i class="fa-solid fa-trash-can"></i>
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+
+                      <tr>
+                        <td class="ps-4">
+                          <div
+                            class="category-img-wrapper border rounded-3 bg-light d-flex align-items-center justify-content-center"
+                          >
+                            <i
+                              class="fa-solid fa-image text-muted opacity-50"
+                            ></i>
+                          </div>
+                        </td>
+                        <td>
+                          <div class="d-flex align-items-center">
+                            <span
+                              class="icon-box-sm bg-success bg-opacity-10 text-success rounded-circle me-2"
+                            >
+                              <i class="fa-solid fa-hammer"></i>
+                            </span>
+                            <span class="fw-bold text-dark">Narzędzia</span>
+                          </div>
+                        </td>
+                        <td class="d-none d-md-table-cell">
+                          <span
+                            class="text-muted small text-wrap d-block"
+                            style="max-width: 350px"
+                          >
+                            Sprzęt budowlany, wiertarki, młoty udarowe.
+                          </span>
+                        </td>
+                        <td class="text-center">
+                          <span
+                            class="badge bg-light text-dark border rounded-pill px-3"
+                            >8</span
+                          >
+                        </td>
+                        <td class="text-end pe-4">
+                          <div class="btn-group">
+                            <button
+                              class="btn btn-sm btn-white border shadow-sm rounded-start-pill"
+                            >
+                              <i class="fa-solid fa-pen text-muted"></i>
+                            </button>
+                            <button
+                              class="btn btn-sm btn-white border shadow-sm rounded-end-pill text-danger"
+                            >
+                              <i class="fa-solid fa-trash-can"></i>
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <footer class="bg-white py-4 mt-auto border-top">
+      <div class="container-fluid px-4">
+        <div
+          class="d-flex align-items-center justify-content-between small text-muted"
+        >
+          <div>&copy; 2024 Rent-A-Thing Admin System.</div>
+          <div>
+            Wsparcie:
+            <a href="#" class="text-decoration-none">helpdesk@rentathing.pl</a>
+          </div>
+        </div>
+      </div>
+    </footer>
+
+    <div
+      class="modal fade"
+      id="addCategoryModal"
+      tabindex="-1"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow rounded-4">
+          <div class="modal-header border-0 pb-0">
+            <h5 class="modal-title fw-bold">Nowa Kategoria</h5>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+          <div class="modal-body">
+            <form>
+              <div class="mb-3">
+                <label
+                  class="form-label small text-muted text-uppercase fw-bold"
+                  >Nazwa Kategorii</label
+                >
+                <input
+                  type="text"
+                  class="form-control rounded-3"
+                  placeholder="np. Sprzęt Wodny"
+                />
+              </div>
+
+              <div class="mb-3">
+                <label
+                  class="form-label small text-muted text-uppercase fw-bold"
+                  >Zdjęcie Promujące</label
+                >
+                <input
+                  type="file"
+                  class="form-control rounded-3"
+                  id="categoryImage"
+                />
+                <div class="form-text small">
+                  Formaty: JPG, PNG. Zalecany rozmiar: 600x400px.
+                </div>
+              </div>
+
+              <div class="mb-3">
+                <label
+                  class="form-label small text-muted text-uppercase fw-bold"
+                  >Ikona (FontAwesome)</label
+                >
+                <div class="input-group">
+                  <span class="input-group-text bg-light border-end-0"
+                    ><i class="fa-solid fa-icons"></i
+                  ></span>
+                  <input
+                    type="text"
+                    class="form-control rounded-end-3"
+                    placeholder="np. fa-water"
+                  />
+                </div>
+              </div>
+
+              <div class="mb-3">
+                <label
+                  class="form-label small text-muted text-uppercase fw-bold"
+                  >Opis</label
+                >
+                <textarea
+                  class="form-control rounded-3"
+                  rows="2"
+                  placeholder="Krótki opis widoczny dla klienta..."
+                ></textarea>
+              </div>
+            </form>
+          </div>
+          <div class="modal-footer border-0 pt-0">
+            <button
+              type="button"
+              class="btn btn-light rounded-pill px-4"
+              data-bs-dismiss="modal"
+            >
+              Anuluj
+            </button>
+            <button type="button" class="btn btn-primary rounded-pill px-4">
+              Utwórz
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  </body>
+</html>
