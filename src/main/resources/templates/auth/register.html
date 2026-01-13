@@ -23,7 +23,7 @@
                                 <div th:text="${registrationError}">Wystąpił błąd rejestracji.</div>
                             </div>
 
-                            <form th:action="@{/auth/register}" th:object="${user}" method="post">
+                            <form th:action="@{/register}" th:object="${registerRequest}" method="post">
                                 
                                 <div class="row g-3 mb-3">
                                     <div class="col-md-6">
@@ -65,21 +65,25 @@
                                     <label for="password" class="text-muted">Hasło</label>
                                     <div class="invalid-feedback" th:errors="*{password}">Hasło jest wymagane</div>
                                 </div>
-
-                                <div class="form-floating mb-4">
-                                    <input type="password" class="form-control rounded-3 shadow-none border-light-subtle" 
-                                           id="confirmPassword" name="confirmPassword"
+                                <div class="mb-4"> <div class="form-floating">
+                                    <input type="password"
+                                           class="form-control rounded-3 shadow-none border-light-subtle"
+                                           id="confirmPassword"
+                                           th:field="*{confirmPassword}"
+                                           th:classappend="${#fields.hasErrors('confirmPassword')} ? 'is-invalid' : ''"
                                            placeholder="Powtórz hasło">
                                     <label for="confirmPassword" class="text-muted">Powtórz hasło</label>
+                                    <div class="invalid-feedback" th:if="${#fields.hasErrors('confirmPassword')}" th:errors="*{confirmPassword}">
+                                        Błąd hasła
+                                    </div>
                                 </div>
-
+                                </div>
                                 <div class="form-check mb-4 small">
-                                    <input class="form-check-input shadow-none" type="checkbox" id="terms" required>
+                                    <input class="form-check-input shadow-none" type="checkbox" id="terms">
                                     <label class="form-check-label text-muted" for="terms">
                                         Akceptuję <a href="#" class="text-decoration-none text-primary">Regulamin</a> oraz <a href="#" class="text-decoration-none text-primary">Politykę Prywatności</a>.
                                     </label>
                                 </div>
-
                                 <button type="submit" class="btn btn-primary w-100 rounded-pill py-2 fw-medium shadow-sm">
                                     Zarejestruj się
                                 </button>
