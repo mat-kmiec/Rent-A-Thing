@@ -18,6 +18,8 @@ public class SecurityConfig {
         http
 
                 .authorizeHttpRequests(auth -> auth
+
+
                         .requestMatchers
                                 ("/css/**", "/js/**", "/images/**", "/libs/**" )
                         .permitAll()
@@ -25,7 +27,7 @@ public class SecurityConfig {
                         // Auth
                         .requestMatchers("/logowanie", "/rejestracja", "/register", "/logout").permitAll()
 
-                        // Open ??
+                        //
                         .requestMatchers("/").permitAll()
 
 

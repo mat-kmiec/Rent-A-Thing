@@ -40,6 +40,9 @@ public class AuthController {
     public String register(@Valid @ModelAttribute RegisterRequest request,
                            BindingResult bindingResult,
                            Model model){
+        if(!request.getPassword().equals(request.getConfirmPassword())){
+            bindingResult.rejectValue("confirmPassword", "error.mismatch", "Hasła nie są takie same");
+        }
         if(bindingResult.hasErrors()){
             return "auth/register";
         }
