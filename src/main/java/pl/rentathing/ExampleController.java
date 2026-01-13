@@ -10,4 +10,9 @@ public class ExampleController {
     public String index() {
         return "index";
     }
+
+    @GetMapping("/finalizacja")
+    public String index1() {
+        return "rental/form";
+    }
 }
