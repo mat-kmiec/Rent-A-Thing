@@ -15,12 +15,9 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 public class RegisterRequest extends AuthRequest{
 
-    @NotBlank(message = "Username cannot be blank")
+    @NotBlank(message = "Imię nie moze być puste")
     private String firstName;
 
-    @NotBlank(message = "Username cannot be blank")
+    @NotBlank(message = "Nazwisko nie moze być puste")
     private String lastName;
-
-    @NotBlank(message = "Password cannot be blank")
-    private String confirmPassword;
 }

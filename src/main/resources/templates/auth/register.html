@@ -23,7 +23,7 @@
                                 <div th:text="${registrationError}">Wystąpił błąd rejestracji.</div>
                             </div>
 
-                            <form th:action="@{/auth/register}" th:object="${user}" method="post">
+                            <form th:action="@{/register}" th:object="${registerRequest}" method="post">
                                 
                                 <div class="row g-3 mb-3">
                                     <div class="col-md-6">
@@ -74,7 +74,7 @@
                                 </div>
 
                                 <div class="form-check mb-4 small">
-                                    <input class="form-check-input shadow-none" type="checkbox" id="terms" required>
+                                    <input class="form-check-input shadow-none" type="checkbox" id="terms">
                                     <label class="form-check-label text-muted" for="terms">
                                         Akceptuję <a href="#" class="text-decoration-none text-primary">Regulamin</a> oraz <a href="#" class="text-decoration-none text-primary">Politykę Prywatności</a>.
                                     </label>

@@ -38,8 +38,8 @@ public class AuthController {
         }
 
         try{
-//            authService.register(request);
-            return "redirect:/logowanie?success";
+           authService.register(request);
+            return "redirect:/logowanie?registered";
         }catch (AuthException e){
             model.addAttribute("error", e.getMessage());
             return "auth/register";

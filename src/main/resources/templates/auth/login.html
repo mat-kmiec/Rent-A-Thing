@@ -23,6 +23,11 @@
                                 <div>Błędny login lub hasło.</div>
                             </div>
 
+                            <div th:if="${param.registered}" class="alert alert-success d-flex align-items-center small py-2" role="alert">
+                                <i class="fa-solid fa-check-circle me-2"></i>
+                                <div>Konto zarejestrowane pomyślnie.</div>
+                            </div>
+
                             <div th:if="${param.logout}" class="alert alert-success d-flex align-items-center small py-2" role="alert">
                                 <i class="fa-solid fa-check-circle me-2"></i>
                                 <div>Zostałeś wylogowany.</div>

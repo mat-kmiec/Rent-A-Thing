@@ -15,10 +15,10 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 public abstract class AuthRequest {
 
-    @NotBlank(message = "Email cannot be blank")
+    @NotBlank(message = "Email nie może być pusty")
     @Email(message = "Email must be valid")
     protected String email;
 
-    @NotBlank(message = "Password cannot be blank")
+    @NotBlank(message = "Hasło nie może być puste")
     protected String password;
 }
