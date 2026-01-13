@@ -9,9 +9,5 @@ import pl.rentathing.auth.dto.RegisterRequest;
 @RequiredArgsConstructor
 public class AuthService {
 
-    @Transactional
-    public void register(RegisterRequest request){
-        // TODO: Implement user.existByEmail()
-        // TODO: implement user.save()
-    }
+
 }
