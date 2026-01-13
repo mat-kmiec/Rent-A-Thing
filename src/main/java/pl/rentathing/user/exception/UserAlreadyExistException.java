@@ -1,6 +1,6 @@
-package pl.rentathing.auth.exception;
+package pl.rentathing.user.exception;
 
-public class UserAlreadyExistException extends AuthException{
+public class UserAlreadyExistException extends UserException{
     public UserAlreadyExistException(String email) {
         super("User with email: " + email + " already exist");
     }

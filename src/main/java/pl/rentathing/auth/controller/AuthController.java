@@ -38,7 +38,7 @@ public class AuthController {
         }
 
         try{
-            authService.register(request);
+//            authService.register(request);
             return "redirect:/logowanie?success";
         }catch (AuthException e){
             model.addAttribute("error", e.getMessage());

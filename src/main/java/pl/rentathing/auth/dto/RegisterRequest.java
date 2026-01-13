@@ -20,4 +20,7 @@ public class RegisterRequest extends AuthRequest{
 
     @NotBlank(message = "Username cannot be blank")
     private String lastName;
+
+    @NotBlank(message = "Password cannot be blank")
+    private String confirmPassword;
 }
