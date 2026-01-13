@@ -12,7 +12,8 @@ document.addEventListener('DOMContentLoaded', function () {
         'success': { class: 'bg-success', icon: 'fa-check-circle', msg: 'Operacja zakończona sukcesem!' },
         'error':   { class: 'bg-danger',  icon: 'fa-exclamation-circle', msg: 'Wystąpił błąd. Spróbuj ponownie.' },
         'warning': { class: 'bg-warning', icon: 'fa-exclamation-triangle', msg: 'Uwaga! Sprawdź dane.' },
-        'logout':  { class: 'bg-success', icon: 'fa-info-circle', msg: 'Zostałeś wylogowany.' }
+        'logout':  { class: 'bg-success', icon: 'fa-info-circle', msg: 'Zostałeś wylogowany.' },
+        'loggedIn':  { class: 'bg-success', icon: 'fa-info-circle', msg: 'Jesteś już zalogowany!.' }
     };
 
     for (const [key, config] of Object.entries(types)) {

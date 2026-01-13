@@ -2,6 +2,7 @@ package pl.rentathing.auth.controller;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -19,12 +20,18 @@ public class AuthController {
     private final AuthService authService;
 
     @GetMapping("/logowanie")
-    public String loginPage(){
+    public String loginPage(Authentication authentication){
+        if(authentication != null && authentication.isAuthenticated()){
+            return "redirect:/?loggedIn";
+        }
         return "auth/login";
     }
 
     @GetMapping("/rejestracja")
-    public String registerPage(Model model){
+    public String registerPage(Authentication authentication, Model model){
+        if(authentication != null && authentication.isAuthenticated()){
+            return "redirect:/?loggedIn";
+        }
         model.addAttribute("registerRequest", new RegisterRequest());
         return "auth/register";
     }
