@@ -9,6 +9,23 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
+/**
+ * Represents a registration request containing user details required for creating a new account.
+ * Extends {@code AuthRequest} to include additional fields specific to registration.
+ *
+ * The {@code RegisterRequest} class ensures that all required fields for registration
+ * are validated according to predefined rules.
+ *
+ * Fields include:
+ * - {@code firstName}: The user's first name with validation for non-empty
+ *   input and length constraints.
+ * - {@code lastName}: The user's last name with validation for non-empty input
+ *   and length constraints.
+ * - {@code confirmPassword}: A field to confirm the user's password with validation
+ *   for non-empty input.
+ *
+ * This class uses annotations for validation and leverages Lombok to reduce boilerplate code.
+ */
 @Getter
 @Setter
 @NoArgsConstructor

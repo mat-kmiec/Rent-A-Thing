@@ -1,6 +1,5 @@
 package pl.rentathing.user.entity;
 
-import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
 import lombok.*;
 

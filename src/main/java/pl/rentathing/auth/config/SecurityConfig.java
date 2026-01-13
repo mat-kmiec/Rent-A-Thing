@@ -19,20 +19,22 @@ public class SecurityConfig {
 
                 .authorizeHttpRequests(auth -> auth
 
-
+                        // static resources
                         .requestMatchers
-                                ("/css/**", "/js/**", "/images/**", "/libs/**" )
-                        .permitAll()
+                                ("/css/**", "/js/**", "/images/**", "/libs/**" ).permitAll()
 
                         // Auth
                         .requestMatchers("/logowanie", "/rejestracja", "/register", "/logout").permitAll()
 
-                        //
+                        // Unauntenticated
                         .requestMatchers("/").permitAll()
 
-
-                        .requestMatchers("/h2-console/**").permitAll()
+                        // Admin
                         .requestMatchers("/admin/**").hasRole("ADMIN")
+
+                        // H2-CONSOLE
+                        .requestMatchers("/h2-console/**").permitAll()
+
                         .anyRequest().authenticated()
                 )
                 .formLogin(form -> form

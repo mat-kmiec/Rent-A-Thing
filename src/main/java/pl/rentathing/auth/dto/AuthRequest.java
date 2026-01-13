@@ -10,6 +10,15 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
+/**
+ * Abstract class representing an authentication request.
+ * It serves as a base class for specific authentication-related requests such as login and registration.
+ *
+ * The class includes validation constraints for email and password fields to ensure proper formatting
+ * and security requirements.
+ *
+ * Subclasses are expected to provide additional fields and customization as needed.
+ */
 @Getter
 @Setter
 @NoArgsConstructor
