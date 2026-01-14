@@ -11,9 +11,9 @@
 
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav ms-auto align-items-center fw-medium mt-3 mt-lg-0">
-                <li class="nav-item"><a class="nav-link px-3" href="#categories">Kategorie</a></li>
-                <li class="nav-item"><a class="nav-link px-3" href="#featured">Oferta</a></li>
-                <li class="nav-item"><a class="nav-link px-3 text-nowrap" href="#how-it-works">Jak to działa</a></li>
+                <li class="nav-item"><a class="nav-link px-3" th:href="@{/katalog}">Katalog</a></li>
+                <li class="nav-item"><a class="nav-link px-3" th:href="@{/#featured}">Oferta</a></li>
+                <li class="nav-item"><a class="nav-link px-3 text-nowrap" th:href="@{/#how-it-works}">Jak to działa</a></li>
 
                 <th:block sec:authorize="isAnonymous()">
                     <li class="nav-item ms-lg-3 mt-3 mt-lg-0 w-100 w-lg-auto">

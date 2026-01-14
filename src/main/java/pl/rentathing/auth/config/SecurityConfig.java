@@ -28,6 +28,8 @@ public class SecurityConfig {
 
                         // Unauntenticated
                         .requestMatchers("/").permitAll()
+                        .requestMatchers("/katalog/**").permitAll()
+                        .requestMatchers("/przedmiot/**").permitAll()
 
                         // Admin
                         .requestMatchers("/admin/**").hasRole("ADMIN")
