@@ -2,6 +2,7 @@ package pl.rentathing.auth.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer;
@@ -28,6 +29,10 @@ public class SecurityConfig {
 
                         // Unauntenticated
                         .requestMatchers("/").permitAll()
+                        .requestMatchers("/katalog/**").permitAll()
+                        .requestMatchers("/przedmiot/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/reviews/**").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/reviews/**").permitAll()
 
                         // Admin
                         .requestMatchers("/admin/**").hasRole("ADMIN")

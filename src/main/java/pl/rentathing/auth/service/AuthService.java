@@ -3,6 +3,7 @@ package pl.rentathing.auth.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import pl.rentathing.auth.dto.RegisterRequest;
 import pl.rentathing.user.entity.Role;
 import pl.rentathing.user.entity.User;
@@ -49,6 +50,7 @@ public class AuthService {
      *                        Must not be null and should contain valid input.
      * @throws UserAlreadyExistException if a user with the given email already exists.
      */
+    @Transactional
     public void register(RegisterRequest registerRequest) {
         if(userRepository.findByEmail(registerRequest.getEmail()).isPresent()) throw new UserAlreadyExistException(registerRequest.getEmail());
         User user = userMapper.toEntity(registerRequest);

@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                   https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <changeSet id="0" author="mateusz kmiec">
+        <insert tableName="categories">
+            <column name="name" value="Elektronika"/>
+            <column name="description" value="Aparaty, drony, laptopy i inne gadżety."/>
+            <column name="icon_class" value="fa-camera"/>
+        </insert>
+        <insert tableName="categories">
+            <column name="name" value="Dom i Ogród"/>
+            <column name="description" value="Narzędzia budowlane, kosiarki, meble ogrodowe."/>
+            <column name="icon_class" value="fa-hammer"/>
+        </insert>
+        <insert tableName="categories">
+            <column name="name" value="Pojazdy"/>
+            <column name="description" value="Samochody, motocykle, hulajnogi elektryczne."/>
+            <column name="icon_class" value="fa-car"/>
+        </insert>
+        <insert tableName="categories">
+            <column name="name" value="Sport i Turystyka"/>
+            <column name="description" value="Namioty, rowery, sprzęt narciarski."/>
+            <column name="icon_class" value="fa-bicycle"/>
+        </insert>
+        <insert tableName="categories">
+            <column name="name" value="Dla Dzieci"/>
+            <column name="description" value="Wózki, foteliki, zabawki ogrodowe."/>
+            <column name="icon_class" value="fa-baby-carriage"/>
+        </insert>
+    </changeSet>
+</databaseChangeLog>
