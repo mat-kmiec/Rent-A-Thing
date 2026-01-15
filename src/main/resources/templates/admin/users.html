@@ -108,23 +108,34 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr>
+                                <tr th:each="user : ${users.content}" th:classappend="${!user.enabled ? 'bg-light bg-opacity-50' : ''}">
                                     <td class="ps-4">
-                                        <div class="d-flex flex-column">
-                                            <span class="fw-bold text-dark">Marek Kowalski</span>
-                                            <small class="text-muted">marek.kowalski@email.com</small>
-                                            <small class="d-md-none text-primary mt-1">Użytkownik</small>
+                                        <div class="d-flex flex-column" th:classappend="${!user.enabled ? 'opacity-50' : ''}">
+                                            <span class="fw-bold text-dark" th:classappend="${!user.enabled ? 'text-decoration-line-through' : ''}">
+                                                <span th:text="${user.firstName}"></span> <span th:text="${user.lastName}"></span>
+                                            </span>
+                                            <small class="text-muted" th:text="${user.email}"></small>
+                                            <small class="d-md-none mt-1" th:classappend="${user.role == 'ROLE_ADMIN' ? 'text-dark fw-bold' : 'text-primary'}">
+                                                <span th:text="${user.role == 'ROLE_ADMIN' ? 'Admin' : 'Użytkownik'}"></span>
+                                            </small>
                                         </div>
                                     </td>
                                     <td class="d-none d-md-table-cell">
-                                        <span class="badge bg-light text-dark border rounded-pill fw-normal">Użytkownik</span>
+                                        <span class="badge rounded-pill fw-normal" 
+                                              th:classappend="${user.role == 'ROLE_ADMIN' ? 'bg-dark text-white' : 'bg-light text-dark border'}"
+                                              th:classappend="${!user.enabled ? 'opacity-75' : ''}">
+                                            <i th:if="${user.role == 'ROLE_ADMIN'}" class="fa-solid fa-shield-halved me-1 fs-xs"></i>
+                                            <span th:text="${user.role == 'ROLE_ADMIN' ? 'Admin' : 'Użytkownik'}"></span>
+                                        </span>
                                     </td>
                                     <td class="d-none d-lg-table-cell text-center">
-                                        <span class="badge bg-primary bg-opacity-10 text-primary rounded-pill">3 aktywne</span>
+                                        <span class="text-muted small">-</span>
                                     </td>
                                     <td>
-                                        <span class="badge bg-success bg-opacity-10 text-success rounded-pill px-2">
-                                            <i class="fa-solid fa-check-circle me-1"></i> Aktywny
+                                        <span class="badge rounded-pill px-2" 
+                                              th:classappend="${user.enabled ? 'bg-success bg-opacity-10 text-success' : 'bg-danger bg-opacity-10 text-danger'}">
+                                            <i th:classappend="${user.enabled ? 'fa-check-circle' : 'fa-lock'}" class="fa-solid me-1"></i> 
+                                            <span th:text="${user.enabled ? 'Aktywny' : 'Zablokowany'}"></span>
                                         </span>
                                     </td>
                                     <td class="text-end pe-4">
@@ -133,72 +144,30 @@
                                                 <i class="fa-solid fa-pen text-muted"></i>
                                             </button>
                                             <button class="btn btn-sm btn-white border shadow-sm rounded-end-pill text-danger" 
+                                                    th:if="${user.enabled && user.role != 'ROLE_ADMIN'}"
                                                     data-bs-toggle="modal" 
                                                     data-bs-target="#blockUserModal"
                                                     title="Zablokuj">
                                                 <i class="fa-solid fa-ban"></i>
                                             </button>
-                                        </div>
-                                    </td>
-                                </tr>
-
-                                <tr>
-                                    <td class="ps-4">
-                                        <div class="d-flex flex-column">
-                                            <span class="fw-bold text-dark">Anna Nowak</span>
-                                            <small class="text-muted">anna.nowak@admin.pl</small>
-                                            <small class="d-md-none text-dark fw-bold mt-1">Admin</small>
-                                        </div>
-                                    </td>
-                                    <td class="d-none d-md-table-cell">
-                                        <span class="badge bg-dark text-white rounded-pill fw-normal">
-                                            <i class="fa-solid fa-shield-halved me-1 fs-xs"></i> Admin
-                                        </span>
-                                    </td>
-                                    <td class="d-none d-lg-table-cell text-center">
-                                        <span class="text-muted small">-</span>
-                                    </td>
-                                    <td>
-                                        <span class="badge bg-success bg-opacity-10 text-success rounded-pill px-2">
-                                            <i class="fa-solid fa-check-circle me-1"></i> Aktywny
-                                        </span>
-                                    </td>
-                                    <td class="text-end pe-4">
-                                        <div class="btn-group">
-                                            <button class="btn btn-sm btn-white border shadow-sm rounded-start-pill" data-bs-toggle="modal" data-bs-target="#editUserModal">
-                                                <i class="fa-solid fa-pen text-muted"></i>
-                                            </button>
-                                            <button class="btn btn-sm btn-light border rounded-end-pill text-muted" disabled>
+                                            <button class="btn btn-sm btn-light border rounded-end-pill text-muted" 
+                                                    th:if="${user.enabled && user.role == 'ROLE_ADMIN'}"
+                                                    disabled>
                                                 <i class="fa-solid fa-ban"></i>
                                             </button>
+                                            <button class="btn btn-sm btn-outline-success rounded-end-pill px-3 shadow-sm"
+                                                    th:if="${!user.enabled}"
+                                                    data-bs-toggle="modal" 
+                                                    data-bs-target="#unlockUserModal">
+                                                <i class="fa-solid fa-unlock me-1"></i> Odblokuj
+                                            </button>
                                         </div>
                                     </td>
                                 </tr>
-
-                                <tr class="bg-light bg-opacity-50">
-                                    <td class="ps-4">
-                                        <div class="d-flex flex-column opacity-50">
-                                            <span class="fw-bold text-dark text-decoration-line-through">Piotr Jakiś</span>
-                                            <small class="text-muted">piotr.jakis@spam.com</small>
-                                        </div>
-                                    </td>
-                                    <td class="d-none d-md-table-cell">
-                                        <span class="badge bg-light text-dark border rounded-pill fw-normal opacity-75">Użytkownik</span>
-                                    </td>
-                                    <td class="d-none d-lg-table-cell text-center">
-                                        <span class="badge bg-danger bg-opacity-10 text-danger rounded-pill">Opóźnione: 2</span>
-                                    </td>
-                                    <td>
-                                        <span class="badge bg-danger bg-opacity-10 text-danger rounded-pill px-2">
-                                            <i class="fa-solid fa-lock me-1"></i> Zablokowany
-                                        </span>
-                                    </td>
-                                    <td class="text-end pe-4">
-                                        <button class="btn btn-sm btn-outline-success rounded-pill px-3 shadow-sm" 
-                                                data-bs-toggle="modal" 
-                                                data-bs-target="#unlockUserModal">
-                                            <i class="fa-solid fa-unlock me-1"></i> Odblokuj
-                                        </button>
+                                <tr th:if="${users.empty}">
+                                    <td colspan="5" class="text-center py-5 text-muted">
+                                        <i class="fa-solid fa-inbox fs-2 mb-3 d-block"></i>
+                                        Brak użytkowników do wyświetlenia
                                     </td>
                                 </tr>
                             </tbody>
@@ -206,26 +175,27 @@
                     </div>
                 </div>
 
-                <div class="card-footer bg-white border-top border-light py-3 px-4">
+                <div class="card-footer bg-white border-top border-light py-3 px-4" th:if="${users.totalElements > 0}">
                     <div class="d-flex flex-column flex-md-row justify-content-between align-items-center gap-3">
                         <small class="text-muted">
-                            Strona <strong>1</strong> z <strong>15</strong> &bull; Wyników: <strong>145</strong>
+                            Strona <strong th:text="${currentPage + 1}">1</strong> z <strong th:text="${totalPages}">1</strong> &bull; 
+                            Wyników na stronie: <strong th:text="${users.size}">0</strong> z <strong th:text="${users.totalElements}">0</strong>
                         </small>
                         
-                        <nav>
+                        <nav th:if="${totalPages > 1}">
                             <ul class="pagination pagination-sm mb-0">
-                                <li class="page-item disabled">
-                                    <a class="page-link" href="#" tabindex="-1">
+                                <li class="page-item" th:classappend="${currentPage == 0 ? 'disabled' : ''}">
+                                    <a class="page-link" th:href="${currentPage == 0 ? '#' : '/admin/users?page=' + (currentPage - 1) + '&size=' + pageSize}" th:attr="tabindex=${currentPage == 0 ? '-1' : ''}">
                                         <i class="fa-solid fa-chevron-left"></i>
                                     </a>
                                 </li>
-                                <li class="page-item active"><a class="page-link" href="#">1</a></li>
-                                <li class="page-item"><a class="page-link" href="#">2</a></li>
-                                <li class="page-item"><a class="page-link" href="#">3</a></li>
-                                <li class="page-item disabled"><span class="page-link border-0">...</span></li>
-                                <li class="page-item"><a class="page-link" href="#">15</a></li>
-                                <li class="page-item">
-                                    <a class="page-link" href="#">
+                                
+                                <li class="page-item" th:each="i : ${#numbers.sequence(0, totalPages - 1)}" th:classappend="${currentPage == i ? 'active' : ''}">
+                                    <a class="page-link" th:href="'/admin/users?page=' + ${i} + '&size=' + ${pageSize}" th:text="${i + 1}">1</a>
+                                </li>
+                                
+                                <li class="page-item" th:classappend="${currentPage == totalPages - 1 ? 'disabled' : ''}">
+                                    <a class="page-link" th:href="${currentPage == totalPages - 1 ? '#' : '/admin/users?page=' + (currentPage + 1) + '&size=' + pageSize}">
                                         <i class="fa-solid fa-chevron-right"></i>
                                     </a>
                                 </li>
