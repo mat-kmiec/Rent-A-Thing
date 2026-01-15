@@ -8,8 +8,12 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.http.ResponseEntity;
 import pl.rentathing.user.dto.UserListDTO;
 import pl.rentathing.user.service.UserService;
 
@@ -51,5 +55,19 @@ public class AdminUserController {
         model.addAttribute("pages", pages);
         
         return "admin/users";
+    }
+    
+    @PostMapping("/users/{id}/block")
+    @ResponseBody
+    public ResponseEntity<?> blockUser(@PathVariable Long id) {
+        userService.blockUser(id);
+        return ResponseEntity.ok().body("{\"success\": true}");
+    }
+    
+    @PostMapping("/users/{id}/unlock")
+    @ResponseBody
+    public ResponseEntity<?> unblockUser(@PathVariable Long id) {
+        userService.unblockUser(id);
+        return ResponseEntity.ok().body("{\"success\": true}");
     }
 }

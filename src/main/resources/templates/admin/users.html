@@ -9,6 +9,9 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     
+    <meta name="csrf-token" th:content="${_csrf.token}" />
+    <meta name="csrf-header" th:content="${_csrf.headerName}" />
+    
     <link rel="stylesheet" th:href="@{/css/home.css}" href="../css/style.css">
     <link rel="stylesheet" th:href="@{/css/admin.css}" href="../css/admin.css">
 </head>
@@ -143,12 +146,15 @@
                                             <button class="btn btn-sm btn-white border shadow-sm rounded-start-pill" data-bs-toggle="modal" data-bs-target="#editUserModal">
                                                 <i class="fa-solid fa-pen text-muted"></i>
                                             </button>
-                                            <button class="btn btn-sm btn-white border shadow-sm rounded-end-pill text-danger" 
+                                            <button class="btn btn-sm btn-outline-danger rounded-end-pill px-3 shadow-sm" 
                                                     th:if="${!user.locked && user.role != 'ROLE_ADMIN'}"
                                                     data-bs-toggle="modal" 
                                                     data-bs-target="#blockUserModal"
-                                                    title="Zablokuj">
-                                                <i class="fa-solid fa-ban"></i>
+                                                    th:data-user-id="${user.id}"
+                                                    th:data-user-name="${user.firstName + ' ' + user.lastName}"
+                                                    title="Zablokuj"
+                                                    onclick="setBlockUserData(this)">
+                                                <i class="fa-solid fa-ban me-1"></i> Zablokuj
                                             </button>
                                             <button class="btn btn-sm btn-light border rounded-end-pill text-muted" 
                                                     th:if="${user.role == 'ROLE_ADMIN'}"
@@ -158,7 +164,10 @@
                                             <button class="btn btn-sm btn-outline-success rounded-end-pill px-3 shadow-sm"
                                                     th:if="${user.locked}"
                                                     data-bs-toggle="modal" 
-                                                    data-bs-target="#unlockUserModal">
+                                                    data-bs-target="#unlockUserModal"
+                                                    th:data-user-id="${user.id}"
+                                                    th:data-user-name="${user.firstName + ' ' + user.lastName}"
+                                                    onclick="setUnlockUserData(this)">
                                                 <i class="fa-solid fa-unlock me-1"></i> Odblokuj
                                             </button>
                                         </div>
@@ -239,12 +248,12 @@
                     </div>
                     <h5 class="fw-bold mb-2">Zablokować użytkownika?</h5>
                     <p class="text-muted small mb-4">
-                        Użytkownik <strong>Marek Kowalski</strong> straci dostęp do swojego konta.<br>
+                        Użytkownik <strong id="blockUserName"></strong> straci dostęp do swojego konta.<br>
                         Wypożyczenia pozostaną aktywne.
                     </p>
                     <div class="d-flex justify-content-center gap-2">
                         <button type="button" class="btn btn-light rounded-pill px-4" data-bs-dismiss="modal">Anuluj</button>
-                        <button type="button" class="btn btn-danger rounded-pill px-4 shadow-sm">Zablokuj konto</button>
+                        <button type="button" class="btn btn-danger rounded-pill px-4 shadow-sm" id="confirmBlockBtn">Zablokuj konto</button>
                     </div>
                 </div>
             </div>
@@ -260,11 +269,11 @@
                     </div>
                     <h5 class="fw-bold mb-2">Odblokować użytkownika?</h5>
                     <p class="text-muted small mb-4">
-                        Czy na pewno chcesz przywrócić dostęp dla użytkownika <strong>Piotr Jakiś</strong>?
+                        Czy na pewno chcesz przywrócić dostęp dla użytkownika <strong id="unlockUserName"></strong>?
                     </p>
                     <div class="d-flex justify-content-center gap-2">
                         <button type="button" class="btn btn-light rounded-pill px-4" data-bs-dismiss="modal">Anuluj</button>
-                        <button type="button" class="btn btn-success rounded-pill px-4 shadow-sm">Odblokuj konto</button>
+                        <button type="button" class="btn btn-success rounded-pill px-4 shadow-sm" id="confirmUnlockBtn">Odblokuj konto</button>
                     </div>
                 </div>
             </div>
@@ -303,5 +312,81 @@
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        let currentBlockUserId = null;
+        let currentUnlockUserId = null;
+
+        function setBlockUserData(button) {
+            const userId = button.getAttribute('data-user-id');
+            const userName = button.getAttribute('data-user-name');
+            currentBlockUserId = userId;
+            document.getElementById('blockUserName').textContent = userName;
+        }
+
+        function setUnlockUserData(button) {
+            const userId = button.getAttribute('data-user-id');
+            const userName = button.getAttribute('data-user-name');
+            currentUnlockUserId = userId;
+            document.getElementById('unlockUserName').textContent = userName;
+        }
+
+        function getCSRFToken() {
+            return document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+        }
+
+        function getCSRFHeader() {
+            return document.querySelector('meta[name="csrf-header"]').getAttribute('content');
+        }
+
+        document.getElementById('confirmBlockBtn').addEventListener('click', function() {
+            if (currentBlockUserId) {
+                const headers = {
+                    'Content-Type': 'application/json'
+                };
+                headers[getCSRFHeader()] = getCSRFToken();
+
+                fetch(`/admin/users/${currentBlockUserId}/block`, {
+                    method: 'POST',
+                    headers: headers
+                })
+                .then(response => {
+                    if (response.ok) {
+                        location.reload();
+                    } else {
+                        alert('Błąd podczas blokowania użytkownika');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Błąd podczas blokowania użytkownika');
+                });
+            }
+        });
+
+        document.getElementById('confirmUnlockBtn').addEventListener('click', function() {
+            if (currentUnlockUserId) {
+                const headers = {
+                    'Content-Type': 'application/json'
+                };
+                headers[getCSRFHeader()] = getCSRFToken();
+
+                fetch(`/admin/users/${currentUnlockUserId}/unlock`, {
+                    method: 'POST',
+                    headers: headers
+                })
+                .then(response => {
+                    if (response.ok) {
+                        location.reload();
+                    } else {
+                        alert('Błąd podczas odblokowywania użytkownika');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Błąd podczas odblokowywania użytkownika');
+                });
+            }
+        });
+    </script>
 </body>
 </html>

@@ -54,6 +54,20 @@ public class UserService {
         userRepository.save(user);
     }
     
+    public void blockUser(Long userId) {
+        User user = userRepository.findById(userId)
+            .orElseThrow(() -> new RuntimeException("Użytkownik nie znaleziony"));
+        user.setLocked(true);
+        userRepository.save(user);
+    }
+    
+    public void unblockUser(Long userId) {
+        User user = userRepository.findById(userId)
+            .orElseThrow(() -> new RuntimeException("Użytkownik nie znaleziony"));
+        user.setLocked(false);
+        userRepository.save(user);
+    }
+    
 
     private UserListDTO mapToUserListDTO(User user) {
         return UserListDTO.builder()
