@@ -10,4 +10,6 @@ public interface ItemMapper {
 
     @Mapping(target = "categoryName", source = "category.name")
     ItemDetailsDTO toDetailsDTO(Item item);
+
+
 }

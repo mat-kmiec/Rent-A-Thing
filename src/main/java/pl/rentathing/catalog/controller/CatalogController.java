@@ -13,4 +13,6 @@ public class CatalogController {
     public String catalog() {
         return "catalog/list";
     }
+
+
 }

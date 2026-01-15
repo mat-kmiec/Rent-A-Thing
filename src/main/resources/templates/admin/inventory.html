@@ -347,212 +347,82 @@
               </div>
 
               <div class="tab-pane fade" id="categories" role="tabpanel">
-                <div
-                  class="p-3 p-md-4 border-bottom border-light bg-light bg-opacity-25"
-                >
+                <div class="p-3 p-md-4 border-bottom border-light bg-light bg-opacity-25">
                   <div class="row g-2 align-items-center">
                     <div class="col-12 col-md-6">
                       <div class="input-group">
-                        <span
-                          class="input-group-text bg-white border-end-0 rounded-start-pill ps-3"
-                        >
-                          <i
-                            class="fa-solid fa-magnifying-glass text-muted"
-                          ></i>
-                        </span>
-                        <input
-                          type="text"
-                          class="form-control bg-white border-start-0 rounded-end-pill shadow-none"
-                          placeholder="Szukaj kategorii..."
-                        />
+          <span class="input-group-text bg-white border-end-0 rounded-start-pill ps-3">
+            <i class="fa-solid fa-magnifying-glass text-muted"></i>
+          </span>
+                        <input type="text" id="category-search" class="form-control bg-white border-start-0 rounded-end-pill shadow-none" placeholder="Szukaj kategorii..."/>
                       </div>
                     </div>
                     <div class="col-6 col-md-4">
-                      <select
-                        class="form-select rounded-pill bg-white border shadow-none cursor-pointer"
-                      >
-                        <option selected>Sortuj: Popularność</option>
-                        <option value="name_asc">Nazwa (A-Z)</option>
-                        <option value="count_desc">
-                          Najwięcej przedmiotów
-                        </option>
+                      <select class="form-select rounded-pill bg-white border shadow-none cursor-pointer">
+                        <option selected>Sortuj: Nazwa (A-Z)</option>
                       </select>
                     </div>
                     <div class="col-6 col-md-2 text-end">
-                      <span class="text-muted small fw-medium">Łącznie: 3</span>
+                      <span class="text-muted small fw-medium">Łącznie: <span id="category-total-count">0</span></span>
                     </div>
                   </div>
                 </div>
 
                 <div class="table-responsive">
-                  <table
-                    class="table table-hover align-middle mb-0 text-nowrap"
-                  >
+                  <table class="table table-hover align-middle mb-0 text-nowrap">
                     <thead class="bg-light text-uppercase small text-muted">
-                      <tr>
-                        <th class="ps-4" style="width: 100px">Zdjęcie</th>
-                        <th>Nazwa</th>
-                        <th class="d-none d-md-table-cell">Opis</th>
-                        <th class="text-center">Przedmiotów</th>
-                        <th class="text-end pe-4">Akcje</th>
-                      </tr>
+                    <tr>
+                      <th class="ps-4" style="width: 100px">Ikona</th>
+                      <th>Nazwa</th>
+                      <th class="d-none d-md-table-cell">Opis</th>
+                      <th class="text-center">Przedmiotów</th>
+                      <th class="text-end pe-4">Akcje</th>
+                    </tr>
                     </thead>
-                    <tbody>
-                      <tr>
-                        <td class="ps-4">
-                          <div class="category-img-wrapper border rounded-3">
-                            <img
-                              src="https://images.unsplash.com/photo-1549317661-bd32c8ce0db2?auto=format&fit=crop&w=150&q=80"
-                              alt="Pojazdy"
-                              class="img-fluid rounded-3"
-                            />
-                          </div>
-                        </td>
-                        <td>
-                          <div class="d-flex align-items-center">
-                            <span
-                              class="icon-box-sm bg-primary bg-opacity-10 text-primary rounded-circle me-2"
-                            >
-                              <i class="fa-solid fa-car"></i>
-                            </span>
-                            <span class="fw-bold text-dark">Pojazdy</span>
-                          </div>
-                        </td>
-                        <td class="d-none d-md-table-cell">
-                          <span
-                            class="text-muted small text-wrap d-block"
-                            style="max-width: 350px"
-                          >
-                            Samochody osobowe, dostawcze, przyczepy i lawety.
-                          </span>
-                        </td>
-                        <td class="text-center">
-                          <span
-                            class="badge bg-light text-dark border rounded-pill px-3"
-                            >12</span
-                          >
-                        </td>
-                        <td class="text-end pe-4">
-                          <div class="btn-group">
-                            <button
-                              class="btn btn-sm btn-white border shadow-sm rounded-start-pill"
-                              title="Edytuj"
-                            >
-                              <i class="fa-solid fa-pen text-muted"></i>
-                            </button>
-                            <button
-                              class="btn btn-sm btn-white border shadow-sm rounded-end-pill text-danger"
-                              title="Usuń"
-                            >
-                              <i class="fa-solid fa-trash-can"></i>
-                            </button>
-                          </div>
-                        </td>
-                      </tr>
-
-                      <tr>
-                        <td class="ps-4">
-                          <div class="category-img-wrapper border rounded-3">
-                            <img
-                              src="https://images.unsplash.com/photo-1550009158-9ebf69173e03?auto=format&fit=crop&w=150&q=80"
-                              alt="Elektronika"
-                              class="img-fluid rounded-3"
-                            />
-                          </div>
-                        </td>
-                        <td>
-                          <div class="d-flex align-items-center">
-                            <span
-                              class="icon-box-sm bg-warning bg-opacity-10 text-warning rounded-circle me-2"
-                            >
-                              <i class="fa-solid fa-laptop"></i>
-                            </span>
-                            <span class="fw-bold text-dark">Elektronika</span>
-                          </div>
-                        </td>
-                        <td class="d-none d-md-table-cell">
-                          <span
-                            class="text-muted small text-wrap d-block"
-                            style="max-width: 350px"
-                          >
-                            Drony, kamery, laptopy, rzutniki i sprzęt audio.
-                          </span>
-                        </td>
-                        <td class="text-center">
-                          <span
-                            class="badge bg-light text-dark border rounded-pill px-3"
-                            >45</span
-                          >
-                        </td>
-                        <td class="text-end pe-4">
-                          <div class="btn-group">
-                            <button
-                              class="btn btn-sm btn-white border shadow-sm rounded-start-pill"
-                            >
-                              <i class="fa-solid fa-pen text-muted"></i>
-                            </button>
-                            <button
-                              class="btn btn-sm btn-white border shadow-sm rounded-end-pill text-danger"
-                            >
-                              <i class="fa-solid fa-trash-can"></i>
-                            </button>
-                          </div>
-                        </td>
-                      </tr>
-
-                      <tr>
-                        <td class="ps-4">
-                          <div
-                            class="category-img-wrapper border rounded-3 bg-light d-flex align-items-center justify-content-center"
-                          >
-                            <i
-                              class="fa-solid fa-image text-muted opacity-50"
-                            ></i>
-                          </div>
-                        </td>
-                        <td>
-                          <div class="d-flex align-items-center">
-                            <span
-                              class="icon-box-sm bg-success bg-opacity-10 text-success rounded-circle me-2"
-                            >
-                              <i class="fa-solid fa-hammer"></i>
-                            </span>
-                            <span class="fw-bold text-dark">Narzędzia</span>
-                          </div>
-                        </td>
-                        <td class="d-none d-md-table-cell">
-                          <span
-                            class="text-muted small text-wrap d-block"
-                            style="max-width: 350px"
-                          >
-                            Sprzęt budowlany, wiertarki, młoty udarowe.
-                          </span>
-                        </td>
-                        <td class="text-center">
-                          <span
-                            class="badge bg-light text-dark border rounded-pill px-3"
-                            >8</span
-                          >
-                        </td>
-                        <td class="text-end pe-4">
-                          <div class="btn-group">
-                            <button
-                              class="btn btn-sm btn-white border shadow-sm rounded-start-pill"
-                            >
-                              <i class="fa-solid fa-pen text-muted"></i>
-                            </button>
-                            <button
-                              class="btn btn-sm btn-white border shadow-sm rounded-end-pill text-danger"
-                            >
-                              <i class="fa-solid fa-trash-can"></i>
-                            </button>
-                          </div>
-                        </td>
-                      </tr>
+                    <tbody id="category-table-body">
                     </tbody>
                   </table>
                 </div>
               </div>
+
+              <script>
+                document.addEventListener('DOMContentLoaded', loadCategories);
+
+                async function loadCategories() {
+                    try {
+                        const response = await fetch('/admin/api/categories');
+                        const categories = await response.json();
+
+                        const tbody = document.getElementById('category-table-body');
+                        const totalCount = document.getElementById('category-total-count');
+
+                        tbody.innerHTML = '';
+                        totalCount.textContent = categories.length;
+
+                        categories.forEach(cat => {
+                            tbody.innerHTML += `
+                                <tr>
+                                    <td class="ps-4">
+                                        <div class="category-img-wrapper border rounded-3 bg-light d-flex align-items-center justify-content-center" style="width: 45px; height: 45px;">
+                                            <i class="fa-solid ${cat.iconClass || 'fa-folder'} text-muted"></i>
+                                        </div>
+                                    </td>
+                                    <td><span class="fw-bold text-dark">${cat.name}</span></td>
+                                    <td class="d-none d-md-table-cell"><span class="text-muted small">${cat.description || 'Brak opisu'}</span></td>
+                                    <td class="text-center"><span class="badge bg-light text-dark border rounded-pill px-3">${cat.itemCount}</span></td>
+                                    <td class="text-end pe-4">
+                                        <div class="btn-group">
+                                            <button class="btn btn-sm btn-white border shadow-sm rounded-start-pill"><i class="fa-solid fa-pen"></i></button>
+                                            <button class="btn btn-sm btn-white border shadow-sm rounded-end-pill text-danger"><i class="fa-solid fa-trash-can"></i></button>
+                                        </div>
+                                    </td>
+                                </tr>`;
+                        });
+                    } catch (err) {
+                        console.error("Błąd ładowania:", err);
+                    }
+                }
+              </script>
             </div>
           </div>
         </div>

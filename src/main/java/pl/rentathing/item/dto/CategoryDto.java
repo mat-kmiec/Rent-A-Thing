@@ -6,5 +6,7 @@ import lombok.Data;
 public class CategoryDto {
     private Long id;
     private String name;
+    private String description;
     private String iconClass;
+    private int itemCount;
 }
