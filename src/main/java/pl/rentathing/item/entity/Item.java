@@ -5,9 +5,11 @@ import jakarta.validation.constraints.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
+import pl.rentathing.item.review.Review;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Table(name = "items")
@@ -73,9 +75,8 @@ public class Item {
     @Column(updatable = false)
     private LocalDateTime createdAt;
 
-
-
-
+    @OneToMany(mappedBy = "item", cascade = CascadeType.ALL)
+    private List<Review> reviews;
 
 
 }

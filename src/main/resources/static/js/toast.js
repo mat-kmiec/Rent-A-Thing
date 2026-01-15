@@ -22,6 +22,11 @@ document.addEventListener('DOMContentLoaded', function () {
             toastIcon.classList.add('fa-solid', config.icon);
             toastBody.textContent = config.msg;
             toast.show();
+
+            setTimeout(() => {
+                window.history.replaceState({}, document.title, window.location.pathname);
+            }, 1000);
+
             break;
         }
     }

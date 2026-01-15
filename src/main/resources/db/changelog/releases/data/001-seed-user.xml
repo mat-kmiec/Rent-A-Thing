@@ -4,7 +4,27 @@
                    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
                    https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
 
-    <changeSet id="0" author="admin">
+    <changeSet id="20260113-2-seed-users" author="mateusz kmiec">
+        <!--        PASSWORD = Secret1324-->
+        <insert tableName="users">
+            <column name="first_name" value="Jan"/>
+            <column name="last_name" value="Kowalski"/>
+            <column name="email" value="admin@admin.pl"/>
+            <column name="password" value="$2a$10$Rr49N6mdjbSPLlXttYMbCOfAFEzPg/ZcLqPn9DWszt2zAO/20HocC"/>
+            <column name="role" value="ROLE_ADMIN"/>
+            <column name="enabled" valueBoolean="true"/>
+            <column name="locked" valueBoolean="false"/>
+        </insert>
 
+        <insert tableName="users">
+            <!--    PASSWORD Marta2026           -->
+            <column name="first_name" value="Marta"/>
+            <column name="last_name" value="Nowak"/>
+            <column name="email" value="user@user.com"/>
+            <column name="password" value="$2a$10$paAaspYGsNEJgLlCURtVlOIpfrWwhg6HoOxGX7fnNuB0ftQwImE.y"/>
+            <column name="role" value="ROLE_USER"/>
+            <column name="enabled" valueBoolean="true"/>
+            <column name="locked" valueBoolean="false"/>
+        </insert>
     </changeSet>
 </databaseChangeLog>

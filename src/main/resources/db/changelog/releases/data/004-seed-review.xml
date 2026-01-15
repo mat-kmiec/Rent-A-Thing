@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                   https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <changeSet id="20260115-3-bulk-seed-reviews" author="Mateusz Kmiec">
+        <insert tableName="reviews"><column name="author_name" value="Adam Nowak"/><column name="content" value="Bardzo polecam, sprzęt wysokiej klasy."/><column name="rating" valueNumeric="5"/><column name="item_id" valueNumeric="1"/><column name="created_at" valueComputed="CURRENT_TIMESTAMP"/></insert>
+        <insert tableName="reviews"><column name="author_name" value="Katarzyna W."/><column name="content" value="Wszystko super, szybki kontakt."/><column name="rating" valueNumeric="5"/><column name="item_id" valueNumeric="1"/><column name="created_at" valueComputed="CURRENT_TIMESTAMP"/></insert>
+        <insert tableName="reviews"><column name="author_name" value="Piotr Z."/><column name="content" value="Sprzęt działa bez zarzutu, polecam."/><column name="rating" valueNumeric="4"/><column name="item_id" valueNumeric="1"/><column name="created_at" valueComputed="CURRENT_TIMESTAMP"/></insert>
+        <insert tableName="reviews"><column name="author_name" value="Anna Maria"/><column name="content" value="Trochę porysowana obudowa, ale technicznie ok."/><column name="rating" valueNumeric="3"/><column name="item_id" valueNumeric="1"/><column name="created_at" valueComputed="CURRENT_TIMESTAMP"/></insert>
+        <insert tableName="reviews"><column name="author_name" value="Michał K."/><column name="content" value="Najlepszy wynajem w okolicy."/><column name="rating" valueNumeric="5"/><column name="item_id" valueNumeric="1"/><column name="created_at" valueComputed="CURRENT_TIMESTAMP"/></insert>
+        <insert tableName="reviews"><column name="author_name" value="Zofia S."/><column name="content" value="Bardzo czysty i zadbany sprzęt."/><column name="rating" valueNumeric="5"/><column name="item_id" valueNumeric="1"/><column name="created_at" valueComputed="CURRENT_TIMESTAMP"/></insert>
+        <insert tableName="reviews"><column name="author_name" value="Tomasz B."/><column name="content" value="Bateria trzyma krócej niż myślałem."/><column name="rating" valueNumeric="3"/><column name="item_id" valueNumeric="1"/><column name="created_at" valueComputed="CURRENT_TIMESTAMP"/></insert>
+        <insert tableName="reviews"><column name="author_name" value="Magda G."/><column name="content" value="Rewelacja! Na pewno skorzystam ponownie."/><column name="rating" valueNumeric="5"/><column name="item_id" valueNumeric="1"/><column name="created_at" valueComputed="CURRENT_TIMESTAMP"/></insert>
+        <insert tableName="reviews"><column name="author_name" value="Robert J."/><column name="content" value="Dobry stosunek ceny do jakości."/><column name="rating" valueNumeric="4"/><column name="item_id" valueNumeric="1"/><column name="created_at" valueComputed="CURRENT_TIMESTAMP"/></insert>
+        <insert tableName="reviews"><column name="author_name" value="Julia O."/><column name="content" value="Wszystko zgodnie z opisem."/><column name="rating" valueNumeric="5"/><column name="item_id" valueNumeric="1"/><column name="created_at" valueComputed="CURRENT_TIMESTAMP"/></insert>
+        <insert tableName="reviews"><column name="author_name" value="Krzysztof L."/><column name="content" value="Sprawnie i profesjonalnie."/><column name="rating" valueNumeric="4"/><column name="item_id" valueNumeric="1"/><column name="created_at" valueComputed="CURRENT_TIMESTAMP"/></insert>
+        <insert tableName="reviews"><column name="author_name" value="Beata M."/><column name="content" value="Nie mam zastrzeżeń."/><column name="rating" valueNumeric="5"/><column name="item_id" valueNumeric="1"/><column name="created_at" valueComputed="CURRENT_TIMESTAMP"/></insert>
+        <insert tableName="reviews"><column name="author_name" value="Paweł W."/><column name="content" value="Super kontakt z właścicielem."/><column name="rating" valueNumeric="5"/><column name="item_id" valueNumeric="1"/><column name="created_at" valueComputed="CURRENT_TIMESTAMP"/></insert>
+        <insert tableName="reviews"><column name="author_name" value="Monika K."/><column name="content" value="Aparat idealny na wesele."/><column name="rating" valueNumeric="5"/><column name="item_id" valueNumeric="1"/><column name="created_at" valueComputed="CURRENT_TIMESTAMP"/></insert>
+        <insert tableName="reviews"><column name="author_name" value="Łukasz P."/><column name="content" value="Solidnie zapakowane na czas transportu."/><column name="rating" valueNumeric="4"/><column name="item_id" valueNumeric="1"/><column name="created_at" valueComputed="CURRENT_TIMESTAMP"/></insert>
+        <insert tableName="reviews"><column name="author_name" value="Dominika F."/><column name="content" value="Polecam każdemu."/><column name="rating" valueNumeric="5"/><column name="item_id" valueNumeric="1"/><column name="created_at" valueComputed="CURRENT_TIMESTAMP"/></insert>
+        <insert tableName="reviews"><column name="author_name" value="Artur D."/><column name="content" value="Daję 4 gwiazdki bo brakowało instrukcji."/><column name="rating" valueNumeric="4"/><column name="item_id" valueNumeric="1"/><column name="created_at" valueComputed="CURRENT_TIMESTAMP"/></insert>
+        <insert tableName="reviews"><column name="author_name" value="Szymon R."/><column name="content" value="Działa doskonale."/><column name="rating" valueNumeric="5"/><column name="item_id" valueNumeric="1"/><column name="created_at" valueComputed="CURRENT_TIMESTAMP"/></insert>
+        <insert tableName="reviews"><column name="author_name" value="Alicja B."/><column name="content" value="Bardzo elastyczne godziny zwrotu."/><column name="rating" valueNumeric="5"/><column name="item_id" valueNumeric="1"/><column name="created_at" valueComputed="CURRENT_TIMESTAMP"/></insert>
+        <insert tableName="reviews"><column name="author_name" value="Grzegorz H."/><column name="content" value="Solidny sprzęt do pracy."/><column name="rating" valueNumeric="5"/><column name="item_id" valueNumeric="1"/><column name="created_at" valueComputed="CURRENT_TIMESTAMP"/></insert>
+
+        <update tableName="items">
+            <column name="average_rating" valueNumeric="4.7"/>
+            <column name="review_count" valueNumeric="22"/>
+            <where>id = 1</where>
+        </update>
+    </changeSet>
+
+</databaseChangeLog>
