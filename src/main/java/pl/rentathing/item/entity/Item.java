@@ -78,5 +78,12 @@ public class Item {
     @OneToMany(mappedBy = "item", cascade = CascadeType.ALL)
     private List<Review> reviews;
 
+    @NotBlank
+    @Column(unique = true, length = 50)
+    private String sku;
+
+    @Min(1)
+    private Integer minRentalDays = 1;
+
 
 }

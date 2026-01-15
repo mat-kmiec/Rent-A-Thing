@@ -9,6 +9,9 @@
             <column name="id" type="BIGINT" autoIncrement="true">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
+            <column name="sku" type="VARCHAR(50)">
+                <constraints nullable="false" unique="true"/>
+            </column>
             <column name="title" type="VARCHAR(100)">
                 <constraints nullable="false" unique="true"/>
             </column>
@@ -34,9 +37,11 @@
             <column name="can_be_shipped" type="BOOLEAN" defaultValueBoolean="true"/>
             <column name="can_be_picked_up" type="BOOLEAN" defaultValueBoolean="true"/>
             <column name="shipping_price" type="DECIMAL(10,2)"/>
+            <column name="min_rental_days" type="INT" defaultValueNumeric="1"/>
             <column name="is_new" type="BOOLEAN" defaultValueBoolean="true"/>
             <column name="created_at" type="TIMESTAMP"/>
             <column name="last_modified" type="TIMESTAMP"/>
         </createTable>
     </changeSet>
+
 </databaseChangeLog>

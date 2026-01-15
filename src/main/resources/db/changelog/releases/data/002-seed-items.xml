@@ -4,15 +4,15 @@
                    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
                    https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
 
-    <changeSet id="20260114-1" author="mateusz kmiec">
+    <changeSet id="20260114-2" author="mateusz kmiec">
         <insert tableName="items">
-            <column name="title" value="Sony Alpha a7 III"/>
-            <column name="description" value="Pełnoklatkowy aparat bezlusterkowy Sony Alpha a7 III to idealne narzędzie dla profesjonalistów i pasjonatów. W zestawie body, dwa akumulatory i karta pamięci 64GB."/>
+            <column name="sku" value="SON-A7III-001"/> <column name="title" value="Sony Alpha a7 III"/>
+            <column name="description" value="Pełnoklatkowy aparat bezlusterkowy Sony Alpha a7 III..."/>
             <column name="price_per_day" value="120.00"/>
             <column name="discounted_percent" value="10"/>
             <column name="deposit" valueBoolean="true"/>
             <column name="deposit_price" value="500.00"/>
-            <column name="image_url" value="https://images.unsplash.com/photo-1516035069371-29a1b244cc32?q=80&amp;w=1000&amp;auto=format&amp;fit=crop"/>
+            <column name="image_url" value="https://images.unsplash.com/photo-1516035069371-29a1b244cc32"/>
             <column name="category_id" valueNumeric="1"/>
             <column name="average_rating" valueNumeric="4.8"/>
             <column name="review_count" valueNumeric="12"/>
@@ -20,7 +20,7 @@
             <column name="can_be_shipped" valueBoolean="true"/>
             <column name="can_be_picked_up" valueBoolean="true"/>
             <column name="shipping_price" value="19.99"/>
-            <column name="is_new" valueBoolean="false"/>
+            <column name="min_rental_days" valueNumeric="1"/> <column name="is_new" valueBoolean="false"/>
             <column name="created_at" valueComputed="CURRENT_TIMESTAMP"/>
         </insert>
     </changeSet>
