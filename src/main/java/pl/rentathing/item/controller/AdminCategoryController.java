@@ -19,7 +19,7 @@ public class AdminCategoryController {
 
     @GetMapping("/magazyn")
     public String inventoryPage() {
-        return "localhost:8080/admin/inventory";
+        return "admin/inventory";
     }
 
 }
