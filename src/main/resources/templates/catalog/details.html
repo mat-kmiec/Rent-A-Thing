@@ -13,43 +13,49 @@
                     
                     <div class="mb-5">
                         <div class="position-relative">
-                            <span class="badge bg-success position-absolute top-0 start-0 m-3 fs-6 px-3 py-2 rounded-pill shadow-sm">Dostępny od ręki</span>
-                            <img src="https://images.unsplash.com/photo-1516035069371-29a1b244cc32?auto=format&fit=crop&w=1200&q=80" class="img-fluid rounded-4 shadow-sm product-image-single" alt="Main Image">
+                            <div class="position-absolute top-0 start-0 m-3 d-flex gap-2" style="z-index: 10;">
+                                <span class="badge bg-success fs-6 px-3 py-2 rounded-pill shadow-sm" th:if="${item.available}">
+                                    Dostępny od ręki
+                                </span>
+                                                        <span class="badge bg-primary fs-6 px-3 py-2 rounded-pill shadow-sm" th:if="${item.isNew}">
+                                    Nowość
+                                </span>
+                            </div>
+
+                            <img th:src="${item.imageUrl}"
+                                 class="img-fluid rounded-4 shadow-sm product-image-single"
+                                 alt="Main Image">
                         </div>
                     </div>
 
                     <div class="mb-2">
                         <div class="mb-2">
-                            <h1 class="fw-bold mb-1 display-6">Sony Alpha a7 III</h1>
+                            <h1 class="fw-bold mb-1 display-6" th:text="${item.title}"></h1>
                             <div class="text-warning small mb-3">
                                 <i class="fa-solid fa-star"></i>
                                 <i class="fa-solid fa-star"></i>
                                 <i class="fa-solid fa-star"></i>
                                 <i class="fa-solid fa-star"></i>
                                 <i class="fa-solid fa-star-half-stroke"></i>
-                                <span class="text-muted ms-2 fw-medium">(4.9 / 82 opinie)</span>
+                                <span class="text-muted ms-2 fw-medium"
+                                      th:text="'(' + ${item.averageRating} + ' / ' + ${item.reviewCount} + ' opinie)'">(4.9 / 82 opinie)</span>
                             </div>
                         </div>
                     </div>
 
                     <div class="mb-5">
                         <h4 class="fw-bold mb-3">Opis produktu</h4>
-                        <p class="text-muted">Sony Alpha a7 III to jeden z najpopularniejszych bezlusterkowców na rynku. Oferuje doskonałą jakość obrazu dzięki pełnoklatkowej matrycy CMOS o rozdzielczości 24.2 MP. Aparat świetnie radzi sobie w słabym oświetleniu i oferuje szybki system autofocusa.</p>
-                        <p class="text-muted">Wypożyczając ten zestaw otrzymujesz:</p>
-                        <ul class="text-muted">
-                            <li>Body Sony A7 III</li>
-                            <li>Obiektyw 28-70mm f/3.5-5.6</li>
-                            <li>Karta pamięci 64GB (Szybka)</li>
-                            <li>Torba transportowa</li>
-                            <li>Ładowarka + 2x Bateria NP-FZ100</li>
-                        </ul>
+                        <p class="text-muted" th:utext="${item.description}">Sony Alpha a7 III to jeden z najpopularniejszych bezlusterkowców na rynku. Oferuje doskonałą jakość obrazu dzięki pełnoklatkowej matrycy CMOS o rozdzielczości 24.2 MP. Aparat świetnie radzi sobie w słabym oświetleniu i oferuje szybki system autofocusa.</p>
                     </div>
 
                     <hr class="my-5 border-secondary opacity-10">
 
                     <div id="reviews">
                         <div class="d-flex align-items-center justify-content-between mb-4">
-                            <h4 class="fw-bold mb-0">Opinie użytkowników (82)</h4>
+                            <h4 class="fw-bold mb-0"
+                                th:text="'Opinie użytkowników (' + ${item.reviewCount} + ')'">
+                                Opinie użytkowników (82)
+                            </h4>
                             <button class="btn btn-outline-primary btn-sm rounded-pill px-3">Dodaj opinię</button>
                         </div>
 
@@ -98,9 +104,12 @@
                             <div class="d-flex justify-content-between align-items-end mb-4 border-bottom pb-3">
                                 <div>
                                     <small class="text-muted text-uppercase fw-bold ls-1">Cena</small>
-                                    <h2 class="text-primary fw-bold mb-0">120 zł <span class="fs-6 text-muted fw-normal">/doba</span></h2>
+                                    <h2 class="text-primary fw-bold mb-0">
+                                        <span th:text="${item.pricePerDay} + ' zł'">120 zł</span>
+                                        <span class="fs-6 text-muted fw-normal">/doba</span>
+                                    </h2>
                                 </div>
-                                <span class="badge bg-success bg-opacity-10 text-success rounded-pill px-3 py-2">Dostępny</span>
+                                <span class="badge bg-success bg-opacity-10 text-success rounded-pill px-3 py-2" th:if="${item.available}">Dostępny</span>
                             </div>
 
                             <form>

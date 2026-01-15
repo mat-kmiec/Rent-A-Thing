@@ -4,7 +4,13 @@
                    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
                    https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
 
-    <include file="db/changelog/releases/001-create-user.xml"/>
-    <include file="db/changelog/releases/002-create-items.xml"/>
-    <include file="db/changelog/releases/003-create-categories.xml"/>
+    <include file="/db/changelog/releases/changes/001-create-user.xml"/>
+    <include file="/db/changelog/releases/changes/003-create-categories.xml"/>
+    <include file="/db/changelog/releases/changes/002-create-items.xml"/>
+
+
+    <!-- SEED  -->
+    <include file="/db/changelog/releases/data/001-seed-user.xml"/>
+    <include file="/db/changelog/releases/data/003-seed-categories.xml"/>
+    <include file="/db/changelog/releases/data/002-seed-items.xml"/>
 </databaseChangeLog>

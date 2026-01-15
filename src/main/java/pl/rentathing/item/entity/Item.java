@@ -36,7 +36,6 @@ public class Item {
     @Min(0) @Max(100)
     private Integer discountedPercent;
 
-
     private boolean deposit = false;
 
     @PositiveOrZero

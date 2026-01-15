@@ -19,6 +19,7 @@ public class ItemDetailsDTO {
     private Double averageRating;
     private Integer reviewCount;
     private boolean available;
+    private boolean isNew;
     private boolean canBeShipped;
     private BigDecimal depositPrice;
 }
