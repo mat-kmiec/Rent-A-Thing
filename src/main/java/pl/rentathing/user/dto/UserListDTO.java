@@ -26,5 +26,7 @@ public class UserListDTO {
     
     private Boolean enabled;
     
+    private Boolean locked;
+    
     private LocalDateTime createdAt;
 }

@@ -63,6 +63,7 @@ public class UserService {
             .email(user.getEmail())
             .role(user.getRole().name())
             .enabled(user.isEnabled())
+            .locked(user.isLocked())
             .build();
     }
 }
