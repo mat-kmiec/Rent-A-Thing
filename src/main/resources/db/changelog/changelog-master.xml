@@ -8,6 +8,7 @@
     <include file="/db/changelog/releases/changes/003-create-categories.xml"/>
     <include file="/db/changelog/releases/changes/002-create-items.xml"/>
     <include file="/db/changelog/releases/changes/004-create-review.xml"/>
+    <include file="/db/changelog/releases/changes/005-create-rentals.xml"/>
 
 
     <!-- SEED  -->
