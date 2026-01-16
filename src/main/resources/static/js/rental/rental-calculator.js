@@ -6,9 +6,12 @@ document.addEventListener('DOMContentLoaded', function () {
     const deliveryCostSpan = document.getElementById('deliveryCost');
     const totalCostSpan = document.getElementById('totalCost');
     const pricePerDay = parseFloat(document.getElementById('rawPricePerDay').value);
+    const discountedPriceValue = document.getElementById('rawDiscountedPrice').value;
+    const discountedPrice = discountedPriceValue ? parseFloat(discountedPriceValue) : pricePerDay;
     const depositElement = document.getElementById('rawDepositPrice');
     const depositPrice = depositElement ? parseFloat(depositElement.value) : 0;
-    const discountPercent = 0;
+    const activePrice = (discountedPrice < pricePerDay) ? discountedPrice : pricePerDay;
+
     function calculateTotal() {
         const start = new Date(startDateInput.value);
         const end = new Date(endDateInput.value);
@@ -20,11 +23,11 @@ document.addEventListener('DOMContentLoaded', function () {
             if (days === 0) days = 1;
         }
         daysCountSpan.textContent = days;
-        let rentalTotal = pricePerDay * days;
+        let rentalTotal = activePrice * days;
         rentalCostSpan.textContent = rentalTotal.toFixed(2);
+
         let shippingCost = 0;
         const selectedDelivery = document.querySelector('input[name="deliveryMethod"]:checked');
-
         if (selectedDelivery) {
             shippingCost = parseFloat(selectedDelivery.getAttribute('data-price')) || 0;
         }
