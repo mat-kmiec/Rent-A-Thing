@@ -2,6 +2,7 @@ package pl.rentathing.Rental.Service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import pl.rentathing.Rental.Dto.RentalCreateDto;
@@ -20,6 +21,7 @@ import pl.rentathing.user.repository.UserRepository;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 
 @Service
@@ -82,4 +84,23 @@ public class RentalService {
 
         rentalRepository.save(rental);
     }
+
+    public RentalCreateDto prepareRentalDto(Long itemId, LocalDate startDate, LocalDate endDate, Authentication authentication) {
+        if(authentication == null) throw new UnautorizedException();
+        User user = userRepository.findByEmail(authentication.getName())
+                .orElseThrow(() -> new UserNotFoundException(authentication.getName()));
+
+        RentalCreateDto dto = new RentalCreateDto();
+        dto.setItemId(itemId);
+        dto.setFirstName(user.getFirstName());
+        dto.setLastName(user.getLastName());
+        dto.setEmail(user.getEmail());
+        dto.setDeliveryMethod("PICKUP");
+        dto.setPayment("ONLINE");
+        dto.setStartDate(startDate != null ? startDate : LocalDate.now());
+        dto.setEndDate(endDate != null ? endDate : LocalDate.now().plusDays(1));
+
+        return dto;
+    }
+
 }
