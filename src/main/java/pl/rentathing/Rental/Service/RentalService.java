@@ -32,6 +32,7 @@ public class RentalService {
     private final ItemRepository itemRepository;
     private final UserRepository userRepository;
     private final RentalRepository rentalRepository;
+    private final RentalPriceCalculator priceCalculator;
 
     @Transactional
     public void createRental(RentalCreateDto dto, Authentication authentication) {
@@ -41,31 +42,12 @@ public class RentalService {
         if(authentication == null) throw new UnautorizedException();
         User user = userRepository.findByEmail(authentication.getName())
                 .orElseThrow(() -> new UserNotFoundException(authentication.getName()));
-        long days = ChronoUnit.DAYS.between(dto.getStartDate(), dto.getEndDate());
-        if(days <= 0) days = 1;
+        long days = priceCalculator.calculateRentalDays(dto.getStartDate(), dto.getEndDate());
+        BigDecimal pricePerDay = priceCalculator.calculateDiscountedPrice(item);
+        BigDecimal shippingCost = priceCalculator.calculateShippingCost(item, dto.getDeliveryMethod());
+        BigDecimal deposit = priceCalculator.calculateDeposit(item);
 
-        BigDecimal pricePerDay = item.getPricePerDay();
-        if (item.getDiscountedPercent() != null && item.getDiscountedPercent() > 0) {
-            BigDecimal discountMultiplier = BigDecimal.valueOf(100 - item.getDiscountedPercent());
-            pricePerDay = pricePerDay.multiply(discountMultiplier)
-                    .divide(BigDecimal.valueOf(100), 2, RoundingMode.HALF_UP);
-        }
         BigDecimal rentalTotal = pricePerDay.multiply(BigDecimal.valueOf(days));
-        DeliveryMethod selectedMethod = DeliveryMethod.valueOf(dto.getDeliveryMethod());
-        BigDecimal shippingCost = BigDecimal.ZERO;
-
-        if (selectedMethod == DeliveryMethod.DELIVERY) {
-            if (item.getShippingPrice() != null) {
-                shippingCost = item.getShippingPrice();
-            } else {
-                shippingCost = BigDecimal.valueOf(25);
-            }
-        }
-
-        BigDecimal deposit = (item.isDeposit() && item.getDepositPrice() != null)
-                ? item.getDepositPrice()
-                : BigDecimal.ZERO;
-
         BigDecimal totalCost = rentalTotal.add(shippingCost).add(deposit);
 
         Rental rental = Rental.builder()
@@ -76,10 +58,10 @@ public class RentalService {
                 .totalCost(totalCost)
                 .deposit(deposit)
                 .shippingCost(shippingCost)
-                .deliveryMethod(selectedMethod)
+                .deliveryMethod(DeliveryMethod.valueOf(dto.getDeliveryMethod()))
                 .paymentMethod(PaymentMethod.valueOf(dto.getPayment().toUpperCase()))
                 .status(RentalStatus.PENDING)
-                .depositPaid(item.isDeposit())
+                .depositPaid(!item.isDeposit())
                 .build();
 
         rentalRepository.save(rental);
@@ -102,5 +84,7 @@ public class RentalService {
 
         return dto;
     }
+
+
 
 }
