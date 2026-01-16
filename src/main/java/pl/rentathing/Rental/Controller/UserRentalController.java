@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import pl.rentathing.Rental.Dto.RentalCreateDto;
 import pl.rentathing.Rental.Service.RentalService;
+import pl.rentathing.auth.service.AuthService;
 import pl.rentathing.item.dto.ItemDetailsDTO;
 import pl.rentathing.item.service.ItemService;
 import pl.rentathing.user.entity.User;
@@ -27,6 +28,7 @@ public class UserRentalController {
     private final ItemService itemService;
     private final RentalService rentalService;
     private final UserRepository userRepository;
+    private final AuthService authService;
 
     @GetMapping("/formularz")
     public String showRentalForm(
@@ -35,7 +37,6 @@ public class UserRentalController {
             @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
             @RequestParam(name = "koniec", required = false)
             @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate,
-            Authentication authentication,
             Model model
     ) {
         ItemDetailsDTO itemDto = itemService.getItemDetails(itemId);
@@ -43,8 +44,8 @@ public class UserRentalController {
             return "redirect:/catalog/details?id=" + itemId + "&error=not_available";
         }
 
-        RentalCreateDto rentalCreateDto = rentalService.prepareRentalDto(itemId, startDate, endDate, authentication);
-        User currentUser = userRepository.findByEmail(SecurityContextHolder.getContext().getAuthentication().getName()).orElseThrow();
+        RentalCreateDto rentalCreateDto = rentalService.prepareRentalDto(itemId, startDate, endDate);
+        User currentUser = authService.getCurrentUser();
 
         model.addAttribute("item", itemDto);
         model.addAttribute("startDate", rentalCreateDto.getStartDate());
@@ -60,26 +61,25 @@ public class UserRentalController {
     public String confirmRental(
             @Valid @ModelAttribute("rentalCreateDto") RentalCreateDto rentalCreateDto,
             BindingResult bindingResult,
-            Authentication authentication,
             RedirectAttributes redirectAttributes,
             Model model
     ) {
         if (bindingResult.hasErrors()) {
             ItemDetailsDTO itemDto = itemService.getItemDetails(rentalCreateDto.getItemId());
-            User currentUser = userRepository.findByEmail(authentication.getName()).orElseThrow();
+            User currentUser = authService.getCurrentUser();
+
             model.addAttribute("item", itemDto);
             model.addAttribute("user", currentUser);
             return "rental/form";
         }
 
         try {
-            rentalService.createRental(rentalCreateDto, authentication);
+            rentalService.createRental(rentalCreateDto);
             return "redirect:/wypozyczenia/sukces";
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("errorMessage", "Wystąpił błąd: " + e.getMessage());
             return "redirect:/wypozyczenia/formularz?przedmiot=" + rentalCreateDto.getItemId();
         }
     }
-
 
 }

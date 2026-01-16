@@ -1,6 +1,7 @@
 package pl.rentathing.auth.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -8,6 +9,7 @@ import pl.rentathing.auth.dto.RegisterRequest;
 import pl.rentathing.user.entity.Role;
 import pl.rentathing.user.entity.User;
 import pl.rentathing.user.exception.UserAlreadyExistException;
+import pl.rentathing.user.exception.UserNotFoundException;
 import pl.rentathing.user.mapper.UserMapper;
 import pl.rentathing.user.repository.UserRepository;
 
@@ -57,6 +59,16 @@ public class AuthService {
         user.setPassword(passwordEncoder.encode(registerRequest.getPassword()));
         user.setRole(Role.ROLE_USER);
         userRepository.save(user);
+    }
+
+    public User getCurrentUser() {
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        return userRepository.findByEmail(email)
+                .orElseThrow(() -> new UserNotFoundException(email));
+    }
+
+    public Long getCurrentUserId() {
+        return getCurrentUser().getId();
     }
 
 

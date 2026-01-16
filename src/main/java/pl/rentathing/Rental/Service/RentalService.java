@@ -12,6 +12,7 @@ import pl.rentathing.Rental.Entity.Rental;
 import pl.rentathing.Rental.Entity.RentalStatus;
 import pl.rentathing.Rental.Repository.RentalRepository;
 import pl.rentathing.auth.exception.UnautorizedException;
+import pl.rentathing.auth.service.AuthService;
 import pl.rentathing.item.entity.Item;
 import pl.rentathing.item.exception.ItemNotFoundException;
 import pl.rentathing.item.repository.ItemRepository;
@@ -33,15 +34,14 @@ public class RentalService {
     private final UserRepository userRepository;
     private final RentalRepository rentalRepository;
     private final RentalPriceCalculator priceCalculator;
+    private final AuthService authService;
 
     @Transactional
-    public void createRental(RentalCreateDto dto, Authentication authentication) {
+    public void createRental(RentalCreateDto dto) {
         Item item = itemRepository.findById(dto.getItemId())
                 .orElseThrow(() -> new ItemNotFoundException(dto.getItemId().toString()));
 
-        if(authentication == null) throw new UnautorizedException();
-        User user = userRepository.findByEmail(authentication.getName())
-                .orElseThrow(() -> new UserNotFoundException(authentication.getName()));
+        User user = authService.getCurrentUser();
         long days = priceCalculator.calculateRentalDays(dto.getStartDate(), dto.getEndDate());
         BigDecimal pricePerDay = priceCalculator.calculateDiscountedPrice(item);
         BigDecimal shippingCost = priceCalculator.calculateShippingCost(item, dto.getDeliveryMethod());
@@ -67,10 +67,8 @@ public class RentalService {
         rentalRepository.save(rental);
     }
 
-    public RentalCreateDto prepareRentalDto(Long itemId, LocalDate startDate, LocalDate endDate, Authentication authentication) {
-        if(authentication == null) throw new UnautorizedException();
-        User user = userRepository.findByEmail(authentication.getName())
-                .orElseThrow(() -> new UserNotFoundException(authentication.getName()));
+    public RentalCreateDto prepareRentalDto(Long itemId, LocalDate startDate, LocalDate endDate) {
+        User user = authService.getCurrentUser();
 
         RentalCreateDto dto = new RentalCreateDto();
         dto.setItemId(itemId);
