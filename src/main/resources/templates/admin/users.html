@@ -69,33 +69,35 @@
             <div class="card border-0 shadow-sm rounded-4 overflow-hidden">
                 
                 <div class="card-header bg-white border-bottom border-light p-3 p-md-4">
-                    <div class="row g-2 g-md-3">
-                        <div class="col-12 col-md-4">
-                            <div class="input-group">
-                                <span class="input-group-text bg-light border-end-0 rounded-start-pill ps-3">
-                                    <i class="fa-solid fa-magnifying-glass text-muted"></i>
-                                </span>
-                                <input type="text" class="form-control bg-light border-start-0 rounded-end-pill shadow-none" placeholder="Szukaj...">
+                    <form id="filterForm" method="get" action="/admin/users">
+                        <div class="row g-2 g-md-3">
+                            <div class="col-12 col-md-4">
+                                <div class="input-group">
+                                    <span class="input-group-text bg-light border-end-0 rounded-start-pill ps-3">
+                                        <i class="fa-solid fa-magnifying-glass text-muted"></i>
+                                    </span>
+                                    <input type="text" name="search" class="form-control bg-light border-start-0 rounded-end-pill shadow-none" placeholder="Szukaj..." th:value="${search}">
+                                </div>
+                            </div>
+                            <div class="col-6 col-md-3">
+                                <select name="role" class="form-select rounded-pill bg-light border-0 shadow-none cursor-pointer">
+                                    <option value="">Role: Wszystkie</option>
+                                    <option value="ROLE_USER" th:selected="${role == 'ROLE_USER'}">Użytkownik</option>
+                                    <option value="ROLE_ADMIN" th:selected="${role == 'ROLE_ADMIN'}">Administrator</option>
+                                </select>
+                            </div>
+                            <div class="col-6 col-md-3">
+                                <select class="form-select rounded-pill bg-light border-0 shadow-none cursor-pointer">
+                                    <option selected>Status: Wszystkie</option>
+                                    <option value="active">Aktywne</option>
+                                    <option value="blocked">Zablokowane</option>
+                                </select>
+                            </div>
+                            <div class="col-12 col-md-2 d-grid">
+                                <button type="submit" class="btn btn-outline-primary rounded-pill">Filtruj</button>
                             </div>
                         </div>
-                        <div class="col-6 col-md-3">
-                            <select class="form-select rounded-pill bg-light border-0 shadow-none cursor-pointer">
-                                <option selected>Role: Wszystkie</option>
-                                <option value="ROLE_USER">Użytkownik</option>
-                                <option value="ROLE_ADMIN">Administrator</option>
-                            </select>
-                        </div>
-                        <div class="col-6 col-md-3">
-                            <select class="form-select rounded-pill bg-light border-0 shadow-none cursor-pointer">
-                                <option selected>Status: Wszystkie</option>
-                                <option value="active">Aktywne</option>
-                                <option value="blocked">Zablokowane</option>
-                            </select>
-                        </div>
-                        <div class="col-12 col-md-2 d-grid">
-                            <button class="btn btn-outline-primary rounded-pill">Filtruj</button>
-                        </div>
-                    </div>
+                    </form>
                 </div>
 
                 <div class="card-body p-0">

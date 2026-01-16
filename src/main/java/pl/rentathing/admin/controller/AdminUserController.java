@@ -33,10 +33,12 @@ public class AdminUserController {
         @RequestParam(defaultValue = "3") int size,
         @RequestParam(defaultValue = "id") String sortBy,
         @RequestParam(defaultValue = "DESC") Sort.Direction direction,
+        @RequestParam(required = false) String search,
+        @RequestParam(required = false) String role,
         Model model) {
         
         Pageable pageable = PageRequest.of(page, size, Sort.by(direction, sortBy));
-        Page<UserListDTO> users = userService.getAllUsers(pageable);
+        Page<UserListDTO> users = userService.searchUsers(search, role, pageable);
         
         int totalPages = users.getTotalPages();
         List<Integer> pages = new ArrayList<>();
@@ -53,6 +55,8 @@ public class AdminUserController {
         model.addAttribute("direction", direction);
         model.addAttribute("totalPages", totalPages);
         model.addAttribute("pages", pages);
+        model.addAttribute("search", search);
+        model.addAttribute("role", role);
         
         return "admin/users";
     }

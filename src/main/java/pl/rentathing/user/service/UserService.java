@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import pl.rentathing.user.dto.UserListDTO;
 import pl.rentathing.user.dto.UserSettingsDTO;
+import pl.rentathing.user.entity.Role;
 import pl.rentathing.user.entity.User;
 import pl.rentathing.user.repository.UserRepository;
 
@@ -26,6 +27,32 @@ public class UserService {
             .map(this::mapToUserListDTO);
     }
     
+    public Page<UserListDTO> getUsersByRole(Role role, Pageable pageable) {
+        return userRepository.findByRole(role, pageable)
+            .map(this::mapToUserListDTO);
+    }
+    
+    public Page<UserListDTO> searchUsers(String search, String role, Pageable pageable) {
+        Role roleEnum = null;
+        if (role != null && !role.isEmpty() && !role.equals("ALL")) {
+            try {
+                roleEnum = Role.valueOf(role);
+            } catch (IllegalArgumentException e) {
+                roleEnum = null;
+            }
+        }
+        
+        if (search != null && !search.isEmpty()) {
+            return userRepository.searchUsers(search, roleEnum, pageable)
+                .map(this::mapToUserListDTO);
+        } else if (roleEnum != null) {
+            return userRepository.findByRole(roleEnum, pageable)
+                .map(this::mapToUserListDTO);
+        } else {
+            return userRepository.findAll(pageable)
+                .map(this::mapToUserListDTO);
+        }
+    }
 
     @Transactional(readOnly = true)
     public Optional<User> findByEmail(String email) {
