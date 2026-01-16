@@ -7,19 +7,19 @@
 
     <section class="py-5">
         <div class="container">
-            
+
             <div class="mb-4">
-                <a href="/catalog/details" class="text-decoration-none text-muted small">
+                <a th:href="@{/przedmiot/{id}(id=${item.id})}" class="text-decoration-none text-muted small">
                     <i class="fa-solid fa-arrow-left me-1"></i> Wróć do oferty
                 </a>
                 <h2 class="fw-bold mt-2">Sfinalizuj rezerwację</h2>
             </div>
 
-            <form th:action="@{/rental/confirm}" method="post" id="bookingForm">
+            <form th:action="@{/wypozyczenia/potwierdz}" method="post" id="bookingForm" th:object="${rentalCreateDto}">
                 <div class="row g-5">
-                    
+
                     <div class="col-lg-8">
-                        
+
                         <div class="card border-0 shadow-sm rounded-4 mb-4">
                             <div class="card-header bg-white border-bottom p-4">
                                 <h5 class="fw-bold mb-0 text-primary"><i class="fa-regular fa-calendar-check me-2"></i> Termin i Dostawa</h5>
@@ -28,39 +28,64 @@
                                 <div class="row g-3 mb-4">
                                     <div class="col-md-6">
                                         <label class="form-label small text-muted fw-bold">ODBIÓR</label>
-                                        <input type="date" class="form-control bg-light border-0" id="startDate" required>
+                                        <input type="date"
+                                               class="form-control bg-light border-0"
+                                               id="startDate"
+                                               name="startDate"
+                                               th:value="${startDate != null ? #temporals.format(startDate, 'yyyy-MM-dd') : ''}"
+                                               th:field="*{startDate}"
+                                               required>
                                     </div>
                                     <div class="col-md-6">
                                         <label class="form-label small text-muted fw-bold">ZWROT</label>
-                                        <input type="date" class="form-control bg-light border-0" id="endDate" required>
+                                        <input type="date"
+                                               class="form-control bg-light border-0"
+                                               id="endDate"
+                                               name="endDate"
+                                               th:value="${endDate != null ? #temporals.format(endDate, 'yyyy-MM-dd') : ''}"
+                                               th:field="*{endDate}"
+                                               required>
                                     </div>
                                 </div>
 
                                 <label class="form-label small text-muted fw-bold mb-3">SPOSÓB ODBIORU</label>
                                 <div class="row g-3">
-                                    <div class="col-md-6">
+                                    <div class="col-md-6" th:if="${item.canBePickedUp}">
                                         <label class="w-100 cursor-pointer">
-                                            <input type="radio" name="delivery" value="0" class="form-check-input" checked onchange="updateTotal()">
-                                            <div class="custom-radio-card d-flex align-items-center">
-                                                <i class="fa-solid fa-shop fs-4 text-primary me-3"></i>
-                                                <div>
-                                                    <div class="fw-bold text-dark">Odbiór Osobisty</div>
-                                                    <small class="text-muted">ul. Magazynowa 5, W-wa</small>
-                                                </div>
-                                                <div class="ms-auto fw-bold text-success">0 zł</div>
+                                            <input type="radio"
+                                                   class="form-check-input delivery-radio"
+                                                   value="PICKUP"
+                                                   data-price="0"
+                                                   th:field="*{deliveryMethod}"
+                                                   checked> <div class="custom-radio-card d-flex align-items-center">
+                                            <i class="fa-solid fa-shop fs-4 text-primary me-3"></i>
+                                            <div>
+                                                <div class="fw-bold text-dark">Odbiór Osobisty</div>
+                                                <small class="text-muted">ul. Magazynowa 5, W-wa</small>
                                             </div>
+                                            <div class="ms-auto fw-bold text-success">0 zł</div>
+                                        </div>
                                         </label>
                                     </div>
-                                    <div class="col-md-6">
+
+                                    <div class="col-md-6" th:if="${item.canBeShipped}">
                                         <label class="w-100 cursor-pointer">
-                                            <input type="radio" name="delivery" value="25" class="form-check-input" onchange="updateTotal()">
+                                            <input type="radio"
+                                                   class="form-check-input delivery-radio"
+                                                   value="DELIVERY"
+                                                   th:data-price="${item.shippingPrice != null ? item.shippingPrice : 25}"
+                                                   th:field="*{deliveryMethod}">
+
                                             <div class="custom-radio-card d-flex align-items-center">
                                                 <i class="fa-solid fa-truck-fast fs-4 text-primary me-3"></i>
                                                 <div>
                                                     <div class="fw-bold text-dark">Kurier DPD</div>
                                                     <small class="text-muted">Dostawa w 24h</small>
                                                 </div>
-                                                <div class="ms-auto fw-bold text-dark">+25 zł</div>
+                                                <div class="ms-auto fw-bold text-dark"
+                                                     th:text="${item.shippingPrice != null ? '+' + item.shippingPrice + ' zł' : '+25 zł'}">
+                                                    +25 zł
+                                                </div>
                                             </div>
                                         </label>
                                     </div>
@@ -69,42 +94,58 @@
                         </div>
 
                         <div class="card border-0 shadow-sm rounded-4 mb-4">
-                            <div class="card-header bg-white border-bottom p-4">
+                            <div class="card-header bg-white border-bottom p-4 d-flex justify-content-between align-items-center">
                                 <h5 class="fw-bold mb-0 text-primary"><i class="fa-regular fa-address-card me-2"></i> Twoje Dane</h5>
+                                <a th:href="@{/profile/settings}" class="btn btn-sm btn-outline-secondary rounded-pill">
+                                    <i class="fa-solid fa-pen-to-square me-1"></i> Edytuj w profilu
+                                </a>
                             </div>
                             <div class="card-body p-4">
+                                <div class="alert alert-light border-0 small text-muted mb-4">
+                                    <i class="fa-solid fa-circle-info me-1"></i> Dane są pobierane automatycznie z Twojego konta. Jeśli chcesz je zmienić, przejdź do ustawień profilu.
+                                </div>
+
                                 <div class="row g-3">
                                     <div class="col-md-6">
-                                        <label class="form-label">Imię</label>
-                                        <input type="text" class="form-control" placeholder="Jan" required>
+                                        <label class="form-label small fw-bold">Imię</label>
+                                        <input type="text" name="firstName" class="form-control bg-light"
+                                               th:value="${user.firstName}" th:field="*{firstName}" readonly>
                                     </div>
                                     <div class="col-md-6">
-                                        <label class="form-label">Nazwisko</label>
-                                        <input type="text" class="form-control" placeholder="Kowalski" required>
+                                        <label class="form-label small fw-bold">Nazwisko</label>
+                                        <input type="text" name="lastName" class="form-control bg-light"
+                                               th:value="${user.lastName}" th:field="*{lastName}" readonly>
                                     </div>
                                     <div class="col-md-6">
-                                        <label class="form-label">Email</label>
-                                        <input type="email" class="form-control" placeholder="jan@example.com" required>
+                                        <label class="form-label small fw-bold">Email</label>
+                                        <input type="email" name="email" class="form-control bg-light"
+                                               th:value="${user.email}" th:field="*{email}" readonly>
                                     </div>
-                                    <div class="col-md-6">
-                                        <label class="form-label">Telefon</label>
-                                        <input type="tel" class="form-control" placeholder="+48 000 000 000" required>
-                                    </div>
-                                    <div class="col-12">
-                                        <label class="form-label">Ulica i numer</label>
-                                        <input type="text" class="form-control" placeholder="ul. Prosta 1/2" required>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <label class="form-label">Kod pocztowy</label>
-                                        <input type="text" class="form-control" placeholder="00-000" required>
-                                    </div>
-                                    <div class="col-md-8">
-                                        <label class="form-label">Miasto</label>
-                                        <input type="text" class="form-control" placeholder="Warszawa" required>
-                                    </div>
+<!--                                    <div class="col-md-6">-->
+<!--                                        <label class="form-label small fw-bold">Telefon</label>-->
+<!--                                        <input type="tel" name="phone" class="form-control bg-light"-->
+<!--                                               th:value="${user.phone}" readonly>-->
+<!--                                    </div>-->
+<!--                                    <div class="col-12">-->
+<!--                                        <label class="form-label small fw-bold">Ulica i numer</label>-->
+<!--                                        <input type="text" name="address" class="form-control bg-light"-->
+<!--                                               th:value="${user.address}" readonly>-->
+<!--                                    </div>-->
+<!--                                    <div class="col-md-4">-->
+<!--                                        <label class="form-label small fw-bold">Kod pocztowy</label>-->
+<!--                                        <input type="text" name="zipCode" class="form-control bg-light"-->
+<!--                                               th:value="${user.zipCode}" readonly>-->
+<!--                                    </div>-->
+<!--                                    <div class="col-md-8">-->
+<!--                                        <label class="form-label small fw-bold">Miasto</label>-->
+<!--                                        <input type="text" name="city" class="form-control bg-light"-->
+<!--                                               th:value="${user.city}" readonly>-->
+<!--                                    </div>-->
                                 </div>
                             </div>
                         </div>
+
+                        <input type="hidden"  th:field="*{itemId}">
 
                         <div class="card border-0 shadow-sm rounded-4 mb-4">
                             <div class="card-header bg-white border-bottom p-4">
@@ -113,21 +154,21 @@
                             <div class="card-body p-4">
                                 <div class="d-flex flex-column gap-3">
                                     <label class="w-100 cursor-pointer">
-                                        <input type="radio" name="payment" class="form-check-input" checked>
+                                        <input type="radio" name="payment" class="form-check-input" value="BLIK" checked th:field="*{payment}">
                                         <div class="custom-radio-card d-flex align-items-center">
                                             <i class="fa-brands fa-cc-visa fs-4 text-primary me-3"></i>
                                             <div class="fw-bold text-dark">Karta Płatnicza (Online)</div>
                                         </div>
                                     </label>
                                     <label class="w-100 cursor-pointer">
-                                        <input type="radio" name="payment" class="form-check-input">
+                                        <input type="radio" name="payment" class="form-check-input" VALUE="BLIK" th:field="*{payment}">
                                         <div class="custom-radio-card d-flex align-items-center">
                                             <i class="fa-solid fa-mobile-screen fs-4 text-primary me-3"></i>
                                             <div class="fw-bold text-dark">BLIK</div>
                                         </div>
                                     </label>
                                     <label class="w-100 cursor-pointer">
-                                        <input type="radio" name="payment" class="form-check-input">
+                                        <input type="radio" name="payment" class="form-check-input" value="CASH" th:field="*{payment}">
                                         <div class="custom-radio-card d-flex align-items-center">
                                             <i class="fa-solid fa-wallet fs-4 text-primary me-3"></i>
                                             <div class="fw-bold text-dark">Przy odbiorze</div>
@@ -138,10 +179,10 @@
                         </div>
 
                         <div class="d-flex align-items-start gap-2 mb-4">
-                            <input class="form-check-input mt-1" type="checkbox" id="terms" required>
-                            <label class="form-check-label small text-muted" for="terms">
-                                Oświadczam, że zapoznałem się z <a href="#">Regulaminem</a> i akceptuję warunki wypożyczenia.
-                            </label>
+<!--                            <input class="form-check-input mt-1" type="checkbox" id="terms" required>-->
+<!--                            <label class="form-check-label small text-muted" for="terms">-->
+<!--                                Oświadczam, że zapoznałem się z <a href="#">Regulaminem</a> i akceptuję warunki wypożyczenia.-->
+<!--                            </label>-->
                         </div>
 
                     </div>
@@ -153,13 +194,13 @@
                             </div>
                             <div class="card-body p-4">
                                 <div class="d-flex gap-3 mb-4">
-                                    <img src="https://images.unsplash.com/photo-1516035069371-29a1b244cc32?auto=format&fit=crop&w=150&q=80" 
-                                         class="rounded-3 object-fit-cover" 
-                                         style="width: 70px; height: 70px;" 
+                                    <img th:src="${item.imageUrl}"
+                                         class="rounded-3 object-fit-cover"
+                                         style="width: 70px; height: 70px;"
                                          alt="Produkt">
                                     <div>
-                                        <h6 class="fw-bold mb-1">Sony Alpha a7 III</h6>
-                                        <small class="text-muted d-block">Stawka: <span id="dailyRate">120.00</span> zł/doba</small>
+                                        <h6 class="fw-bold mb-1" th:text="${item.title}">Sony Alpha a7 III</h6>
+                                        <small class="text-muted d-block">Stawka: <span id="dailyRate" th:text="${item.pricePerDay}">120.00</span> zł/doba</small>
                                     </div>
                                 </div>
 
@@ -177,18 +218,35 @@
                                     <span class="text-muted">Dostawa</span>
                                     <span><span id="deliveryCost">0.00</span> zł</span>
                                 </div>
+                                <div class="d-flex justify-content-between mb-3">
+                                    <span class="text-muted">Kaucja</span>
+                                    <span th:if="${item.depositPrice > 0}"><span id="cautionCost" th:text="${item.depositPrice}">0.00</span> zł</span>
+                                    <span th:unless="${item.depositPrice > 0}">0.00 zł</span>
+                                </div>
 
                                 <hr class="border-secondary opacity-10 my-4">
 
-                                <div class="d-flex justify-content-between align-items-center mb-4">
+                                <div class="d-flex justify-content-between align-items-center">
                                     <span class="h5 mb-0 fw-bold">Do zapłaty</span>
                                     <span class="h3 mb-0 fw-bold text-primary"><span id="totalCost">0.00</span> zł</span>
                                 </div>
 
-                                <button type="submit" class="btn btn-primary w-100 py-3 rounded-pill fw-bold shadow-sm hover-up">
+                                <div class="d-flex justify-content-between " th:if="${item.discountedPercent > 0}">
+                                    <span class="text-muted">Zniżka:</span>
+                                    <span><span id="promotionCost" class="fs-5 text-danger" th:text="|(-${item.discountedPercent}%)|">0%</span></span>
+                                </div>
+                                <div class="text-start mb-3">
+                                    <small class="text-muted"><i class="fa-solid fa-circle-info me-1"></i> Rabaty naliczane są wyłacznie od ceny podstawowej produktu.</small>
+                                </div>
+
+                                <input type="hidden" id="rawPricePerDay" th:value="${item.pricePerDay}">
+                                <input type="hidden" id="rawDiscountedPrice" th:value="${item.discountedPrice}">
+                                <input type="hidden" id="rawDepositPrice" th:value="${item.depositPrice}">
+
+                                <button type="submit" id="submitBtn"  class="btn btn-primary w-100 py-3 rounded-pill fw-bold shadow-sm hover-up">
                                     Potwierdzam i Płacę
                                 </button>
-                                
+
                                 <div class="text-center mt-3">
                                     <small class="text-muted"><i class="fa-solid fa-lock me-1"></i> Bezpieczna transakcja SSL</small>
                                 </div>
@@ -202,55 +260,10 @@
     </section>
 
     <footer th:replace="~{fragments/footer :: footer}"></footer>
-    <script>
-        const rate = 120.00;
-        const startDateInput = document.getElementById('startDate');
-        const endDateInput = document.getElementById('endDate');
-        const deliveryRadios = document.querySelectorAll('input[name="delivery"]');
-        
-        function updateTotal() {
-            const start = new Date(startDateInput.value);
-            const end = new Date(endDateInput.value);
 
-            let deliveryPrice = 0;
-            deliveryRadios.forEach(radio => {
-                if(radio.checked) deliveryPrice = parseFloat(radio.value);
-            });
-
-            if (startDateInput.value && endDateInput.value && end >= start) {
-                const diffTime = Math.abs(end - start);
-                let diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)); 
-                if (diffDays === 0) diffDays = 1;
-
-                const rentalTotal = diffDays * rate;
-                const grandTotal = rentalTotal + deliveryPrice;
+<script th:src="@{/js/rental/payment-toggle.js}"></script>
+<script th:src="@{/js/rental/rental-calculator.js}"></script>
 
 
-                document.getElementById('daysCount').innerText = diffDays;
-                document.getElementById('rentalCost').innerText = rentalTotal.toFixed(2);
-                document.getElementById('deliveryCost').innerText = deliveryPrice.toFixed(2);
-                document.getElementById('totalCost').innerText = grandTotal.toFixed(2);
-            } else {
-
-                document.getElementById('daysCount').innerText = "0";
-                document.getElementById('rentalCost').innerText = "0.00";
-                document.getElementById('deliveryCost').innerText = deliveryPrice.toFixed(2);
-                document.getElementById('totalCost').innerText = deliveryPrice.toFixed(2);
-            }
-        }
-
-
-        startDateInput.addEventListener('change', updateTotal);
-        endDateInput.addEventListener('change', updateTotal);
-
-        const today = new Date();
-        const tomorrow = new Date(today);
-        tomorrow.setDate(tomorrow.getDate() + 1);
-        
-        startDateInput.valueAsDate = today;
-        endDateInput.valueAsDate = tomorrow;
-
-        updateTotal();
-    </script>
 </body>
 </html>
