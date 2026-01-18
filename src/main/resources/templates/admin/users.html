@@ -57,11 +57,8 @@
     </div>
 
     <div class="d-flex gap-2 w-100 w-md-auto ms-md-auto justify-content-end">
-        <button class="btn btn-white border shadow-sm rounded-pill flex-fill flex-md-grow-0">
+        <button id="exportCsvBtn" class="btn btn-white border shadow-sm rounded-pill flex-fill flex-md-grow-0">
             <i class="fa-solid fa-file-csv me-2 text-success"></i> CSV
-        </button>
-        <button class="btn btn-primary rounded-pill shadow-sm flex-fill flex-md-grow-0" data-bs-toggle="modal" data-bs-target="#addUserModal">
-            <i class="fa-solid fa-user-plus me-2"></i> Dodaj
         </button>
     </div>
 </div>
@@ -87,10 +84,11 @@
                                 </select>
                             </div>
                             <div class="col-6 col-md-3">
-                                <select class="form-select rounded-pill bg-light border-0 shadow-none cursor-pointer">
-                                    <option selected>Status: Wszystkie</option>
-                                    <option value="active">Aktywne</option>
-                                    <option value="blocked">Zablokowane</option>
+                                <select name="status" class="form-select rounded-pill bg-light border-0 shadow-none cursor-pointer">
+                                    <option value="">Status: Wszystkie</option>
+                                    <option value="active" th:selected="${status == 'active'}">Aktywne</option>
+                                    <option value="inactive" th:selected="${status == 'inactive'}">Nieaktywne</option>
+                                    <option value="blocked" th:selected="${status == 'blocked'}">Zablokowane</option>
                                 </select>
                             </div>
                             <div class="col-12 col-md-2 d-grid">
@@ -388,6 +386,24 @@
                     alert('Błąd podczas odblokowywania użytkownika');
                 });
             }
+        });
+
+        document.getElementById('exportCsvBtn').addEventListener('click', function() {
+            const search = new URLSearchParams(window.location.search).get('search') || '';
+            const role = new URLSearchParams(window.location.search).get('role') || '';
+            const status = new URLSearchParams(window.location.search).get('status') || '';
+
+            let url = '/admin/users/export-csv';
+            const params = new URLSearchParams();
+            if (search) params.append('search', search);
+            if (role) params.append('role', role);
+            if (status) params.append('status', status);
+
+            if (params.toString()) {
+                url += '?' + params.toString();
+            }
+
+            window.location.href = url;
         });
     </script>
 </body>

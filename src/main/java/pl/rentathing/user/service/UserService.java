@@ -32,7 +32,7 @@ public class UserService {
             .map(this::mapToUserListDTO);
     }
     
-    public Page<UserListDTO> searchUsers(String search, String role, Pageable pageable) {
+    public Page<UserListDTO> searchUsers(String search, String role, String status, Pageable pageable) {
         Role roleEnum = null;
         if (role != null && !role.isEmpty() && !role.equals("ALL")) {
             try {
@@ -42,11 +42,22 @@ public class UserService {
             }
         }
         
-        if (search != null && !search.isEmpty()) {
-            return userRepository.searchUsers(search, roleEnum, pageable)
-                .map(this::mapToUserListDTO);
-        } else if (roleEnum != null) {
-            return userRepository.findByRole(roleEnum, pageable)
+        Boolean statusLocked = null;
+        Boolean statusDisabled = null;
+        
+        if (status != null && !status.isEmpty()) {
+            if ("blocked".equals(status)) {
+                statusLocked = true;
+            } else if ("inactive".equals(status)) {
+                statusDisabled = false;
+            } else if ("active".equals(status)) {
+                statusLocked = false;
+                statusDisabled = true;
+            }
+        }
+        
+        if (search != null && !search.isEmpty() || roleEnum != null || statusLocked != null || statusDisabled != null) {
+            return userRepository.searchUsersWithStatus(search, roleEnum, statusLocked, statusDisabled, pageable)
                 .map(this::mapToUserListDTO);
         } else {
             return userRepository.findAll(pageable)

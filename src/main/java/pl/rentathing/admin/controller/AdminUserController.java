@@ -14,8 +14,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import pl.rentathing.user.dto.UserListDTO;
 import pl.rentathing.user.service.UserService;
+import pl.rentathing.user.service.CsvService;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,6 +29,7 @@ import java.util.List;
 public class AdminUserController {
     
     private final UserService userService;
+    private final CsvService csvService;
     
     @GetMapping("/users")
     public String getAllUsers(
@@ -35,10 +39,11 @@ public class AdminUserController {
         @RequestParam(defaultValue = "DESC") Sort.Direction direction,
         @RequestParam(required = false) String search,
         @RequestParam(required = false) String role,
+        @RequestParam(required = false) String status,
         Model model) {
         
         Pageable pageable = PageRequest.of(page, size, Sort.by(direction, sortBy));
-        Page<UserListDTO> users = userService.searchUsers(search, role, pageable);
+        Page<UserListDTO> users = userService.searchUsers(search, role, status, pageable);
         
         int totalPages = users.getTotalPages();
         List<Integer> pages = new ArrayList<>();
@@ -57,6 +62,7 @@ public class AdminUserController {
         model.addAttribute("pages", pages);
         model.addAttribute("search", search);
         model.addAttribute("role", role);
+        model.addAttribute("status", status);
         
         return "admin/users";
     }
@@ -73,5 +79,26 @@ public class AdminUserController {
     public ResponseEntity<?> unblockUser(@PathVariable Long id) {
         userService.unblockUser(id);
         return ResponseEntity.ok().body("{\"success\": true}");
+    }
+
+    @GetMapping("/users/export-csv")
+    public ResponseEntity<String> exportUsersCsv(
+        @RequestParam(required = false) String search,
+        @RequestParam(required = false) String role,
+        @RequestParam(required = false) String status) {
+        
+        try {
+            Pageable pageable = PageRequest.of(0, Integer.MAX_VALUE);
+            Page<UserListDTO> users = userService.searchUsers(search, role, status, pageable);
+            
+            String csvContent = csvService.generateUsersCsv(users.getContent());
+            
+            return ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"users.csv\"")
+                .header(HttpHeaders.CONTENT_TYPE, "text/csv; charset=UTF-8")
+                .body(csvContent);
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("Błąd przy generowaniu pliku CSV");
+        }
     }
 }
