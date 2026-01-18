@@ -14,6 +14,7 @@ import pl.rentathing.Rental.Repository.RentalRepository;
 import pl.rentathing.auth.exception.UnautorizedException;
 import pl.rentathing.auth.service.AuthService;
 import pl.rentathing.item.entity.Item;
+import pl.rentathing.item.exception.ItemNotAvailableExpection;
 import pl.rentathing.item.exception.ItemNotFoundException;
 import pl.rentathing.item.repository.ItemRepository;
 import pl.rentathing.user.entity.User;
@@ -23,6 +24,7 @@ import pl.rentathing.user.repository.UserRepository;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 
 @Service
@@ -35,13 +37,22 @@ public class RentalService {
     private final RentalRepository rentalRepository;
     private final RentalPriceCalculator priceCalculator;
     private final AuthService authService;
+    private final RentalAvailibilityService rentalAvailibilityService;
 
     @Transactional
     public void createRental(RentalCreateDto dto) {
         Item item = itemRepository.findById(dto.getItemId())
                 .orElseThrow(() -> new ItemNotFoundException(dto.getItemId().toString()));
 
+        LocalDateTime start = dto.getStartDate().atStartOfDay();
+        LocalDateTime end = dto.getEndDate().atTime(23, 59, 59);
+
+        if (!rentalAvailibilityService.checkAvailability(item, start, end)) {
+            throw new ItemNotAvailableExpection();
+        }
+
         User user = authService.getCurrentUser();
+
         long days = priceCalculator.calculateRentalDays(dto.getStartDate(), dto.getEndDate());
         BigDecimal pricePerDay = priceCalculator.calculateDiscountedPrice(item);
         BigDecimal shippingCost = priceCalculator.calculateShippingCost(item, dto.getDeliveryMethod());
@@ -53,8 +64,8 @@ public class RentalService {
         Rental rental = Rental.builder()
                 .item(item)
                 .user(user)
-                .startDateTime(dto.getStartDate().atStartOfDay())
-                .endDateTime(dto.getEndDate().atTime(23, 59, 59))
+                .startDateTime(start)
+                .endDateTime(end)
                 .totalCost(totalCost)
                 .deposit(deposit)
                 .shippingCost(shippingCost)
@@ -62,6 +73,7 @@ public class RentalService {
                 .paymentMethod(PaymentMethod.valueOf(dto.getPayment().toUpperCase()))
                 .status(RentalStatus.PENDING)
                 .depositPaid(!item.isDeposit())
+                .createdAt(LocalDateTime.now())
                 .build();
 
         rentalRepository.save(rental);
