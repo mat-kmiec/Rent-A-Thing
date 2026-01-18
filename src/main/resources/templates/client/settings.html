@@ -36,31 +36,39 @@
                 <div class="col-lg-9">
                     <h4 class="fw-bold mb-4">Ustawienia Konta</h4>
 
+                    <div th:if="${successMessage}" class="alert alert-success alert-dismissible fade show rounded-4 mb-4" role="alert">
+                        <i class="fa-solid fa-check-circle me-2"></i>
+                        <span th:text="${successMessage}"></span>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+
                     <div class="card border-0 shadow-sm rounded-4 mb-4">
                         <div class="card-header bg-white p-4 border-bottom">
                             <h6 class="fw-bold mb-0 text-primary">Dane osobowe</h6>
                         </div>
                         <div class="card-body p-4">
-                            <form>
+                            <form th:action="@{/client/settings}" th:object="${settings}" method="post" novalidate>
                                 <div class="row g-3">
                                     <div class="col-md-6">
                                         <label class="form-label small text-muted fw-bold">Imię</label>
-                                        <input type="text" class="form-control" value="Jan">
+                                        <input type="text" class="form-control" th:field="*{firstName}" 
+                                               th:classappend="${#fields.hasErrors('firstName') ? 'is-invalid' : ''}">
+                                        <div class="invalid-feedback d-block" th:if="${#fields.hasErrors('firstName')}" th:errors="*{firstName}"></div>
                                     </div>
                                     <div class="col-md-6">
                                         <label class="form-label small text-muted fw-bold">Nazwisko</label>
-                                        <input type="text" class="form-control" value="Kowalski">
+                                        <input type="text" class="form-control" th:field="*{lastName}"
+                                               th:classappend="${#fields.hasErrors('lastName') ? 'is-invalid' : ''}">
+                                        <div class="invalid-feedback d-block" th:if="${#fields.hasErrors('lastName')}" th:errors="*{lastName}"></div>
                                     </div>
-                                    <div class="col-md-6">
+                                    <div class="col-md-12">
                                         <label class="form-label small text-muted fw-bold">Adres Email</label>
-                                        <input type="email" class="form-control bg-light" value="jan.kowalski@example.com">
-                                    </div>
-                                    <div class="col-md-6">
-                                        <label class="form-label small text-muted fw-bold">Numer Telefonu</label>
-                                        <input type="tel" class="form-control" value="+48 123 456 789">
+                                        <input type="email" class="form-control" th:field="*{email}"
+                                               th:classappend="${#fields.hasErrors('email') ? 'is-invalid' : ''}">
+                                        <div class="invalid-feedback d-block" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></div>
                                     </div>
                                     <div class="col-12 text-end mt-4">
-                                        <button class="btn btn-primary rounded-pill px-4 shadow-sm">Zapisz dane</button>
+                                        <button type="submit" class="btn btn-primary rounded-pill px-4 shadow-sm">Zapisz dane</button>
                                     </div>
                                 </div>
                             </form>
@@ -99,22 +107,29 @@
                             <h6 class="fw-bold mb-0 text-primary">Zmiana hasła</h6>
                         </div>
                         <div class="card-body p-4">
-                            <form>
+                            <form th:action="@{/client/settings}" th:object="${settings}" method="post" novalidate>
+                                <input type="hidden" th:field="*{firstName}">
+                                <input type="hidden" th:field="*{lastName}">
+                                <input type="hidden" th:field="*{email}">
                                 <div class="row g-3">
                                     <div class="col-md-12">
                                         <label class="form-label small text-muted fw-bold">Aktualne hasło</label>
-                                        <input type="password" class="form-control">
+                                        <input type="password" class="form-control" th:field="*{currentPassword}"
+                                               th:classappend="${#fields.hasErrors('currentPassword') ? 'is-invalid' : ''}">
+                                        <div class="invalid-feedback d-block" th:if="${#fields.hasErrors('currentPassword')}" th:errors="*{currentPassword}"></div>
                                     </div>
                                     <div class="col-md-6">
                                         <label class="form-label small text-muted fw-bold">Nowe hasło</label>
-                                        <input type="password" class="form-control">
+                                        <input type="password" class="form-control" th:field="*{newPassword}"
+                                               th:classappend="${#fields.hasErrors('newPassword') ? 'is-invalid' : ''}">
+                                        <div class="invalid-feedback d-block" th:if="${#fields.hasErrors('newPassword')}" th:errors="*{newPassword}"></div>
                                     </div>
                                     <div class="col-md-6">
                                         <label class="form-label small text-muted fw-bold">Powtórz nowe hasło</label>
                                         <input type="password" class="form-control">
                                     </div>
                                     <div class="col-12 text-end mt-4">
-                                        <button class="btn btn-outline-primary rounded-pill px-4">Zmień hasło</button>
+                                        <button type="submit" class="btn btn-outline-primary rounded-pill px-4">Zmień hasło</button>
                                     </div>
                                 </div>
                             </form>
