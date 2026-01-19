@@ -1,4 +1,4 @@
-package pl.rentathing.client.controller;
+package pl.rentathing.user.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
@@ -13,13 +13,13 @@ import pl.rentathing.user.service.UserService;
 import jakarta.validation.Valid;
 
 @Controller
-@RequestMapping("/client")
+@RequestMapping("/moje-konto/ustawienia")
 @RequiredArgsConstructor
-public class ClientSettingsController {
+public class UserSettingsController {
     
     private final UserService userService;
     
-    @GetMapping("/settings")
+    @GetMapping
     public String getSettings(Authentication authentication, Model model) {
         User user = (User) authentication.getPrincipal();
         
@@ -34,7 +34,7 @@ public class ClientSettingsController {
         return "client/settings";
     }
     
-    @PostMapping("/settings")
+    @PostMapping("/profile")
     public String updateSettings(
         @Valid @ModelAttribute("settings") UserSettingsDTO settingsDTO,
         BindingResult bindingResult,

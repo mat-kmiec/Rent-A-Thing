@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<div th:fragment="sidebar(activePage)" class="col-lg-3">
+    <div class="card border-0 shadow-sm rounded-4 p-4 sticky-top">
+        <div class="text-center mb-4">
+            <div class="user-avatar-lg bg-primary text-white rounded-circle d-flex align-items-center justify-content-center mx-auto mb-3 shadow-sm"
+                 th:text="${#strings.substring(loggedInUser.firstName,0,1) + #strings.substring(loggedInUser.lastName,0,1)}">
+                JK
+            </div>
+            <h5 th:text="${loggedInUser.firstName + ' ' + loggedInUser.lastName}">Jan Kowalski</h5>
+            <small class="text-muted">Klient od 2023</small>
+        </div>
+
+        <nav class="d-flex flex-column gap-1">
+            <a href="/moje-konto"
+               class="user-sidebar-link"
+               th:classappend="${activePage == 'dashboard' ? 'active' : ''}">
+                <i class="fa-solid fa-table-columns"></i> Kokpit
+            </a>
+
+            <a href="/moje-konto/historia"
+               class="user-sidebar-link"
+               th:classappend="${activePage == 'history' ? 'active' : ''}">
+                <i class="fa-solid fa-clock-rotate-left"></i> Historia
+            </a>
+
+            <a href="/moje-konto/ustawienia"
+               class="user-sidebar-link"
+               th:classappend="${activePage == 'settings' ? 'active' : ''}">
+                <i class="fa-solid fa-gear"></i> Ustawienia
+            </a>
+        </nav>
+    </div>
+</div>
+</html>
