@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="pl" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+    layout:decorate="~{index}">
+
+<head>
+    <title>Edycja użytkownika - Admin</title>
+</head>
+
+<body>
+    <div layout:fragment="content">
+        <div class="container mt-4">
+            <div class="row justify-content-center">
+                <div class="col-md-8">
+                    <div class="card shadow-sm">
+                        <div class="card-header bg-white">
+                            <h4 class="mb-0">Edycja użytkownika</h4>
+                        </div>
+                        <div class="card-body">
+                            <form th:action="@{/admin/users/edit/{id}(id=${userSettings.id})}"
+                                th:object="${userSettings}" method="post">
+
+                                <h5 class="mb-3 text-primary">Dane osobowe</h5>
+                                <div class="row mb-3">
+                                    <div class="col-md-6">
+                                        <label for="firstName" class="form-label">Imię</label>
+                                        <input type="text" class="form-control" id="firstName" th:field="*{firstName}"
+                                            th:classappend="${#fields.hasErrors('firstName')} ? 'is-invalid'">
+                                        <div class="invalid-feedback" th:errors="*{firstName}"></div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label for="lastName" class="form-label">Nazwisko</label>
+                                        <input type="text" class="form-control" id="lastName" th:field="*{lastName}"
+                                            th:classappend="${#fields.hasErrors('lastName')} ? 'is-invalid'">
+                                        <div class="invalid-feedback" th:errors="*{lastName}"></div>
+                                    </div>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="email" class="form-label">Email</label>
+                                    <input type="email" class="form-control" id="email" th:field="*{email}"
+                                        th:classappend="${#fields.hasErrors('email')} ? 'is-invalid'">
+                                    <div class="invalid-feedback" th:errors="*{email}"></div>
+                                </div>
+
+                                <hr class="my-4">
+
+                                <h5 class="mb-3 text-primary">Adres</h5>
+                                <div class="row mb-3">
+                                    <div class="col-md-8">
+                                        <label for="street" class="form-label">Ulica</label>
+                                        <input type="text" class="form-control" id="street" th:field="*{address.street}"
+                                            th:classappend="${#fields.hasErrors('address.street')} ? 'is-invalid'">
+                                        <div class="invalid-feedback" th:errors="*{address.street}"></div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label for="houseNumber" class="form-label">Nr domu</label>
+                                        <input type="text" class="form-control" id="houseNumber"
+                                            th:field="*{address.houseNumber}"
+                                            th:classappend="${#fields.hasErrors('address.houseNumber')} ? 'is-invalid'">
+                                        <div class="invalid-feedback" th:errors="*{address.houseNumber}"></div>
+                                    </div>
+                                </div>
+
+                                <div class="row mb-3">
+                                    <div class="col-md-4">
+                                        <label for="apartmentNumber" class="form-label">Nr mieszkania</label>
+                                        <input type="text" class="form-control" id="apartmentNumber"
+                                            th:field="*{address.apartmentNumber}">
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label for="zipCode" class="form-label">Kod pocztowy</label>
+                                        <input type="text" class="form-control" id="zipCode"
+                                            th:field="*{address.zipCode}" placeholder="XX-XXX"
+                                            th:classappend="${#fields.hasErrors('address.zipCode')} ? 'is-invalid'">
+                                        <div class="invalid-feedback" th:errors="*{address.zipCode}"></div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label for="city" class="form-label">Miasto</label>
+                                        <input type="text" class="form-control" id="city" th:field="*{address.city}"
+                                            th:classappend="${#fields.hasErrors('address.city')} ? 'is-invalid'">
+                                        <div class="invalid-feedback" th:errors="*{address.city}"></div>
+                                    </div>
+                                </div>
+
+                                <div class="d-flex justify-content-between align-items-center mt-4">
+                                    <a th:href="@{/admin/users}" class="btn btn-outline-secondary">Anuluj</a>
+                                    <button type="submit" class="btn btn-primary">Zapisz zmiany</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
