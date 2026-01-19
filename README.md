@@ -8,7 +8,7 @@
 ##  Autorzy (Grupa Projektowa)
 
 1.  **Mateusz Kmieć**
-2.  **Michał Jastrzębski**
+2.  **Maciej Jastrzębski**
 3.  **Michał Koptewicz**
 
 ---

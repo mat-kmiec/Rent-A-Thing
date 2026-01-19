@@ -1,23 +1,29 @@
 <!DOCTYPE html>
 <html lang="pl" xmlns:th="http://www.thymeleaf.org">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Użytkownicy | Panel Administratora</title>
-    
+
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+
+    <meta name="csrf-token" th:content="${_csrf.token}" />
+    <meta name="csrf-header" th:content="${_csrf.headerName}" />
+
     <link rel="stylesheet" th:href="@{/css/home.css}" href="../css/style.css">
     <link rel="stylesheet" th:href="@{/css/admin.css}" href="../css/admin.css">
 </head>
+
 <body class="bg-light">
 
     <nav class="navbar navbar-expand-lg fixed-top navbar-dark bg-dark shadow py-3">
         <div class="container-fluid px-4">
             <a class="navbar-brand fw-bold text-white fs-4 d-flex align-items-center" href="/admin/dashboard">
-                <i class="fa-solid fa-layer-group text-primary me-2"></i> 
+                <i class="fa-solid fa-layer-group text-primary me-2"></i>
                 Rent-A-Thing <span class="badge bg-primary fs-xs ms-2 text-uppercase ls-1">Admin</span>
             </a>
             <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#adminNav">
@@ -36,63 +42,71 @@
                         <span class="fw-bold">Jan Admin</span>
                     </div>
                     <form th:action="@{/logout}" method="post">
-                         <button class="btn btn-outline-light btn-sm rounded-pill px-3"><i class="fa-solid fa-right-from-bracket"></i></button>
+                        <button class="btn btn-outline-light btn-sm rounded-pill px-3"><i
+                                class="fa-solid fa-right-from-bracket"></i></button>
                     </form>
                 </div>
             </div>
         </div>
     </nav>
 
-    <main class="py-4">
+    <main class="py-4 mt-5">
         <div class="container-fluid px-4">
-            
-            <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center mb-4 gap-3">
-    
-    <div>
-        <h2 class="fw-bold mb-0 text-dark">Baza Użytkowników</h2>
-        <p class="text-muted small mb-0">Zarządzaj dostępem i rolami.</p>
-    </div>
 
-    <div class="d-flex gap-2 w-100 w-md-auto ms-md-auto justify-content-end">
-        <button class="btn btn-white border shadow-sm rounded-pill flex-fill flex-md-grow-0">
-            <i class="fa-solid fa-file-csv me-2 text-success"></i> CSV
-        </button>
-        <button class="btn btn-primary rounded-pill shadow-sm flex-fill flex-md-grow-0" data-bs-toggle="modal" data-bs-target="#addUserModal">
-            <i class="fa-solid fa-user-plus me-2"></i> Dodaj
-        </button>
-    </div>
-</div>
+            <div
+                class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center mb-4 gap-3">
+
+                <div>
+                    <h2 class="fw-bold mb-0 text-dark">Baza Użytkowników</h2>
+                    <p class="text-muted small mb-0">Zarządzaj dostępem i rolami.</p>
+                </div>
+
+                <div class="d-flex gap-2 w-100 w-md-auto ms-md-auto justify-content-end">
+                    <button id="exportCsvBtn"
+                        class="btn btn-white border shadow-sm rounded-pill flex-fill flex-md-grow-0">
+                        <i class="fa-solid fa-file-csv me-2 text-success"></i> CSV
+                    </button>
+                </div>
+            </div>
 
             <div class="card border-0 shadow-sm rounded-4 overflow-hidden">
-                
+
                 <div class="card-header bg-white border-bottom border-light p-3 p-md-4">
-                    <div class="row g-2 g-md-3">
-                        <div class="col-12 col-md-4">
-                            <div class="input-group">
-                                <span class="input-group-text bg-light border-end-0 rounded-start-pill ps-3">
-                                    <i class="fa-solid fa-magnifying-glass text-muted"></i>
-                                </span>
-                                <input type="text" class="form-control bg-light border-start-0 rounded-end-pill shadow-none" placeholder="Szukaj...">
+                    <form id="filterForm" method="get" action="/admin/users">
+                        <div class="row g-2 g-md-3">
+                            <div class="col-12 col-md-4">
+                                <div class="input-group">
+                                    <span class="input-group-text bg-light border-end-0 rounded-start-pill ps-3">
+                                        <i class="fa-solid fa-magnifying-glass text-muted"></i>
+                                    </span>
+                                    <input type="text" name="search"
+                                        class="form-control bg-light border-start-0 rounded-end-pill shadow-none"
+                                        placeholder="Szukaj..." th:value="${search}">
+                                </div>
+                            </div>
+                            <div class="col-6 col-md-3">
+                                <select name="role"
+                                    class="form-select rounded-pill bg-light border-0 shadow-none cursor-pointer">
+                                    <option value="">Role: Wszystkie</option>
+                                    <option value="ROLE_USER" th:selected="${role == 'ROLE_USER'}">Użytkownik</option>
+                                    <option value="ROLE_ADMIN" th:selected="${role == 'ROLE_ADMIN'}">Administrator
+                                    </option>
+                                </select>
+                            </div>
+                            <div class="col-6 col-md-3">
+                                <select name="status"
+                                    class="form-select rounded-pill bg-light border-0 shadow-none cursor-pointer">
+                                    <option value="">Status: Wszystkie</option>
+                                    <option value="active" th:selected="${status == 'active'}">Aktywne</option>
+                                    <option value="inactive" th:selected="${status == 'inactive'}">Nieaktywne</option>
+                                    <option value="blocked" th:selected="${status == 'blocked'}">Zablokowane</option>
+                                </select>
+                            </div>
+                            <div class="col-12 col-md-2 d-grid">
+                                <button type="submit" class="btn btn-outline-primary rounded-pill">Filtruj</button>
                             </div>
                         </div>
-                        <div class="col-6 col-md-3">
-                            <select class="form-select rounded-pill bg-light border-0 shadow-none cursor-pointer">
-                                <option selected>Role: Wszystkie</option>
-                                <option value="ROLE_USER">Użytkownik</option>
-                                <option value="ROLE_ADMIN">Administrator</option>
-                            </select>
-                        </div>
-                        <div class="col-6 col-md-3">
-                            <select class="form-select rounded-pill bg-light border-0 shadow-none cursor-pointer">
-                                <option selected>Status: Wszystkie</option>
-                                <option value="active">Aktywne</option>
-                                <option value="blocked">Zablokowane</option>
-                            </select>
-                        </div>
-                        <div class="col-12 col-md-2 d-grid">
-                            <button class="btn btn-outline-primary rounded-pill">Filtruj</button>
-                        </div>
-                    </div>
+                    </form>
                 </div>
 
                 <div class="card-body p-0">
@@ -108,97 +122,81 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr>
+                                <tr th:each="user : ${users.content}"
+                                    th:classappend="${user.locked ? 'bg-light bg-opacity-50' : ''}">
                                     <td class="ps-4">
-                                        <div class="d-flex flex-column">
-                                            <span class="fw-bold text-dark">Marek Kowalski</span>
-                                            <small class="text-muted">marek.kowalski@email.com</small>
-                                            <small class="d-md-none text-primary mt-1">Użytkownik</small>
+                                        <div class="d-flex flex-column"
+                                            th:classappend="${user.locked ? 'opacity-50' : ''}">
+                                            <span class="fw-bold text-dark"
+                                                th:classappend="${user.locked ? 'text-decoration-line-through' : ''}">
+                                                <span th:text="${user.firstName}"></span> <span
+                                                    th:text="${user.lastName}"></span>
+                                            </span>
+                                            <small class="text-muted" th:text="${user.email}"></small>
+                                            <small class="d-md-none mt-1"
+                                                th:classappend="${user.role == 'ROLE_ADMIN' ? 'text-dark fw-bold' : 'text-primary'}">
+                                                <span
+                                                    th:text="${user.role == 'ROLE_ADMIN' ? 'Admin' : 'Użytkownik'}"></span>
+                                            </small>
                                         </div>
                                     </td>
                                     <td class="d-none d-md-table-cell">
-                                        <span class="badge bg-light text-dark border rounded-pill fw-normal">Użytkownik</span>
-                                    </td>
-                                    <td class="d-none d-lg-table-cell text-center">
-                                        <span class="badge bg-primary bg-opacity-10 text-primary rounded-pill">3 aktywne</span>
-                                    </td>
-                                    <td>
-                                        <span class="badge bg-success bg-opacity-10 text-success rounded-pill px-2">
-                                            <i class="fa-solid fa-check-circle me-1"></i> Aktywny
-                                        </span>
-                                    </td>
-                                    <td class="text-end pe-4">
-                                        <div class="btn-group">
-                                            <button class="btn btn-sm btn-white border shadow-sm rounded-start-pill" data-bs-toggle="modal" data-bs-target="#editUserModal">
-                                                <i class="fa-solid fa-pen text-muted"></i>
-                                            </button>
-                                            <button class="btn btn-sm btn-white border shadow-sm rounded-end-pill text-danger" 
-                                                    data-bs-toggle="modal" 
-                                                    data-bs-target="#blockUserModal"
-                                                    title="Zablokuj">
-                                                <i class="fa-solid fa-ban"></i>
-                                            </button>
-                                        </div>
-                                    </td>
-                                </tr>
-
-                                <tr>
-                                    <td class="ps-4">
-                                        <div class="d-flex flex-column">
-                                            <span class="fw-bold text-dark">Anna Nowak</span>
-                                            <small class="text-muted">anna.nowak@admin.pl</small>
-                                            <small class="d-md-none text-dark fw-bold mt-1">Admin</small>
-                                        </div>
-                                    </td>
-                                    <td class="d-none d-md-table-cell">
-                                        <span class="badge bg-dark text-white rounded-pill fw-normal">
-                                            <i class="fa-solid fa-shield-halved me-1 fs-xs"></i> Admin
+                                        <span class="badge rounded-pill fw-normal"
+                                            th:class="${user.role == 'ROLE_ADMIN' ? 'bg-dark text-white' : 'bg-light text-dark border'}"
+                                            th:classappend="${!user.enabled ? 'opacity-75' : ''}">
+                                            <i th:if="${user.role == 'ROLE_ADMIN'}"
+                                                class="fa-solid fa-shield-halved me-1 fs-xs"></i>
+                                            <span
+                                                th:text="${user.role == 'ROLE_ADMIN' ? 'Admin' : 'Użytkownik'}"></span>
                                         </span>
                                     </td>
                                     <td class="d-none d-lg-table-cell text-center">
                                         <span class="text-muted small">-</span>
                                     </td>
                                     <td>
-                                        <span class="badge bg-success bg-opacity-10 text-success rounded-pill px-2">
-                                            <i class="fa-solid fa-check-circle me-1"></i> Aktywny
+                                        <span class="badge rounded-pill px-2"
+                                            th:classappend="${user.locked ? 'bg-danger bg-opacity-10 text-danger' : (user.enabled ? 'bg-success bg-opacity-10 text-success' : 'bg-warning bg-opacity-10 text-warning')}">
+                                            <i class="fa-solid me-1"
+                                                th:classappend="${user.locked ? 'fa-lock' : (user.enabled ? 'fa-check-circle' : 'fa-circle-exclamation')}"></i>
+                                            <span
+                                                th:text="${user.locked ? 'Zablokowany' : (user.enabled ? 'Aktywny' : 'Nieaktywny')}"></span>
                                         </span>
                                     </td>
                                     <td class="text-end pe-4">
                                         <div class="btn-group">
-                                            <button class="btn btn-sm btn-white border shadow-sm rounded-start-pill" data-bs-toggle="modal" data-bs-target="#editUserModal">
+                                            <a th:href="@{/admin/users/edit/{id}(id=${user.id})}"
+                                                class="btn btn-sm btn-white border shadow-sm rounded-start-pill"
+                                                title="Edytuj">
                                                 <i class="fa-solid fa-pen text-muted"></i>
+                                            </a>
+                                            <button
+                                                class="btn btn-sm btn-outline-danger rounded-end-pill px-3 shadow-sm"
+                                                th:if="${!user.locked && user.role != 'ROLE_ADMIN'}"
+                                                data-bs-toggle="modal" data-bs-target="#blockUserModal"
+                                                th:data-user-id="${user.id}"
+                                                th:data-user-name="${user.firstName + ' ' + user.lastName}"
+                                                title="Zablokuj" onclick="setBlockUserData(this)">
+                                                <i class="fa-solid fa-ban me-1"></i> Zablokuj
                                             </button>
-                                            <button class="btn btn-sm btn-light border rounded-end-pill text-muted" disabled>
+                                            <button class="btn btn-sm btn-light border rounded-end-pill text-muted"
+                                                th:if="${user.role == 'ROLE_ADMIN'}" disabled>
                                                 <i class="fa-solid fa-ban"></i>
+                                            </button>
+                                            <button
+                                                class="btn btn-sm btn-outline-success rounded-end-pill px-3 shadow-sm"
+                                                th:if="${user.locked}" data-bs-toggle="modal"
+                                                data-bs-target="#unlockUserModal" th:data-user-id="${user.id}"
+                                                th:data-user-name="${user.firstName + ' ' + user.lastName}"
+                                                onclick="setUnlockUserData(this)">
+                                                <i class="fa-solid fa-unlock me-1"></i> Odblokuj
                                             </button>
                                         </div>
                                     </td>
                                 </tr>
-
-                                <tr class="bg-light bg-opacity-50">
-                                    <td class="ps-4">
-                                        <div class="d-flex flex-column opacity-50">
-                                            <span class="fw-bold text-dark text-decoration-line-through">Piotr Jakiś</span>
-                                            <small class="text-muted">piotr.jakis@spam.com</small>
-                                        </div>
-                                    </td>
-                                    <td class="d-none d-md-table-cell">
-                                        <span class="badge bg-light text-dark border rounded-pill fw-normal opacity-75">Użytkownik</span>
-                                    </td>
-                                    <td class="d-none d-lg-table-cell text-center">
-                                        <span class="badge bg-danger bg-opacity-10 text-danger rounded-pill">Opóźnione: 2</span>
-                                    </td>
-                                    <td>
-                                        <span class="badge bg-danger bg-opacity-10 text-danger rounded-pill px-2">
-                                            <i class="fa-solid fa-lock me-1"></i> Zablokowany
-                                        </span>
-                                    </td>
-                                    <td class="text-end pe-4">
-                                        <button class="btn btn-sm btn-outline-success rounded-pill px-3 shadow-sm" 
-                                                data-bs-toggle="modal" 
-                                                data-bs-target="#unlockUserModal">
-                                            <i class="fa-solid fa-unlock me-1"></i> Odblokuj
-                                        </button>
+                                <tr th:if="${users.empty}">
+                                    <td colspan="5" class="text-center py-5 text-muted">
+                                        <i class="fa-solid fa-inbox fs-2 mb-3 d-block"></i>
+                                        Brak użytkowników do wyświetlenia
                                     </td>
                                 </tr>
                             </tbody>
@@ -209,23 +207,45 @@
                 <div class="card-footer bg-white border-top border-light py-3 px-4">
                     <div class="d-flex flex-column flex-md-row justify-content-between align-items-center gap-3">
                         <small class="text-muted">
-                            Strona <strong>1</strong> z <strong>15</strong> &bull; Wyników: <strong>145</strong>
+                            Strona <strong th:text="${currentPage + 1}">1</strong> z <strong
+                                th:text="${totalPages}">1</strong> &bull;
+                            Wyników na stronie: <strong th:text="${users.size}">0</strong> z <strong
+                                th:text="${users.totalElements}">0</strong>
                         </small>
-                        
-                        <nav>
+
+                        <nav th:if="${totalPages > 1}">
                             <ul class="pagination pagination-sm mb-0">
-                                <li class="page-item disabled">
-                                    <a class="page-link" href="#" tabindex="-1">
+                                <li class="page-item" th:classappend="${currentPage == 0 ? 'disabled' : ''}">
+                                    <a class="page-link"
+                                        th:href="${currentPage == 0 ? 'javascript:void(0)' : '/admin/users?page=' + (currentPage - 1)}">
                                         <i class="fa-solid fa-chevron-left"></i>
                                     </a>
                                 </li>
-                                <li class="page-item active"><a class="page-link" href="#">1</a></li>
-                                <li class="page-item"><a class="page-link" href="#">2</a></li>
-                                <li class="page-item"><a class="page-link" href="#">3</a></li>
-                                <li class="page-item disabled"><span class="page-link border-0">...</span></li>
-                                <li class="page-item"><a class="page-link" href="#">15</a></li>
-                                <li class="page-item">
-                                    <a class="page-link" href="#">
+
+                                <li class="page-item" th:if="${currentPage > 2}">
+                                    <a class="page-link" href="/admin/users?page=0">1</a>
+                                </li>
+                                <li class="page-item" th:if="${currentPage > 3}">
+                                    <span class="page-link border-0">...</span>
+                                </li>
+
+                                <li class="page-item" th:each="i : ${pages}"
+                                    th:classappend="${currentPage == i ? 'active' : ''}">
+                                    <a class="page-link" th:href="'/admin/users?page=' + ${i}" th:text="${i + 1}"></a>
+                                </li>
+
+                                <li class="page-item" th:if="${currentPage < totalPages - 4}">
+                                    <span class="page-link border-0">...</span>
+                                </li>
+                                <li class="page-item" th:if="${currentPage < totalPages - 3}">
+                                    <a class="page-link" th:href="'/admin/users?page=' + ${totalPages - 1}"
+                                        th:text="${totalPages}"></a>
+                                </li>
+
+                                <li class="page-item"
+                                    th:classappend="${currentPage >= totalPages - 1 ? 'disabled' : ''}">
+                                    <a class="page-link"
+                                        th:href="${currentPage >= totalPages - 1 ? 'javascript:void(0)' : '/admin/users?page=' + (currentPage + 1)}">
                                         <i class="fa-solid fa-chevron-right"></i>
                                     </a>
                                 </li>
@@ -250,17 +270,20 @@
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content border-0 shadow rounded-4">
                 <div class="modal-body p-4 text-center">
-                    <div class="mb-3 text-danger bg-danger bg-opacity-10 rounded-circle d-flex align-items-center justify-content-center mx-auto" style="width: 60px; height: 60px;">
+                    <div class="mb-3 text-danger bg-danger bg-opacity-10 rounded-circle d-flex align-items-center justify-content-center mx-auto"
+                        style="width: 60px; height: 60px;">
                         <i class="fa-solid fa-ban fs-3"></i>
                     </div>
                     <h5 class="fw-bold mb-2">Zablokować użytkownika?</h5>
                     <p class="text-muted small mb-4">
-                        Użytkownik <strong>Marek Kowalski</strong> straci dostęp do swojego konta.<br>
+                        Użytkownik <strong id="blockUserName"></strong> straci dostęp do swojego konta.<br>
                         Wypożyczenia pozostaną aktywne.
                     </p>
                     <div class="d-flex justify-content-center gap-2">
-                        <button type="button" class="btn btn-light rounded-pill px-4" data-bs-dismiss="modal">Anuluj</button>
-                        <button type="button" class="btn btn-danger rounded-pill px-4 shadow-sm">Zablokuj konto</button>
+                        <button type="button" class="btn btn-light rounded-pill px-4"
+                            data-bs-dismiss="modal">Anuluj</button>
+                        <button type="button" class="btn btn-danger rounded-pill px-4 shadow-sm"
+                            id="confirmBlockBtn">Zablokuj konto</button>
                     </div>
                 </div>
             </div>
@@ -271,53 +294,120 @@
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content border-0 shadow rounded-4">
                 <div class="modal-body p-4 text-center">
-                    <div class="mb-3 text-success bg-success bg-opacity-10 rounded-circle d-flex align-items-center justify-content-center mx-auto" style="width: 60px; height: 60px;">
+                    <div class="mb-3 text-success bg-success bg-opacity-10 rounded-circle d-flex align-items-center justify-content-center mx-auto"
+                        style="width: 60px; height: 60px;">
                         <i class="fa-solid fa-unlock fs-3"></i>
                     </div>
                     <h5 class="fw-bold mb-2">Odblokować użytkownika?</h5>
                     <p class="text-muted small mb-4">
-                        Czy na pewno chcesz przywrócić dostęp dla użytkownika <strong>Piotr Jakiś</strong>?
+                        Czy na pewno chcesz przywrócić dostęp dla użytkownika <strong id="unlockUserName"></strong>?
                     </p>
                     <div class="d-flex justify-content-center gap-2">
-                        <button type="button" class="btn btn-light rounded-pill px-4" data-bs-dismiss="modal">Anuluj</button>
-                        <button type="button" class="btn btn-success rounded-pill px-4 shadow-sm">Odblokuj konto</button>
+                        <button type="button" class="btn btn-light rounded-pill px-4"
+                            data-bs-dismiss="modal">Anuluj</button>
+                        <button type="button" class="btn btn-success rounded-pill px-4 shadow-sm"
+                            id="confirmUnlockBtn">Odblokuj konto</button>
                     </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="modal fade" id="editUserModal" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content border-0 shadow rounded-4">
-                <div class="modal-header border-0 pb-0">
-                    <h5 class="modal-title fw-bold">Edycja danych</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <form>
-                        <div class="mb-3">
-                            <label class="form-label small text-muted text-uppercase fw-bold">Dane osobowe</label>
-                            <input type="text" class="form-control rounded-3 mb-2" value="Marek Kowalski">
-                            <input type="email" class="form-control rounded-3" value="marek.kowalski@email.com">
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label small text-muted text-uppercase fw-bold">Uprawnienia</label>
-                            <select class="form-select rounded-3">
-                                <option value="ROLE_USER" selected>Użytkownik</option>
-                                <option value="ROLE_ADMIN">Administrator</option>
-                            </select>
-                        </div>
-                    </form>
-                </div>
-                <div class="modal-footer border-0 pt-0">
-                    <button type="button" class="btn btn-light rounded-pill px-4" data-bs-dismiss="modal">Anuluj</button>
-                    <button type="button" class="btn btn-primary rounded-pill px-4">Zapisz</button>
                 </div>
             </div>
         </div>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        let currentBlockUserId = null;
+        let currentUnlockUserId = null;
+
+        function setBlockUserData(button) {
+            const userId = button.getAttribute('data-user-id');
+            const userName = button.getAttribute('data-user-name');
+            currentBlockUserId = userId;
+            document.getElementById('blockUserName').textContent = userName;
+        }
+
+        function setUnlockUserData(button) {
+            const userId = button.getAttribute('data-user-id');
+            const userName = button.getAttribute('data-user-name');
+            currentUnlockUserId = userId;
+            document.getElementById('unlockUserName').textContent = userName;
+        }
+
+        function getCSRFToken() {
+            return document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+        }
+
+        function getCSRFHeader() {
+            return document.querySelector('meta[name="csrf-header"]').getAttribute('content');
+        }
+
+        document.getElementById('confirmBlockBtn').addEventListener('click', function () {
+            if (currentBlockUserId) {
+                const headers = {
+                    'Content-Type': 'application/json'
+                };
+                headers[getCSRFHeader()] = getCSRFToken();
+
+                fetch(`/admin/users/${currentBlockUserId}/block`, {
+                    method: 'POST',
+                    headers: headers
+                })
+                    .then(response => {
+                        if (response.ok) {
+                            location.reload();
+                        } else {
+                            alert('Błąd podczas blokowania użytkownika');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        alert('Błąd podczas blokowania użytkownika');
+                    });
+            }
+        });
+
+        document.getElementById('confirmUnlockBtn').addEventListener('click', function () {
+            if (currentUnlockUserId) {
+                const headers = {
+                    'Content-Type': 'application/json'
+                };
+                headers[getCSRFHeader()] = getCSRFToken();
+
+                fetch(`/admin/users/${currentUnlockUserId}/unlock`, {
+                    method: 'POST',
+                    headers: headers
+                })
+                    .then(response => {
+                        if (response.ok) {
+                            location.reload();
+                        } else {
+                            alert('Błąd podczas odblokowywania użytkownika');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        alert('Błąd podczas odblokowywania użytkownika');
+                    });
+            }
+        });
+
+        document.getElementById('exportCsvBtn').addEventListener('click', function () {
+            const search = new URLSearchParams(window.location.search).get('search') || '';
+            const role = new URLSearchParams(window.location.search).get('role') || '';
+            const status = new URLSearchParams(window.location.search).get('status') || '';
+
+            let url = '/admin/users/export-csv';
+            const params = new URLSearchParams();
+            if (search) params.append('search', search);
+            if (role) params.append('role', role);
+            if (status) params.append('status', status);
+
+            if (params.toString()) {
+                url += '?' + params.toString();
+            }
+
+            window.location.href = url;
+        });
+    </script>
 </body>
+
 </html>

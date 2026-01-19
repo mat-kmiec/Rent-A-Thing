@@ -26,5 +26,25 @@
             <column name="enabled" valueBoolean="true"/>
             <column name="locked" valueBoolean="false"/>
         </insert>
+        <insert tableName="users">
+            <!--    PASSWORD Blocked2026        -->
+            <column name="first_name" value="Krzysztof"/>
+            <column name="last_name" value="Jakis"/>
+            <column name="email" value="krzysztof.jakis@example.com"/>
+            <column name="password" value="$2a$10$8g5n2bJ1qK4vL6m9oP3sRtXyZaB2cD5eF7gH8iJ0kL1mN2oP3qR4s"/>
+            <column name="role" value="ROLE_USER"/>
+            <column name="enabled" valueBoolean="true"/>
+            <column name="locked" valueBoolean="true"/>
+        </insert>
+        <insert tableName="users">
+            <!--    PASSWORD Test123123        -->
+            <column name="first_name" value="Niewiem"/>
+            <column name="last_name" value="Bezimienny"/>
+            <column name="email" value="nwmbez@example.com"/>
+            <column name="password" value="$2a$10$VvYHFj6K8L9w0N7r4M3qRuFc1N5vX8m3k6L7P8q0R1s2T3u4V5w6X"/>
+            <column name="role" value="ROLE_USER"/>
+            <column name="enabled" valueBoolean="false"/>
+            <column name="locked" valueBoolean="false"/>
+        </insert>
     </changeSet>
 </databaseChangeLog>
