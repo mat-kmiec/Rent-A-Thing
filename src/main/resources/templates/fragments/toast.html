@@ -1,14 +1,19 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<div class="toast-container position-fixed bottom-0 end-0 p-3" style="z-index: 1100" th:fragment="toast">
-    <div id="liveToast" class="toast align-items-center text-white border-0 shadow-lg" role="alert" aria-live="assertive" aria-atomic="true">
-        <div class="d-flex">
-            <div class="toast-body">
-                <i id="toastIcon" class="me-2"></i>
-                <span id="toastMessage"></span>
+<div th:fragment="toast">
+    <div class="toast-container position-fixed bottom-0 end-0 p-3" style="z-index: 1100">
+        <div id="liveToast" class="toast align-items-center text-white border-0 shadow-lg" role="alert">
+            <div class="d-flex">
+                <div class="toast-body">
+                    <i id="toastIcon" class="me-2 fa-solid"></i>
+                    <span id="toastMessage"></span>
+                </div>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
             </div>
-            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
         </div>
     </div>
+
+    <input type="hidden" id="serverToastType" th:value="${toastType}" th:if="${toastType}">
+    <input type="hidden" id="serverToastMsg" th:value="${toastMessage}" th:if="${toastMessage}">
 </div>
 </html>

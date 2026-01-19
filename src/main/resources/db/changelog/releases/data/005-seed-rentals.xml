@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                   https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <changeSet id="20260119-data-testowa-rentals-v2" author="mateusz kmiec">
+
+        <insert tableName="rentals">
+            <column name="item_id" valueNumeric="1"/>
+            <column name="user_id" valueNumeric="1"/>
+            <column name="start_date_time" valueDate="2026-02-01T10:00:00"/>
+            <column name="end_date_time" valueDate="2026-02-03T10:00:00"/>
+            <column name="return_date_time" valueDate="2026-02-03T09:45:00"/>
+            <column name="status" value="COMPLETED"/>
+            <column name="total_cost" valueNumeric="150.00"/>
+            <column name="created_at" valueDate="2026-01-10T12:00:00"/>
+        </insert>
+
+        <insert tableName="rentals">
+            <column name="item_id" valueNumeric="1"/>
+            <column name="user_id" valueNumeric="1"/>
+            <column name="start_date_time" valueDate="2026-02-10T09:00:00"/>
+            <column name="end_date_time" valueDate="2026-02-15T18:00:00"/>
+            <column name="status" value="ACTIVE"/>
+            <column name="deposit" valueNumeric="50.00"/>
+            <column name="deposit_paid" valueBoolean="true"/>
+            <column name="created_at" valueDate="2026-02-05T10:00:00"/>
+        </insert>
+
+        <insert tableName="rentals">
+            <column name="item_id" valueNumeric="1"/>
+            <column name="user_id" valueNumeric="1"/>
+            <column name="start_date_time" valueDate="2026-02-20T08:00:00"/>
+            <column name="end_date_time" valueDate="2026-02-22T20:00:00"/>
+            <column name="status" value="PENDING"/>
+            <column name="payment_method" value="CARD"/>
+            <column name="created_at" valueDate="2026-02-15T15:00:00"/>
+        </insert>
+
+        <insert tableName="rentals">
+            <column name="item_id" valueNumeric="1"/>
+            <column name="user_id" valueNumeric="1"/>
+            <column name="start_date_time" valueDate="2026-02-25T08:00:00"/>
+            <column name="end_date_time" valueDate="2026-02-26T10:00:00"/>
+            <column name="status" value="OVERDUE"/>
+            <column name="created_at" valueDate="2026-02-15T09:00:00"/>
+        </insert>
+
+    </changeSet>
+</databaseChangeLog>

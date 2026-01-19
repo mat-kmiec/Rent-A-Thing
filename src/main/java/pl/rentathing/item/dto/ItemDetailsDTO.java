@@ -18,8 +18,10 @@ public class ItemDetailsDTO {
     private String categoryName;
     private Double averageRating;
     private Integer reviewCount;
-    private boolean available;
-    private boolean isNew;
-    private boolean canBeShipped;
+    private Boolean available;
+    private Boolean canBePickedUp;
+    private Boolean isNew;
+    private Boolean canBeShipped;
     private BigDecimal depositPrice;
+    private BigDecimal shippingPrice;
 }
