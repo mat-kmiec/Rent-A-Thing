@@ -40,9 +40,13 @@ public class User {
     @Builder.Default
     private boolean locked = false;
 
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Address address;
+
     @Override
     public boolean equals(Object o) {
-        if (!(o instanceof User user)) return false;
+        if (!(o instanceof User user))
+            return false;
         return Objects.equals(email, user.email);
     }
 
