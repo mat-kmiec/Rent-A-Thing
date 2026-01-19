@@ -23,7 +23,7 @@ import java.time.LocalDate;
 @Controller
 @RequestMapping("/wypozyczenia")
 @RequiredArgsConstructor
-public class UserRentalController {
+public class RentalController {
 
     private final ItemService itemService;
     private final RentalService rentalService;
