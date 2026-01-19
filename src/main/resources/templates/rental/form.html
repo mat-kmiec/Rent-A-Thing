@@ -50,6 +50,10 @@
                                                required>
                                     </div>
                                 </div>
+                                <div id="availability-status" class="alert d-flex align-items-center mt-3 d-none" role="alert">
+                                    <i id="status-icon" class="fa-solid me-2"></i>
+                                    <div id="status-text" class="small fw-medium"></div>
+                                </div>
 
                                 <label class="form-label small text-muted fw-bold mb-3">SPOSÓB ODBIORU</label>
                                 <div class="row g-3">
@@ -267,7 +271,7 @@
 
 <script th:src="@{/js/rental/payment-toggle.js}"></script>
 <script th:src="@{/js/rental/rental-calculator.js}"></script>
-
+    <script th:src="@{/js/rental/check-availability.js}"></script>
 
 </body>
 </html>
