@@ -1,10 +1,12 @@
 package pl.rentathing.Rental.Controller;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import pl.rentathing.Rental.Service.RentalAvailibilityService;
+
+import java.time.LocalDate;
 
 @RestController
 @RequestMapping("/api/rentals")
@@ -12,8 +14,14 @@ import org.springframework.web.bind.annotation.RestController;
 public class RentalApiController {
 
 
-//    @GetMapping("{id}/availability")
-//    public ResponseEntity checkAvailability(){
-//
-//    }
+    private final RentalAvailibilityService rentalAvailibilityService;
+
+    @GetMapping("/{itemId}/availability")
+    public ResponseEntity<Boolean> checkAvailability(
+            @PathVariable Long itemId,
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate) {
+
+        return ResponseEntity.ok(rentalAvailibilityService.isAvailable(itemId, startDate, endDate));
+    }
 }

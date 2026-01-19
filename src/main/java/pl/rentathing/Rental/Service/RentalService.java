@@ -38,7 +38,7 @@ public class RentalService {
         Item item = itemRepository.findById(dto.getItemId())
                 .orElseThrow(() -> new ItemNotFoundException(dto.getItemId().toString()));
 
-        if (!rentalAvailibilityService.isAvailable(item, dto.getStartDate(), dto.getEndDate())) {
+        if (!rentalAvailibilityService.isAvailable(item.getId(), dto.getStartDate(), dto.getEndDate())) {
             throw new DateNotAvailableException();
         }
 

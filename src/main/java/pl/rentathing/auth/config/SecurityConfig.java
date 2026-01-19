@@ -27,6 +27,9 @@ public class SecurityConfig {
                         // Auth
                         .requestMatchers("/logowanie", "/rejestracja", "/register", "/logout").permitAll()
 
+                        // Api
+                        .requestMatchers("/api/rentals/*/availability").permitAll()
+
                         // Unauntenticated
                         .requestMatchers("/").permitAll()
                         .requestMatchers("/katalog/**").permitAll()
@@ -63,7 +66,9 @@ public class SecurityConfig {
                         .sessionFixation().migrateSession()
                         .maximumSessions(1)
                         .expiredUrl("/logowanie?expired=true"))
-                .csrf(csrf -> csrf.ignoringRequestMatchers("/h2-console/**"))
+                .csrf(csrf -> csrf
+                        .ignoringRequestMatchers("/h2-console/**", "/api/**")
+                )
                 .headers(headers -> headers.frameOptions(HeadersConfigurer.FrameOptionsConfig::sameOrigin));
 
 
