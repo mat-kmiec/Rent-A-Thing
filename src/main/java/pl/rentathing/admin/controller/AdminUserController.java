@@ -24,14 +24,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Controller
-@RequestMapping("/admin")
+@RequestMapping("/admin/users")
 @RequiredArgsConstructor
 public class AdminUserController {
 
     private final UserService userService;
     private final CsvService csvService;
 
-    @GetMapping("/users")
+    @GetMapping()
     public String getAllUsers(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "3") int size,
@@ -67,21 +67,21 @@ public class AdminUserController {
         return "admin/users";
     }
 
-    @PostMapping("/users/{id}/block")
+    @PostMapping("/{id}/block")
     @ResponseBody
     public ResponseEntity<?> blockUser(@PathVariable Long id) {
         userService.blockUser(id);
         return ResponseEntity.ok().body("{\"success\": true}");
     }
 
-    @PostMapping("/users/{id}/unlock")
+    @PostMapping("/{id}/unlock")
     @ResponseBody
     public ResponseEntity<?> unblockUser(@PathVariable Long id) {
         userService.unblockUser(id);
         return ResponseEntity.ok().body("{\"success\": true}");
     }
 
-    @GetMapping("/users/export-csv")
+    @GetMapping("/export-csv")
     public ResponseEntity<String> exportUsersCsv(
             @RequestParam(required = false) String search,
             @RequestParam(required = false) String role,
@@ -102,7 +102,7 @@ public class AdminUserController {
         }
     }
 
-    @GetMapping("/users/edit/{id}")
+    @GetMapping("/edit/{id}")
     public String editUserForm(@PathVariable Long id, Model model) {
         User user = userService.findById(id)
                 .orElseThrow(() -> new RuntimeException("Nie znaleziono użytkownika"));
@@ -132,7 +132,7 @@ public class AdminUserController {
         return "admin/user-edit";
     }
 
-    @PostMapping("/users/edit/{id}")
+    @PostMapping("/edit/{id}")
     public String updateUser(@PathVariable Long id,
             @Valid @ModelAttribute("userSettings") UserSettingsDTO settingsDTO,
             BindingResult bindingResult,
