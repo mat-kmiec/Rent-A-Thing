@@ -16,4 +16,5 @@
     <include file="/db/changelog/releases/data/003-seed-categories.xml"/>
     <include file="/db/changelog/releases/data/002-seed-items.xml"/>
     <include file="/db/changelog/releases/data/004-seed-review.xml"/>
+    <include file="/db/changelog/releases/data/005-seed-rentals.xml"/>
 </databaseChangeLog>

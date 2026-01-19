@@ -14,6 +14,9 @@
                 </a>
                 <h2 class="fw-bold mt-2">Sfinalizuj rezerwację</h2>
             </div>
+            <div th:if="${errorMessage}" class="alert alert-danger" role="alert">
+                <p th:text="${errorMessage}"></p>
+            </div>
 
             <form th:action="@{/wypozyczenia/potwierdz}" method="post" id="bookingForm" th:object="${rentalCreateDto}">
                 <div class="row g-5">
@@ -154,21 +157,21 @@
                             <div class="card-body p-4">
                                 <div class="d-flex flex-column gap-3">
                                     <label class="w-100 cursor-pointer">
-                                        <input type="radio" name="payment" class="form-check-input" value="BLIK" checked th:field="*{payment}">
+                                        <input type="radio" th:field="*{payment}" value="CARD" class="form-check-input">
                                         <div class="custom-radio-card d-flex align-items-center">
                                             <i class="fa-brands fa-cc-visa fs-4 text-primary me-3"></i>
                                             <div class="fw-bold text-dark">Karta Płatnicza (Online)</div>
                                         </div>
                                     </label>
                                     <label class="w-100 cursor-pointer">
-                                        <input type="radio" name="payment" class="form-check-input" VALUE="BLIK" th:field="*{payment}">
+                                        <input type="radio" th:field="*{payment}" value="BLIK" class="form-check-input">
                                         <div class="custom-radio-card d-flex align-items-center">
                                             <i class="fa-solid fa-mobile-screen fs-4 text-primary me-3"></i>
                                             <div class="fw-bold text-dark">BLIK</div>
                                         </div>
                                     </label>
                                     <label class="w-100 cursor-pointer">
-                                        <input type="radio" name="payment" class="form-check-input" value="CASH" th:field="*{payment}">
+                                        <input type="radio" th:field="*{payment}" value="CASH" class="form-check-input">
                                         <div class="custom-radio-card d-flex align-items-center">
                                             <i class="fa-solid fa-wallet fs-4 text-primary me-3"></i>
                                             <div class="fw-bold text-dark">Przy odbiorze</div>
@@ -260,6 +263,7 @@
     </section>
 
     <footer th:replace="~{fragments/footer :: footer}"></footer>
+    <div th:replace="~{fragments/toast :: toast}"></div>
 
 <script th:src="@{/js/rental/payment-toggle.js}"></script>
 <script th:src="@{/js/rental/rental-calculator.js}"></script>

@@ -1,8 +1,6 @@
 package pl.rentathing.Rental.Service;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import pl.rentathing.Rental.Dto.RentalCreateDto;
@@ -11,21 +9,17 @@ import pl.rentathing.Rental.Entity.PaymentMethod;
 import pl.rentathing.Rental.Entity.Rental;
 import pl.rentathing.Rental.Entity.RentalStatus;
 import pl.rentathing.Rental.Repository.RentalRepository;
-import pl.rentathing.auth.exception.UnautorizedException;
+import pl.rentathing.Rental.exception.DateNotAvailableException;
 import pl.rentathing.auth.service.AuthService;
 import pl.rentathing.item.entity.Item;
-import pl.rentathing.item.exception.ItemNotAvailableExpection;
 import pl.rentathing.item.exception.ItemNotFoundException;
 import pl.rentathing.item.repository.ItemRepository;
 import pl.rentathing.user.entity.User;
-import pl.rentathing.user.exception.UserNotFoundException;
 import pl.rentathing.user.repository.UserRepository;
 
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.temporal.ChronoUnit;
 
 @Service
 @RequiredArgsConstructor
@@ -48,7 +42,7 @@ public class RentalService {
         LocalDateTime end = dto.getEndDate().atTime(23, 59, 59);
 
         if (!rentalAvailibilityService.checkAvailability(item, start, end)) {
-            throw new ItemNotAvailableExpection();
+            throw new DateNotAvailableException();
         }
 
         User user = authService.getCurrentUser();
@@ -88,7 +82,7 @@ public class RentalService {
         dto.setLastName(user.getLastName());
         dto.setEmail(user.getEmail());
         dto.setDeliveryMethod("PICKUP");
-        dto.setPayment("ONLINE");
+        dto.setPayment("BLIK");
         dto.setStartDate(startDate != null ? startDate : LocalDate.now());
         dto.setEndDate(endDate != null ? endDate : LocalDate.now().plusDays(1));
 
