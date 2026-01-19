@@ -85,6 +85,7 @@
                                   th:if="${item.available}">Dostępny</span>
                         </div>
                         <form>
+                            <input type="hidden" id="itemId" th:value="${item.id}">
                             <div class="mb-3">
                                 <label class="form-label small text-muted fw-bold">TERMIN WYPOŻYCZENIA</label>
                                 <div class="row g-2">
@@ -99,6 +100,10 @@
                                                class="form-control bg-light border-0 shadow-none">
                                     </div>
                                 </div>
+                                <div id="availability-status" class="alert d-flex align-items-center mt-3 d-none" role="alert">
+                                <i id="status-icon" class="fa-solid me-2"></i>
+                                <div id="status-text" class="small fw-medium"></div>
+                            </div>
                             </div>
                             <div class="mb-4">
                                 <label class="form-label small text-muted fw-bold">METODA DOSTAWY</label>
@@ -119,10 +124,11 @@
                                     <span class="fw-bold text-primary fs-5">240 zł</span>
                                 </div>
                             </div>
-                            <button type="button"
-                                    class="btn btn-primary w-100 btn-lg rounded-pill shadow-sm fw-bold mb-3">
+                            <a id="reserveBtn"
+                               href="#"
+                               class="btn btn-primary w-100 btn-lg rounded-pill shadow-sm fw-bold mb-3 disabled">
                                 Rezerwuję
-                            </button>
+                            </a>
                             <p class="text-center text-muted small mb-0">
                                 <i class="fa-solid fa-shield-halved me-1"></i> Nie zostaniesz jeszcze obciążony.
                             </p>
@@ -237,6 +243,6 @@
 <div th:replace="~{fragments/toast :: toast}"></div>
 <script th:src="@{/js/review/addReview.js}"></script>
 <script th:src="@{/js/review/loadReview.js}"></script>
-</script>
+<script th:src="@{/js/rental/check-availability.js}"></script>
 </body>
 </html>
