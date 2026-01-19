@@ -11,9 +11,11 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import pl.rentathing.Rental.Dto.RentalCreateDto;
 import pl.rentathing.Rental.Service.RentalService;
 import pl.rentathing.Rental.exception.DateNotAvailableException;
+import pl.rentathing.Rental.exception.PastDateException;
 import pl.rentathing.Rental.exception.StartAfterEndDateException;
 import pl.rentathing.auth.service.AuthService;
 import pl.rentathing.item.dto.ItemDetailsDTO;
+import pl.rentathing.item.exception.ItemNotFoundException;
 import pl.rentathing.item.service.ItemService;
 import pl.rentathing.user.entity.User;
 import pl.rentathing.user.repository.UserRepository;
@@ -23,7 +25,7 @@ import java.time.LocalDate;
 @Controller
 @RequestMapping("/wypozyczenia")
 @RequiredArgsConstructor
-public class UserRentalController {
+public class RentalController {
 
     private final ItemService itemService;
     private final RentalService rentalService;
@@ -76,7 +78,7 @@ public class UserRentalController {
             redirectAttributes.addFlashAttribute("toastMessage", "Wypożyczenie zostało utworzone!");
             return "redirect:/wypozyczenia/sukces";
 
-        } catch (DateNotAvailableException | StartAfterEndDateException e) {
+        } catch (DateNotAvailableException | ItemNotFoundException | StartAfterEndDateException | PastDateException e ) {
             redirectAttributes.addFlashAttribute("toastType", "error");
             redirectAttributes.addFlashAttribute("toastMessage", e.getMessage());
 

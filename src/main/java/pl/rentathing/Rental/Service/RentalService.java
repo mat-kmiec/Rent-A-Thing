@@ -38,10 +38,7 @@ public class RentalService {
         Item item = itemRepository.findById(dto.getItemId())
                 .orElseThrow(() -> new ItemNotFoundException(dto.getItemId().toString()));
 
-        LocalDateTime start = dto.getStartDate().atStartOfDay();
-        LocalDateTime end = dto.getEndDate().atTime(23, 59, 59);
-
-        if (!rentalAvailibilityService.checkAvailability(item, start, end)) {
+        if (!rentalAvailibilityService.isAvailable(item.getId(), dto.getStartDate(), dto.getEndDate())) {
             throw new DateNotAvailableException();
         }
 
@@ -58,12 +55,12 @@ public class RentalService {
         Rental rental = Rental.builder()
                 .item(item)
                 .user(user)
-                .startDateTime(start)
-                .endDateTime(end)
+                .startDateTime(dto.getStartDate().atStartOfDay())
+                .endDateTime(dto.getEndDate().atTime(23, 59, 59))
                 .totalCost(totalCost)
                 .deposit(deposit)
                 .shippingCost(shippingCost)
-                .deliveryMethod(DeliveryMethod.valueOf(dto.getDeliveryMethod()))
+                .deliveryMethod(DeliveryMethod.valueOf(dto.getDeliveryMethod().toUpperCase()))
                 .paymentMethod(PaymentMethod.valueOf(dto.getPayment().toUpperCase()))
                 .status(RentalStatus.PENDING)
                 .depositPaid(!item.isDeposit())
