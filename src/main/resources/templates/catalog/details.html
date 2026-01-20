@@ -30,11 +30,14 @@
                 <div class="mb-2">
                     <h1 class="fw-bold mb-1 display-6" th:text="${item.title}"></h1>
                     <div class="text-warning small mb-3">
-                        <i class="fa-solid fa-star"></i>
-                        <i class="fa-solid fa-star"></i>
-                        <i class="fa-solid fa-star"></i>
-                        <i class="fa-solid fa-star"></i>
-                        <i class="fa-solid fa-star-half-stroke"></i>
+                        <th:block th:each="i : ${#numbers.sequence(1, 5)}">
+                            <i th:if="${item.averageRating >= i}" class="fa-solid fa-star"></i>
+
+                            <i th:if="${item.averageRating >= i - 0.5 && item.averageRating < i}" class="fa-solid fa-star-half-stroke"></i>
+
+                            <i th:if="${item.averageRating < i - 0.5}" class="fa-regular fa-star"></i>
+                        </th:block>
+
                         <span class="text-muted ms-2 fw-medium"
                               th:text="'(' + ${item.averageRating} + ' / ' + ${item.reviewCount} + ' opinie)'"></span>
                     </div>
