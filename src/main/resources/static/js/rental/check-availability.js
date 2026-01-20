@@ -1,13 +1,13 @@
 document.addEventListener('DOMContentLoaded', function () {
-    const dateFrom = document.getElementById('dateFrom');
-    const dateTo = document.getElementById('dateTo');
+    const dateFrom = document.getElementById('dateFrom') || document.getElementById('startDate');
+    const dateTo = document.getElementById('dateTo') || document.getElementById('endDate');
     const itemIdInput = document.getElementById('itemId');
     const statusDiv = document.getElementById('availability-status');
     const statusText = document.getElementById('status-text');
     const statusIcon = document.getElementById('status-icon');
-    const reserveBtn = document.getElementById('reserveBtn');
+    const reserveBtn = document.getElementById('reserveBtn') || document.getElementById('submitBtn');
 
-    if (!dateFrom || !dateTo || !itemIdInput || !reserveBtn) return;
+    if (!dateFrom || !dateTo || !itemIdInput) return;
 
     const itemId = itemIdInput.value;
 
@@ -21,17 +21,16 @@ document.addEventListener('DOMContentLoaded', function () {
 
                 if (!response.ok) {
                     const errorData = await response.json();
-                    updateUI(errorData.message, 'alert-warning', 'fa-triangle-exclamation', false);
+                    updateUI(errorData.message, 'alert-warning', 'fa-triangle-exclamation', true);
                     return;
                 }
 
                 const isAvailable = await response.json();
 
                 if (isAvailable) {
-                    const checkoutUrl = `/wypozyczenia/formularz?przedmiot=${itemId}&start=${start}&koniec=${end}`;
-                    updateUI('Świetnie! Ten termin jest dostępny.', 'alert-success', 'fa-circle-check', true, checkoutUrl);
+                    updateUI('Termin jest dostępny!', 'alert-success', 'fa-circle-check', false);
                 } else {
-                    updateUI('Przepraszamy, ten termin jest już zajęty.', 'alert-danger', 'fa-circle-xmark', false);
+                    updateUI('Termin zajęty w wybranym zakresie.', 'alert-danger', 'fa-circle-xmark', true);
                 }
             } catch (error) {
                 console.error('Błąd API:', error);
@@ -39,20 +38,21 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
 
-    function updateUI(message, alertClass, iconClass, isAvailable, url = "#") {
+    function updateUI(message, alertClass, iconClass, isDisabled) {
+        if (!statusDiv) return;
+
         statusDiv.classList.remove('d-none', 'alert-success', 'alert-danger', 'alert-warning');
         statusDiv.classList.add(alertClass);
         statusText.textContent = message;
         statusIcon.className = 'fa-solid ' + iconClass + ' me-2';
-        if (isAvailable) {
-            reserveBtn.classList.remove('disabled');
-            reserveBtn.href = url;
-        } else {
-            reserveBtn.classList.add('disabled');
-            reserveBtn.href = "#";
+
+        if (reserveBtn) {
+            reserveBtn.classList.toggle('disabled', isDisabled);
+            reserveBtn.disabled = isDisabled;
         }
     }
 
     dateFrom.addEventListener('change', checkAvailability);
     dateTo.addEventListener('change', checkAvailability);
+    if(dateFrom.value && dateTo.value) checkAvailability();
 });

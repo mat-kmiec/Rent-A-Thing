@@ -9,6 +9,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import pl.rentathing.Rental.Dto.RentalCreateDto;
+import pl.rentathing.Rental.Dto.RentalSummaryDto;
 import pl.rentathing.Rental.Service.RentalService;
 import pl.rentathing.Rental.exception.DateNotAvailableException;
 import pl.rentathing.Rental.exception.PastDateException;
@@ -56,6 +57,14 @@ public class RentalController {
         return "rental/form";
     }
 
+    @GetMapping("/sukces")
+    public String showRentalSuccess(Model model){
+        if (!model.containsAttribute("rentalSummary")){
+            return "redirect:/katalog";
+        }
+        return "rental/succes";
+    }
+
 
     @PostMapping("/potwierdz")
     public String confirmRental(
@@ -73,9 +82,8 @@ public class RentalController {
         }
 
         try {
-            rentalService.createRental(rentalCreateDto);
-            redirectAttributes.addFlashAttribute("toastType", "success");
-            redirectAttributes.addFlashAttribute("toastMessage", "Wypożyczenie zostało utworzone!");
+            RentalSummaryDto summary = rentalService.createRental(rentalCreateDto);
+            redirectAttributes.addFlashAttribute("rentalSummary", summary);
             return "redirect:/wypozyczenia/sukces";
 
         } catch (DateNotAvailableException | ItemNotFoundException | StartAfterEndDateException | PastDateException e ) {

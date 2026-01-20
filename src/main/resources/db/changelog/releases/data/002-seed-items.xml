@@ -23,5 +23,323 @@
             <column name="min_rental_days" valueNumeric="1"/> <column name="is_new" valueBoolean="false"/>
             <column name="created_at" valueComputed="CURRENT_TIMESTAMP"/>
         </insert>
+
+
+        <insert tableName="items">
+            <column name="sku" value="DJI-MINI3-002"/>
+            <column name="title" value="Dron DJI Mini 3 Pro"/>
+            <column name="description" value="Lekki i kompaktowy dron z kamerą 4K, idealny do podróży."/>
+            <column name="price_per_day" value="150.00"/>
+            <column name="discounted_percent" value="0"/>
+            <column name="deposit" valueBoolean="true"/>
+            <column name="deposit_price" value="1000.00"/>
+            <column name="image_url" value="https://images.unsplash.com/photo-1508614589041-895b88991e3e"/>
+            <column name="category_id" valueNumeric="1"/>
+            <column name="average_rating" valueNumeric="4.9"/>
+            <column name="review_count" valueNumeric="8"/>
+            <column name="available" valueBoolean="true"/>
+            <column name="can_be_shipped" valueBoolean="true"/>
+            <column name="can_be_picked_up" valueBoolean="true"/>
+            <column name="shipping_price" value="25.00"/>
+            <column name="min_rental_days" valueNumeric="1"/>
+            <column name="is_new" valueBoolean="true"/>
+            <column name="created_at" valueComputed="CURRENT_TIMESTAMP"/>
+        </insert>
+
+        <insert tableName="items">
+            <column name="sku" value="MAK-HR2470-003"/>
+            <column name="title" value="Młotowiertarka Makita HR2470"/>
+            <column name="description" value="Profesjonalna młotowiertarka do ciężkich prac remontowych."/>
+            <column name="price_per_day" value="45.00"/>
+            <column name="discounted_percent" value="5"/>
+            <column name="deposit" valueBoolean="true"/>
+            <column name="deposit_price" value="200.00"/>
+            <column name="image_url" value="https://images.unsplash.com/photo-1504148455328-c376907d081c"/>
+            <column name="category_id" valueNumeric="2"/>
+            <column name="average_rating" valueNumeric="4.7"/>
+            <column name="review_count" valueNumeric="24"/>
+            <column name="available" valueBoolean="true"/>
+            <column name="can_be_shipped" valueBoolean="false"/>
+            <column name="can_be_picked_up" valueBoolean="true"/>
+            <column name="shipping_price" value="0.00"/>
+            <column name="min_rental_days" valueNumeric="1"/>
+            <column name="is_new" valueBoolean="false"/>
+            <column name="created_at" valueComputed="CURRENT_TIMESTAMP"/>
+        </insert>
+
+        <insert tableName="items">
+            <column name="sku" value="XIA-M365-004"/>
+            <column name="title" value="Hulajnoga elektryczna Xiaomi M365"/>
+            <column name="description" value="Szybki i ekologiczny transport miejski, zasięg do 30km."/>
+            <column name="price_per_day" value="60.00"/>
+            <column name="discounted_percent" value="0"/>
+            <column name="deposit" valueBoolean="true"/>
+            <column name="deposit_price" value="300.00"/>
+            <column name="image_url" value="https://images.unsplash.com/photo-1597075095400-b247f1850d9c"/>
+            <column name="category_id" valueNumeric="3"/>
+            <column name="average_rating" valueNumeric="4.5"/>
+            <column name="review_count" valueNumeric="15"/>
+            <column name="available" valueBoolean="true"/>
+            <column name="can_be_shipped" valueBoolean="false"/>
+            <column name="can_be_picked_up" valueBoolean="true"/>
+            <column name="shipping_price" value="0.00"/>
+            <column name="min_rental_days" valueNumeric="1"/>
+            <column name="is_new" valueBoolean="false"/>
+            <column name="created_at" valueComputed="CURRENT_TIMESTAMP"/>
+        </insert>
+
+        <insert tableName="items">
+            <column name="sku" value="THU-CHASM-005"/>
+            <column name="title" value="Namiot 4-osobowy Thule"/>
+            <column name="description" value="Wodoodporny, przestronny namiot rodzinny na każdą pogodę."/>
+            <column name="price_per_day" value="80.00"/>
+            <column name="discounted_percent" value="15"/>
+            <column name="deposit" valueBoolean="true"/>
+            <column name="deposit_price" value="400.00"/>
+            <column name="image_url" value="https://images.unsplash.com/photo-1504280390367-361c6d9f38f4"/>
+            <column name="category_id" valueNumeric="4"/>
+            <column name="average_rating" valueNumeric="4.6"/>
+            <column name="review_count" valueNumeric="5"/>
+            <column name="available" valueBoolean="true"/>
+            <column name="can_be_shipped" valueBoolean="true"/>
+            <column name="can_be_picked_up" valueBoolean="true"/>
+            <column name="shipping_price" value="29.99"/>
+            <column name="min_rental_days" valueNumeric="2"/>
+            <column name="is_new" valueBoolean="true"/>
+            <column name="created_at" valueComputed="CURRENT_TIMESTAMP"/>
+        </insert>
+
+        <insert tableName="items">
+            <column name="sku" value="CYB-PRIAM-006"/>
+            <column name="title" value="Wózek Cybex Priam 2w1"/>
+            <column name="description" value="Luksusowy wózek głęboko-spacerowy, doskonała amortyzacja."/>
+            <column name="price_per_day" value="110.00"/>
+            <column name="discounted_percent" value="0"/>
+            <column name="deposit" valueBoolean="true"/>
+            <column name="deposit_price" value="600.00"/>
+            <column name="image_url" value="https://images.unsplash.com/photo-1591123120675-6f7f1aae0e5b"/>
+            <column name="category_id" valueNumeric="5"/>
+            <column name="average_rating" valueNumeric="5.0"/>
+            <column name="review_count" valueNumeric="3"/>
+            <column name="available" valueBoolean="true"/>
+            <column name="can_be_shipped" valueBoolean="false"/>
+            <column name="can_be_picked_up" valueBoolean="true"/>
+            <column name="shipping_price" value="0.00"/>
+            <column name="min_rental_days" valueNumeric="3"/>
+            <column name="is_new" valueBoolean="false"/>
+            <column name="created_at" valueComputed="CURRENT_TIMESTAMP"/>
+        </insert>
+
+            <insert tableName="items">
+                <column name="sku" value="VR-QUEST3-007"/>
+                <column name="title" value="Gogle VR Meta Quest 3 512GB"/>
+                <column name="description" value="Najnowsze gogle VR/MR. W zestawie zainstalowane gry: Beat Saber i Superhot."/>
+                <column name="price_per_day" value="95.00"/>
+                <column name="discounted_percent" value="0"/>
+                <column name="deposit" valueBoolean="true"/>
+                <column name="deposit_price" value="800.00"/>
+                <column name="image_url" value="https://images.unsplash.com/photo-1622979135225-d2ba269cf1ac"/>
+                <column name="category_id" valueNumeric="1"/>
+                <column name="average_rating" valueNumeric="4.9"/>
+                <column name="review_count" valueNumeric="18"/>
+                <column name="available" valueBoolean="true"/>
+                <column name="can_be_shipped" valueBoolean="true"/>
+                <column name="can_be_picked_up" valueBoolean="true"/>
+                <column name="shipping_price" value="21.00"/>
+                <column name="min_rental_days" valueNumeric="2"/>
+                <column name="is_new" valueBoolean="true"/>
+                <column name="created_at" valueComputed="CURRENT_TIMESTAMP"/>
+            </insert>
+
+            <insert tableName="items">
+                <column name="sku" value="KAR-PZZI-008"/>
+                <column name="title" value="Odkurzacz piorący Karcher Puzzi 10/1"/>
+                <column name="description" value="Profesjonalny sprzęt do czyszczenia tapicerek i dywanów. Chemia w zestawie."/>
+                <column name="price_per_day" value="70.00"/>
+                <column name="discounted_percent" value="10"/>
+                <column name="deposit" valueBoolean="true"/>
+                <column name="deposit_price" value="350.00"/>
+                <column name="image_url" value="https://images.unsplash.com/photo-1558317374-067fb5f30001"/>
+                <column name="category_id" valueNumeric="2"/>
+                <column name="average_rating" valueNumeric="4.8"/>
+                <column name="review_count" valueNumeric="42"/>
+                <column name="available" valueBoolean="true"/>
+                <column name="can_be_shipped" valueBoolean="false"/>
+                <column name="can_be_picked_up" valueBoolean="true"/>
+                <column name="shipping_price" value="0.00"/>
+                <column name="min_rental_days" valueNumeric="1"/>
+                <column name="is_new" valueBoolean="false"/>
+                <column name="created_at" valueComputed="CURRENT_TIMESTAMP"/>
+            </insert>
+
+            <insert tableName="items">
+                <column name="sku" value="TRA-PLAT-009"/>
+                <column name="title" value="Przyczepa platforma 4.5m"/>
+                <column name="description" value="Dwuosiowa przyczepa o ładowności do 2000kg. Idealna do transportu gabarytów."/>
+                <column name="price_per_day" value="130.00"/>
+                <column name="discounted_percent" value="0"/>
+                <column name="deposit" valueBoolean="true"/>
+                <column name="deposit_price" value="500.00"/>
+                <column name="image_url" value="https://images.unsplash.com/photo-1586191582151-f73770739972"/>
+                <column name="category_id" valueNumeric="3"/>
+                <column name="average_rating" valueNumeric="4.4"/>
+                <column name="review_count" valueNumeric="6"/>
+                <column name="available" valueBoolean="true"/>
+                <column name="can_be_shipped" valueBoolean="false"/>
+                <column name="can_be_picked_up" valueBoolean="true"/>
+                <column name="shipping_price" value="0.00"/>
+                <column name="min_rental_days" valueNumeric="1"/>
+                <column name="is_new" valueBoolean="false"/>
+                <column name="created_at" valueComputed="CURRENT_TIMESTAMP"/>
+            </insert>
+
+            <insert tableName="items">
+                <column name="sku" value="SUP-AZTRON-010"/>
+                <column name="title" value="Deska SUP Aztron Mercury 10.10"/>
+                <column name="description" value="Pompowana deska do pływania na stojąco. W zestawie wiosło, pompka i plecak."/>
+                <column name="price_per_day" value="55.00"/>
+                <column name="discounted_percent" value="5"/>
+                <column name="deposit" valueBoolean="true"/>
+                <column name="deposit_price" value="400.00"/>
+                <column name="image_url" value="https://images.unsplash.com/photo-1517055729445-fa7d27394b48"/>
+                <column name="category_id" valueNumeric="4"/>
+                <column name="average_rating" valueNumeric="4.7"/>
+                <column name="review_count" valueNumeric="11"/>
+                <column name="available" valueBoolean="true"/>
+                <column name="can_be_shipped" valueBoolean="true"/>
+                <column name="can_be_picked_up" valueBoolean="true"/>
+                <column name="shipping_price" value="35.00"/>
+                <column name="min_rental_days" valueNumeric="2"/>
+                <column name="is_new" valueBoolean="true"/>
+                <column name="created_at" valueComputed="CURRENT_TIMESTAMP"/>
+            </insert>
+
+            <insert tableName="items">
+                <column name="sku" value="LEGO-MILL-011"/>
+                <column name="title" value="Zestaw LEGO Star Wars Sokół Millennium"/>
+                <column name="description" value="Gigantyczny zestaw (7500+ elementów) do złożenia na miejscu. Wynajem na tygodnie."/>
+                <column name="price_per_day" value="40.00"/>
+                <column name="discounted_percent" value="0"/>
+                <column name="deposit" valueBoolean="true"/>
+                <column name="deposit_price" value="1500.00"/>
+                <column name="image_url" value="https://images.unsplash.com/photo-1585366119957-e9730b6d0f60"/>
+                <column name="category_id" valueNumeric="5"/>
+                <column name="average_rating" valueNumeric="5.0"/>
+                <column name="review_count" valueNumeric="4"/>
+                <column name="available" valueBoolean="true"/>
+                <column name="can_be_shipped" valueBoolean="false"/>
+                <column name="can_be_picked_up" valueBoolean="true"/>
+                <column name="shipping_price" value="0.00"/>
+                <column name="min_rental_days" valueNumeric="7"/>
+                <column name="is_new" valueBoolean="false"/>
+                <column name="created_at" valueComputed="CURRENT_TIMESTAMP"/>
+            </insert>
+
+        <insert tableName="items">
+            <column name="sku" value="PROJ-EPS-4K-012"/>
+            <column name="title" value="Projektor 4K Epson EH-TW7000"/>
+            <column name="description" value="Profesjonalny projektor do kina domowego. Idealny na wieczory filmowe lub mecze."/>
+            <column name="price_per_day" value="110.00"/>
+            <column name="discounted_percent" value="0"/>
+            <column name="deposit" valueBoolean="true"/>
+            <column name="deposit_price" value="800.00"/>
+            <column name="image_url" value="https://images.unsplash.com/photo-1535016120720-40c646be44da"/>
+            <column name="category_id" valueNumeric="1"/>
+            <column name="average_rating" valueNumeric="4.8"/>
+            <column name="review_count" valueNumeric="9"/>
+            <column name="available" valueBoolean="true"/>
+            <column name="can_be_shipped" valueBoolean="true"/>
+            <column name="can_be_picked_up" valueBoolean="true"/>
+            <column name="shipping_price" value="25.00"/>
+            <column name="min_rental_days" valueNumeric="1"/>
+            <column name="is_new" valueBoolean="false"/>
+            <column name="created_at" valueComputed="CURRENT_TIMESTAMP"/>
+        </insert>
+
+        <insert tableName="items">
+            <column name="sku" value="OSUSZ-BUD-013"/>
+            <column name="title" value="Osuszacz powietrza Master DH 732"/>
+            <column name="description" value="Wydajny osuszacz budowlany, idealny po tynkowaniu lub zalaniu mieszkania."/>
+            <column name="price_per_day" value="40.00"/>
+            <column name="discounted_percent" value="20"/>
+            <column name="deposit" valueBoolean="true"/>
+            <column name="deposit_price" value="400.00"/>
+            <column name="image_url" value="https://images.unsplash.com/photo-1581092160562-40aa08e78837"/>
+            <column name="category_id" valueNumeric="2"/>
+            <column name="average_rating" valueNumeric="4.9"/>
+            <column name="review_count" valueNumeric="14"/>
+            <column name="available" valueBoolean="true"/>
+            <column name="can_be_shipped" valueBoolean="false"/>
+            <column name="can_be_picked_up" valueBoolean="true"/>
+            <column name="shipping_price" value="0.00"/>
+            <column name="min_rental_days" valueNumeric="3"/>
+            <column name="is_new" valueBoolean="true"/>
+            <column name="created_at" valueComputed="CURRENT_TIMESTAMP"/>
+        </insert>
+
+        <insert tableName="items">
+            <column name="sku" value="BAG-ROW-THU-014"/>
+            <column name="title" value="Bagażnik rowerowy Thule na hak (4 rowery)"/>
+            <column name="description" value="Bezpieczny transport 4 rowerów. Odchylany, co umożliwia dostęp do bagażnika."/>
+            <column name="price_per_day" value="35.00"/>
+            <column name="discounted_percent" value="0"/>
+            <column name="deposit" valueBoolean="true"/>
+            <column name="deposit_price" value="600.00"/>
+            <column name="image_url" value="https://images.unsplash.com/photo-1591741535018-d042766c62eb"/>
+            <column name="category_id" valueNumeric="3"/>
+            <column name="average_rating" valueNumeric="4.7"/>
+            <column name="review_count" valueNumeric="21"/>
+            <column name="available" valueBoolean="true"/>
+            <column name="can_be_shipped" valueBoolean="false"/>
+            <column name="can_be_picked_up" valueBoolean="true"/>
+            <column name="shipping_price" value="0.00"/>
+            <column name="min_rental_days" valueNumeric="3"/>
+            <column name="is_new" valueBoolean="false"/>
+            <column name="created_at" valueComputed="CURRENT_TIMESTAMP"/>
+        </insert>
+
+        <insert tableName="items">
+            <column name="sku" value="GARMIN-FENIX7-015"/>
+            <column name="title" value="Zegarek sportowy Garmin Fenix 7X Sapphire"/>
+            <column name="description" value="Zegarek outdoorowy z mapami GPS. Przetestuj przed wyprawą w góry."/>
+            <column name="price_per_day" value="50.00"/>
+            <column name="discounted_percent" value="0"/>
+            <column name="deposit" valueBoolean="true"/>
+            <column name="deposit_price" value="1200.00"/>
+            <column name="image_url" value="https://images.unsplash.com/photo-1523275335684-37898b6baf30"/>
+            <column name="category_id" valueNumeric="4"/>
+            <column name="average_rating" valueNumeric="5.0"/>
+            <column name="review_count" valueNumeric="5"/>
+            <column name="available" valueBoolean="true"/>
+            <column name="can_be_shipped" valueBoolean="true"/>
+            <column name="can_be_picked_up" valueBoolean="true"/>
+            <column name="shipping_price" value="18.00"/>
+            <column name="min_rental_days" valueNumeric="2"/>
+            <column name="is_new" valueBoolean="true"/>
+            <column name="created_at" valueComputed="CURRENT_TIMESTAMP"/>
+        </insert>
+
+        <insert tableName="items">
+            <column name="sku" value="ZAMEK-DMUCH-016"/>
+            <column name="title" value="Dmuchany zamek ze zjeżdżalnią (Urodziny)"/>
+            <column name="description" value="Atrakcja na przyjęcia dla dzieci. Wymiary 4x3m. W zestawie dmuchawa."/>
+            <column name="price_per_day" value="250.00"/>
+            <column name="discounted_percent" value="0"/>
+            <column name="deposit" valueBoolean="true"/>
+            <column name="deposit_price" value="500.00"/>
+            <column name="image_url" value="https://images.unsplash.com/photo-1572953108210-0dd2b1da8271"/>
+            <column name="category_id" valueNumeric="5"/>
+            <column name="average_rating" valueNumeric="4.6"/>
+            <column name="review_count" valueNumeric="7"/>
+            <column name="available" valueBoolean="true"/>
+            <column name="can_be_shipped" valueBoolean="false"/>
+            <column name="can_be_picked_up" valueBoolean="true"/>
+            <column name="shipping_price" value="0.00"/>
+            <column name="min_rental_days" valueNumeric="1"/>
+            <column name="is_new" valueBoolean="false"/>
+            <column name="created_at" valueComputed="CURRENT_TIMESTAMP"/>
+        </insert>
+
+
     </changeSet>
 </databaseChangeLog>

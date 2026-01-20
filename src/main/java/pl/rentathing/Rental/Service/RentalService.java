@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import pl.rentathing.Rental.Dto.RentalCreateDto;
+import pl.rentathing.Rental.Dto.RentalSummaryDto;
 import pl.rentathing.Rental.Entity.DeliveryMethod;
 import pl.rentathing.Rental.Entity.PaymentMethod;
 import pl.rentathing.Rental.Entity.Rental;
@@ -34,7 +35,7 @@ public class RentalService {
     private final RentalAvailibilityService rentalAvailibilityService;
 
     @Transactional
-    public void createRental(RentalCreateDto dto) {
+    public RentalSummaryDto createRental(RentalCreateDto dto) {
         Item item = itemRepository.findById(dto.getItemId())
                 .orElseThrow(() -> new ItemNotFoundException(dto.getItemId().toString()));
 
@@ -50,7 +51,7 @@ public class RentalService {
         BigDecimal deposit = priceCalculator.calculateDeposit(item);
 
         BigDecimal rentalTotal = pricePerDay.multiply(BigDecimal.valueOf(days));
-        BigDecimal totalCost = rentalTotal.add(shippingCost).add(deposit);
+        BigDecimal totalCost = rentalTotal.add(shippingCost);
 
         Rental rental = Rental.builder()
                 .item(item)
@@ -67,7 +68,14 @@ public class RentalService {
                 .createdAt(LocalDateTime.now())
                 .build();
 
-        rentalRepository.save(rental);
+        Rental savedRental = rentalRepository.save(rental);
+
+        return new RentalSummaryDto(
+                savedRental.getId(),
+                item.getTitle(),
+                savedRental.getTotalCost(),
+                savedRental.getPaymentMethod().toString(),
+                savedRental.getStatus().toString());
     }
 
     public RentalCreateDto prepareRentalDto(Long itemId, LocalDate startDate, LocalDate endDate) {

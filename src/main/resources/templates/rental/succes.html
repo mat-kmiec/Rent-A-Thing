@@ -4,47 +4,74 @@
 
 <body class="d-flex flex-column min-vh-100 bg-light">
 
-    <<nav th:replace="~{fragments/nav :: nav}"></nav>
+<nav th:replace="~{fragments/nav :: nav}"></nav>
 
-    <section class="d-flex align-items-center justify-content-center flex-grow-1 mt-5 pb-5">
-        <div class="container mt-4">
-            <div class="row justify-content-center">
-                <div class="col-md-8 col-lg-5">
-                    
-                    <div class="card border-0 shadow rounded-4 text-center p-4 p-md-5 fade-in-up">
-                        <div class="mb-4">
-                            <i class="fa-solid fa-circle-check success-icon mb-3"></i>
-                            <h2 class="fw-bold mb-2">Dziękujemy!</h2>
-                            <p class="text-muted mb-0 fs-5">Twoja rezerwacja została przyjęta.</p>
+<section class="d-flex align-items-center justify-content-center flex-grow-1 py-5">
+    <div class="container" th:if="${rentalSummary}">
+        <div class="row justify-content-center">
+            <div class="col-md-8 col-lg-5">
+
+                <div class="card border-0 shadow rounded-4 text-center p-4 p-md-5">
+                    <div class="mb-4">
+                        <i class="fa-solid fa-circle-check text-success display-3 mb-3"></i>
+                        <h2 class="fw-bold mb-2">Dziękujemy!</h2>
+                        <p class="text-muted mb-0 fs-5">Twoja rezerwacja została przyjęta.</p>
+                    </div>
+
+                    <div class="bg-light p-3 rounded-3 mb-4 text-start">
+                        <div class="d-flex justify-content-between mb-2 border-bottom pb-2">
+                            <span class="text-muted small fw-bold text-uppercase">Nr zamówienia</span>
+                            <span class="fw-bold text-dark" th:text="'#' + ${rentalSummary.rentalId}">#000</span>
                         </div>
-
-                        <p class="text-muted mb-4">
-                            Potwierdzenie wysłaliśmy na Twój email. Właściciel przedmiotu skontaktuje się z Tobą wkrótce w celu ustalenia odbioru.
-                        </p>
-
-                        <div class="bg-light p-3 rounded-3 mb-4 text-start">
-                            <div class="d-flex justify-content-between mb-2">
-                                <span class="text-muted small fw-bold text-uppercase">Nr zamówienia</span>
-                                <span class="fw-bold text-dark">#REQ-892</span>
-                            </div>
-                            <div class="d-flex justify-content-between">
-                                <span class="text-muted small fw-bold text-uppercase">Przedmiot</span>
-                                <span class="fw-bold text-primary">Sony Alpha a7 III</span>
-                            </div>
+                        <div class="d-flex justify-content-between mb-2">
+                            <span class="text-muted small fw-bold text-uppercase">Przedmiot</span>
+                            <span class="fw-bold text-primary text-end" th:text="${rentalSummary.itemTitle}">Nazwa przedmiotu</span>
                         </div>
+                        <div class="d-flex justify-content-between">
+                            <span class="text-muted small fw-bold text-uppercase">Do zapłaty</span>
+                            <span class="fw-bold text-dark" th:text="${rentalSummary.totalCost} + ' zł'">0.00 zł</span>
+                        </div>
+                    </div>
 
-                        <div class="d-grid gap-2">
-                            <a href="/" class="btn btn-primary btn-lg rounded-pill shadow-sm fw-bold">
-                                Wróć do strony głównej
+                    <div th:if="${rentalSummary.paymentMethod != 'CASH'}" class="mb-4">
+                        <div class="alert alert-primary border-0 rounded-4 p-3 text-start">
+                            <div class="d-flex align-items-center mb-2">
+                                <i class="fa-solid fa-credit-card me-2"></i>
+                                <h6 class="fw-bold mb-0">Płatność elektroniczna</h6>
+                            </div>
+                            <p class="small mb-3">Wybrałeś płatność online. Kliknij poniżej, aby sfinalizować transakcję bezpiecznie.</p>
+                            <a th:href="@{/platnosc/init(id=${rentalSummary.rentalId})}"
+                               class="btn btn-primary w-100 rounded-pill fw-bold shadow-sm">
+                                Zapłać teraz <i class="fa-solid fa-arrow-right ms-2"></i>
                             </a>
                         </div>
                     </div>
 
+                    <div th:if="${rentalSummary.paymentMethod == 'CASH'}" class="mb-4">
+                        <div class="alert alert-info border-0 rounded-4 p-3 text-start">
+                            <div class="d-flex align-items-center mb-2">
+                                <i class="fa-solid fa-hand-holding-dollar me-2"></i>
+                                <h6 class="fw-bold mb-0">Płatność przy odbiorze</h6>
+                            </div>
+                            <p class="small mb-0">Rezerwacja ma status <strong>OCZEKUJĄCA</strong>. Przygotuj kwotę <span class="fw-bold" th:text="${rentalSummary.totalCost} + ' zł'"></span> do zapłaty przy odbiorze sprzętu.</p>
+                        </div>
+                    </div>
+
+                    <div class="d-grid gap-2">
+                        <a th:href="@{/katalog}" class="btn btn-outline-secondary rounded-pill fw-bold">
+                            Kontynuuj zakupy
+                        </a>
+                        <a th:href="@{/moje-konto/historia}" class="btn btn-outline-secondary rounded-pill fw-bold">
+                            Moje wypożyczenia
+                        </a>
+                    </div>
                 </div>
+
             </div>
         </div>
-    </section>
+    </div>
+</section>
 
-    <footer th:replace="~{fragments/footer :: footer}"></footer>
+<footer th:replace="~{fragments/footer :: footer}"></footer>
 </body>
 </html>

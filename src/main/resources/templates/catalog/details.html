@@ -3,6 +3,7 @@
 <head th:replace="~{fragments/head :: head('Szczegóły produktu')}"></head>
 <body class="d-flex flex-column min-vh-100 bg-light">
 <nav th:replace="~{fragments/nav :: nav}"></nav>
+
 <section class="py-5 ">
     <div class="container py-4">
         <div class="row g-5">
@@ -10,49 +11,48 @@
                 <div class="mb-5">
                     <div class="position-relative">
                         <div class="position-absolute top-0 start-0 m-3 d-flex gap-2" style="z-index: 10;">
-                                    <span class="badge bg-success fs-6 px-3 py-2 rounded-pill shadow-sm" th:if="${item.available}">
-                                    Dostępny od ręki
-                                    </span>
+                            <span class="badge bg-success fs-6 px-3 py-2 rounded-pill shadow-sm" th:if="${item.available}">
+                                Dostępny od ręki
+                            </span>
                             <span class="badge bg-primary fs-6 px-3 py-2 rounded-pill shadow-sm" th:if="${item.isNew}">
-                                    Nowość
-                                    </span>
+                                Nowość
+                            </span>
                             <span class="badge bg-danger fs-6 px-3 py-2 rounded-pill shadow-sm"
                                   th:if="${item.discountedPercent > 0}" th:text="'-'+${item.discountedPercent}+'%'">
-                                    </span>
+                            </span>
                         </div>
                         <img th:src="${item.imageUrl}"
                              class="img-fluid rounded-4 shadow-sm product-image-single"
                              alt="Main Image">
                     </div>
                 </div>
+
                 <div class="mb-2">
-                    <div class="mb-2">
-                        <h1 class="fw-bold mb-1 display-6" th:text="${item.title}"></h1>
-                        <div class="text-warning small mb-3">
-                            <i class="fa-solid fa-star"></i>
-                            <i class="fa-solid fa-star"></i>
-                            <i class="fa-solid fa-star"></i>
-                            <i class="fa-solid fa-star"></i>
-                            <i class="fa-solid fa-star-half-stroke"></i>
-                            <span class="text-muted ms-2 fw-medium"
-                                  th:text="'(' + ${item.averageRating} + ' / ' + ${item.reviewCount} + ' opinie)'">(4.9 / 82 opinie)</span>
-                        </div>
+                    <h1 class="fw-bold mb-1 display-6" th:text="${item.title}"></h1>
+                    <div class="text-warning small mb-3">
+                        <th:block th:each="i : ${#numbers.sequence(1, 5)}">
+                            <i th:if="${item.averageRating >= i}" class="fa-solid fa-star"></i>
+
+                            <i th:if="${item.averageRating >= i - 0.5 && item.averageRating < i}" class="fa-solid fa-star-half-stroke"></i>
+
+                            <i th:if="${item.averageRating < i - 0.5}" class="fa-regular fa-star"></i>
+                        </th:block>
+
+                        <span class="text-muted ms-2 fw-medium"
+                              th:text="'(' + ${item.averageRating} + ' / ' + ${item.reviewCount} + ' opinie)'"></span>
                     </div>
                 </div>
+
                 <div class="mb-5">
                     <h4 class="fw-bold mb-3">Opis produktu</h4>
-                    <p class="text-muted" th:utext="${item.description}">Sony Alpha a7 III to jeden z
-                        najpopularniejszych bezlusterkowców na rynku. Oferuje doskonałą jakość obrazu dzięki
-                        pełnoklatkowej matrycy CMOS o rozdzielczości 24.2 MP. Aparat świetnie radzi sobie w słabym
-                        oświetleniu i oferuje szybki system autofocusa.
-                    </p>
+                    <p class="text-muted" th:utext="${item.description}"></p>
                 </div>
+
                 <hr class="my-5 border-secondary opacity-10">
+
                 <div id="reviews">
                     <div class="d-flex align-items-center justify-content-between mb-4">
-                        <h4 class="fw-bold mb-0" th:text="|Opinie użytkowników (${item.reviewCount})|">
-                            Opinie użytkowników (0)
-                        </h4>
+                        <h4 class="fw-bold mb-0" th:text="|Opinie użytkowników (${item.reviewCount})|"></h4>
                         <button class="btn btn-outline-primary btn-sm rounded-pill px-3"
                                 data-bs-toggle="modal"
                                 data-bs-target="#addReviewModal">
@@ -70,6 +70,7 @@
                     </div>
                 </div>
             </div>
+
             <div class="col-lg-4">
                 <div class="card border-0 shadow rounded-4 booking-card">
                     <div class="card-body p-4">
@@ -77,53 +78,47 @@
                             <div>
                                 <small class="text-muted text-uppercase fw-bold ls-1">Cena</small>
                                 <h2 class="text-primary fw-bold mb-0">
-                                    <span th:text="${item.pricePerDay} + ' zł'">120 zł</span>
+                                    <span id="priceDisplay"
+                                          th:data-price="${item.pricePerDay}"
+                                          th:text="${item.pricePerDay} + ' zł'"></span>
                                     <span class="fs-6 text-muted fw-normal">/doba</span>
                                 </h2>
                             </div>
                             <span class="badge bg-success bg-opacity-10 text-success rounded-pill px-3 py-2"
                                   th:if="${item.available}">Dostępny</span>
                         </div>
-                        <form>
+
+                        <form id="booking-preview-form">
                             <input type="hidden" id="itemId" th:value="${item.id}">
+
                             <div class="mb-3">
-                                <label class="form-label small text-muted fw-bold">TERMIN WYPOŻYCZENIA</label>
+                                <label class="form-label small text-muted fw-bold text-uppercase ls-1">Termin wypożyczenia</label>
                                 <div class="row g-2">
                                     <div class="col-6">
-                                        <label for="dateFrom" class="form-label small text-muted mb-1">Od</label>
-                                        <input type="date" id="dateFrom"
-                                               class="form-control bg-light border-0 shadow-none">
+                                        <label for="startDate" class="form-label small text-muted mb-1">Od</label>
+                                        <input type="date" id="startDate" class="form-control bg-light border-0 shadow-none">
                                     </div>
                                     <div class="col-6">
-                                        <label for="dateTo" class="form-label small text-muted mb-1">Do</label>
-                                        <input type="date" id="dateTo"
-                                               class="form-control bg-light border-0 shadow-none">
+                                        <label for="endDate" class="form-label small text-muted mb-1">Do</label>
+                                        <input type="date" id="endDate" class="form-control bg-light border-0 shadow-none">
                                     </div>
                                 </div>
+
                                 <div id="availability-status" class="alert d-flex align-items-center mt-3 d-none" role="alert">
-                                <i id="status-icon" class="fa-solid me-2"></i>
-                                <div id="status-text" class="small fw-medium"></div>
-                            </div>
-                            </div>
-                            <div class="mb-4">
-                                <label class="form-label small text-muted fw-bold">METODA DOSTAWY</label>
-                                <select class="form-select bg-light border-0 shadow-none">
-                                    <option value="pickup">Odbiór Osobisty (0 zł)</option>
-                                    <option value="courier">Kurier DPD (+19.99 zł)</option>
-                                    <option value="inpost">Paczkomat InPost (+14.99 zł)</option>
-                                </select>
-                            </div>
-                            <div class="bg-light p-3 rounded-3 mb-4">
-                                <div class="d-flex justify-content-between mb-1">
-                                    <small class="text-muted">120 zł x 2 dni</small>
-                                    <small class="fw-bold">240 zł</small>
-                                </div>
-                                <hr class="my-2 border-secondary opacity-25">
-                                <div class="d-flex justify-content-between align-items-center">
-                                    <span class="fw-bold text-dark">Razem</span>
-                                    <span class="fw-bold text-primary fs-5">240 zł</span>
+                                    <i id="status-icon" class="fa-solid me-2"></i>
+                                    <div id="status-text" class="small fw-medium"></div>
                                 </div>
                             </div>
+
+
+                            <div id="rental-summary-container" class="bg-light p-3 rounded-3 mb-4">
+                                <div class="text-center text-muted small py-2">
+                                    Wybierz daty, aby zobaczyć wycenę
+                                </div>
+                            </div>
+                            <p class="text-center text-muted small mb-3" th:if="${item.discountedPercent > 0}">Zniżki naliczają się podczas finalizacji rezerwacji.
+                            </p>
+
                             <a id="reserveBtn"
                                href="#"
                                class="btn btn-primary w-100 btn-lg rounded-pill shadow-sm fw-bold mb-3 disabled">
@@ -139,110 +134,14 @@
         </div>
     </div>
 </section>
-<section class="py-5 bg-white border-top mt-auto">
-    <div class="container">
-        <h3 class="fw-bold mb-4">Może Cię zainteresować</h3>
-        <div class="row g-4">
-            <div class="col-md-6 col-lg-3">
-                <div class="card h-100 border-0 shadow-sm product-card">
-                    <div class="position-relative">
-                        <img src="https://images.unsplash.com/photo-1593113598340-089ade4af152?auto=format&fit=crop&w=500&q=80"
-                             class="card-img-top rounded-top-4" alt="Projektor"
-                             style="height: 180px; object-fit: cover;">
-                    </div>
-                    <div class="card-body">
-                        <small class="text-muted text-uppercase fw-bold fs-xs ls-1">Elektronika</small>
-                        <h6 class="card-title fw-bold mt-1 mb-2">Projektor 4K</h6>
-                        <span class="text-primary fw-bold">90 zł</span> <small class="text-muted">/dzień</small>
-                    </div>
-                    <a href="#" class="stretched-link"></a>
-                </div>
-            </div>
-            <div class="col-md-6 col-lg-3">
-                <div class="card h-100 border-0 shadow-sm product-card">
-                    <div class="position-relative">
-                        <img src="https://images.unsplash.com/photo-1473968512647-3e447244af8f?auto=format&fit=crop&w=500&q=80"
-                             class="card-img-top rounded-top-4" alt="Dron" style="height: 180px; object-fit: cover;">
-                    </div>
-                    <div class="card-body">
-                        <small class="text-muted text-uppercase fw-bold fs-xs ls-1">Elektronika</small>
-                        <h6 class="card-title fw-bold mt-1 mb-2">Dron DJI Mavic 3</h6>
-                        <span class="text-primary fw-bold">250 zł</span> <small class="text-muted">/dzień</small>
-                    </div>
-                    <a href="#" class="stretched-link"></a>
-                </div>
-            </div>
-            <div class="col-md-6 col-lg-3">
-                <div class="card h-100 border-0 shadow-sm product-card">
-                    <div class="position-relative">
-                        <img src="https://images.unsplash.com/photo-1572569028738-411a68c4637c?auto=format&fit=crop&w=500&q=80"
-                             class="card-img-top rounded-top-4" alt="Wiertarka"
-                             style="height: 180px; object-fit: cover;">
-                    </div>
-                    <div class="card-body">
-                        <small class="text-muted text-uppercase fw-bold fs-xs ls-1">Narzędzia</small>
-                        <h6 class="card-title fw-bold mt-1 mb-2">Wiertarka Udarowa</h6>
-                        <span class="text-primary fw-bold">45 zł</span> <small class="text-muted">/dzień</small>
-                    </div>
-                    <a href="#" class="stretched-link"></a>
-                </div>
-            </div>
-            <div class="col-md-6 col-lg-3">
-                <div class="card h-100 border-0 shadow-sm product-card">
-                    <div class="position-relative">
-                        <img src="https://images.unsplash.com/photo-1552519507-da3b142c6e3d?auto=format&fit=crop&w=500&q=80"
-                             class="card-img-top rounded-top-4" alt="Auto" style="height: 180px; object-fit: cover;">
-                    </div>
-                    <div class="card-body">
-                        <small class="text-muted text-uppercase fw-bold fs-xs ls-1">Pojazdy</small>
-                        <h6 class="card-title fw-bold mt-1 mb-2">GoPro Hero 11</h6>
-                        <span class="text-primary fw-bold">60 zł</span> <small class="text-muted">/dzień</small>
-                    </div>
-                    <a href="#" class="stretched-link"></a>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
-<div class="modal fade" id="addReviewModal" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content border-0 shadow-lg rounded-4">
-            <div class="modal-header border-0 pb-0">
-                <h5 class="modal-title fw-bold">Dodaj swoją opinię</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <form id="reviewForm">
-                    <div class="mb-3">
-                        <label class="form-label small fw-bold text-muted">TWOJE IMIĘ</label>
-                        <input type="text" id="reviewAuthor" class="form-control bg-light border-0 shadow-none"
-                               required>
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label small fw-bold text-muted">OCENA</label>
-                        <select id="reviewRating" class="form-select bg-light border-0 shadow-none" required>
-                            <option value="5">5 - Rewelacja</option>
-                            <option value="4">4 - Bardzo dobrze</option>
-                            <option value="3">3 - Może być</option>
-                            <option value="2">2 - Słabo</option>
-                            <option value="1">1 - Odradzam</option>
-                        </select>
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label small fw-bold text-muted">TREŚĆ OPINII</label>
-                        <textarea id="reviewContent" class="form-control bg-light border-0 shadow-none" rows="4"
-                                  required></textarea>
-                    </div>
-                    <button type="submit" class="btn btn-primary w-100 rounded-pill py-2 fw-bold">Wyślij opinię</button>
-                </form>
-            </div>
-        </div>
-    </div>
-</div>
-<footer th:replace="~{fragments/footer :: footer}"></footer>
+
+<div th:replace="~{fragments/footer :: footer}"></div>
 <div th:replace="~{fragments/toast :: toast}"></div>
+
 <script th:src="@{/js/review/addReview.js}"></script>
 <script th:src="@{/js/review/loadReview.js}"></script>
 <script th:src="@{/js/rental/check-availability.js}"></script>
+<script th:src="@{/js/rental/rental-preview-calculator.js}"></script>
+
 </body>
 </html>
