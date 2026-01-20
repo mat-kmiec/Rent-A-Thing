@@ -47,8 +47,8 @@ document.addEventListener('DOMContentLoaded', function () {
         statusIcon.className = 'fa-solid ' + iconClass + ' me-2';
 
         if (reserveBtn) {
-            reserveBtn.classList.toggle('disabled', isDisabled); // Dla <a>
-            reserveBtn.disabled = isDisabled; // Dla <button>
+            reserveBtn.classList.toggle('disabled', isDisabled);
+            reserveBtn.disabled = isDisabled;
         }
     }
 
