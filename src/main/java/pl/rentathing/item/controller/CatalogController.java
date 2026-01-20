@@ -23,7 +23,7 @@ public class CatalogController {
     @GetMapping("/katalog")
     public String showCatalog(
             ItemSearchCriteria criteria,
-            @PageableDefault(size = 12, sort = "createdAt", direction = org.springframework.data.domain.Sort.Direction.DESC) Pageable pageable,
+            @PageableDefault(size = 9, sort = "createdAt", direction = org.springframework.data.domain.Sort.Direction.DESC) Pageable pageable,
             Model model
     ) {
         var spec = ItemSpecifications.build(criteria);

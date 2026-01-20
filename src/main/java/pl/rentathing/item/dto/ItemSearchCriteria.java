@@ -1,5 +1,7 @@
 package pl.rentathing.item.dto;
 
+import org.springframework.data.domain.Sort;
+
 import java.math.BigDecimal;
 
 public record ItemSearchCriteria(
@@ -7,5 +9,6 @@ public record ItemSearchCriteria(
         Long categoryId,
         BigDecimal priceFrom,
         BigDecimal priceTo,
-        Boolean availableOnly
-) {}
+        Boolean availableOnly,
+        String sort
+){}

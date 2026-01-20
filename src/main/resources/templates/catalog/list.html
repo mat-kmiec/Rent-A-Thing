@@ -32,7 +32,7 @@
             <div class="row g-4">
                 
                 <div class="col-lg-3">
-                    <form th:action="@{/katalog}" method="get" th:object="${criteria}">
+                    <form th:action="@{/katalog}" method="get" th:object="${criteria}" id="filterForm">
                         <input type="hidden" name="query" th:field="*{query}">
 
                         <div class="card border-0 shadow-sm rounded-4 filter-card">
@@ -99,7 +99,19 @@
         <span class="text-muted mb-2 mb-md-0 ms-2">
             Znaleziono <strong th:text="${items.totalElements}">124</strong> przedmioty
         </span>
+                        <div class="d-flex align-items-center">
+                            <label class="text-muted small me-2 text-nowrap">Sortuj według:</label>
+                            <select name="sort" form="filterForm" onchange="this.form.submit()"
+                                    class="form-select border-0 bg-light rounded-pill shadow-none cursor-pointer"
+                                    style="width: auto;">
+                                <option value="createdAt,desc" th:selected="${criteria.sort == 'createdAt,desc' || criteria.sort == null}">Najnowsze</option>
+                                <option value="pricePerDay,asc" th:selected="${criteria.sort == 'pricePerDay,asc'}">Cena: rosnąco</option>
+                                <option value="pricePerDay,desc" th:selected="${criteria.sort == 'pricePerDay,desc'}">Cena: malejąco</option>
+                                <option value="averageRating,desc" th:selected="${criteria.sort == 'averageRating,desc'}">Popularność</option>
+                            </select>
+                        </div>
                     </div>
+
 
                     <div class="row g-4">
                         <div class="col-md-6 col-lg-4" th:each="item : ${items.content}">
@@ -144,21 +156,21 @@
                             <ul class="pagination">
                                 <li class="page-item" th:classappend="${items.first} ? 'disabled'">
                                     <a class="page-link rounded-start-pill border-0 shadow-sm mx-1"
-                                       th:href="@{/katalog(page=${items.number - 1}, query=${criteria.query}, categoryId=${criteria.categoryId}, priceFrom=${criteria.priceFrom}, priceTo=${criteria.priceTo})}">
+                                       th:href="@{/katalog(page=${items.number - 1}, query=${criteria.query}, categoryId=${criteria.categoryId}, priceFrom=${criteria.priceFrom}, priceTo=${criteria.priceTo}, sort=${criteria.sort})}">
                                         <i class="fa-solid fa-chevron-left"></i>
                                     </a>
                                 </li>
 
                                 <li class="page-item" th:each="i : ${#numbers.sequence(0, items.totalPages - 1)}">
                                     <a class="page-link border-0 shadow-sm mx-1"
-                                       th:href="@{/katalog(page=${i}, query=${criteria.query}, categoryId=${criteria.categoryId}, priceFrom=${criteria.priceFrom}, priceTo=${criteria.priceTo})}"
+                                       th:href="@{/katalog(page=${i}, query=${criteria.query}, categoryId=${criteria.categoryId}, priceFrom=${criteria.priceFrom}, priceTo=${criteria.priceTo}, sort=${criteria.sort})}"
                                        th:text="${i + 1}"
                                        th:classappend="${i == items.number} ? 'active bg-primary text-white' : 'text-dark'">1</a>
                                 </li>
 
                                 <li class="page-item" th:classappend="${items.last} ? 'disabled'">
                                     <a class="page-link rounded-end-pill border-0 shadow-sm mx-1 text-dark"
-                                       th:href="@{/katalog(page=${items.number + 1}, query=${criteria.query}, categoryId=${criteria.categoryId}, priceFrom=${criteria.priceFrom}, priceTo=${criteria.priceTo})}">
+                                       th:href="@{/katalog(page=${items.number + 1}, query=${criteria.query}, categoryId=${criteria.categoryId}, priceFrom=${criteria.priceFrom}, priceTo=${criteria.priceTo}, sort=${criteria.sort})}">
                                         <i class="fa-solid fa-chevron-right"></i>
                                     </a>
                                 </li>
