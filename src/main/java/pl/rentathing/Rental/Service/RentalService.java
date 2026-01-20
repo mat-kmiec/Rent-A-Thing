@@ -51,7 +51,7 @@ public class RentalService {
         BigDecimal deposit = priceCalculator.calculateDeposit(item);
 
         BigDecimal rentalTotal = pricePerDay.multiply(BigDecimal.valueOf(days));
-        BigDecimal totalCost = rentalTotal.add(shippingCost).add(deposit);
+        BigDecimal totalCost = rentalTotal.add(shippingCost);
 
         Rental rental = Rental.builder()
                 .item(item)
