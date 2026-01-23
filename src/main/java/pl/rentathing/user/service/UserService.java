@@ -84,8 +84,18 @@ public class UserService {
         user.setFirstName(settingsDTO.getFirstName());
         user.setLastName(settingsDTO.getLastName());
         user.setEmail(settingsDTO.getEmail());
+        user.setPhoneNumber(settingsDTO.getPhoneNumber());
+        user.setNotifEmail(Boolean.TRUE.equals(settingsDTO.getNotifEmail()));
+        user.setNotifSms(Boolean.TRUE.equals(settingsDTO.getNotifSms()));
+        user.setNewsletter(Boolean.TRUE.equals(settingsDTO.getNewsletter()));
 
         if (settingsDTO.getNewPassword() != null && !settingsDTO.getNewPassword().isEmpty()) {
+            if (settingsDTO.getCurrentPassword() == null || settingsDTO.getCurrentPassword().isEmpty()) {
+                throw new RuntimeException("Aktualne hasło jest wymagane do zmiany hasła");
+            }
+            if (!passwordEncoder.matches(settingsDTO.getCurrentPassword(), user.getPassword())) {
+                throw new RuntimeException("Aktualne hasło jest nieprawidłowe");
+            }
             user.setPassword(passwordEncoder.encode(settingsDTO.getNewPassword()));
         }
 
