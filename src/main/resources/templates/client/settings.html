@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html lang="pl" xmlns:th="http://www.thymeleaf.org">
+
 <head th:replace="~{fragments/head :: head('Ustawienia Konta')}"></head>
+
 <body class="d-flex flex-column min-vh-100 bg-light">
 
     <nav th:replace="~{fragments/nav :: nav}"></nav>
@@ -14,131 +16,237 @@
                 <div class="col-lg-9">
                     <h4 class="fw-bold mb-4">Ustawienia Konta</h4>
 
-                    <div th:if="${successMessage}" class="alert alert-success alert-dismissible fade show rounded-4 mb-4" role="alert">
+                    <div th:if="${successMessage}"
+                        class="alert alert-success alert-dismissible fade show rounded-4 mb-4" role="alert">
                         <i class="fa-solid fa-check-circle me-2"></i>
                         <span th:text="${successMessage}"></span>
                         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                     </div>
 
-                    <div class="card border-0 shadow-sm rounded-4 mb-4">
+                    <div id="profile-card" class="card border-0 shadow-sm rounded-4 mb-4">
                         <div class="card-header bg-white p-4 border-bottom">
                             <h6 class="fw-bold mb-0 text-primary">Dane osobowe</h6>
                         </div>
                         <div class="card-body p-4">
-                            <form th:action="@{/moje-konto/ustawienia/profile}" th:object="${settings}" method="post" novalidate>
+                            <form th:action="@{/moje-konto/ustawienia/profile#profile-card}" th:object="${settings}"
+                                method="post" novalidate>
                                 <div class="row g-3">
                                     <div class="col-md-6">
                                         <label class="form-label small text-muted fw-bold">Imię</label>
-                                        <input type="text" class="form-control" th:field="*{firstName}" 
-                                               th:classappend="${#fields.hasErrors('firstName') ? 'is-invalid' : ''}">
-                                        <div class="invalid-feedback d-block" th:if="${#fields.hasErrors('firstName')}" th:errors="*{firstName}"></div>
+                                        <input type="text" class="form-control" th:field="*{firstName}"
+                                            th:classappend="${#fields.hasErrors('firstName') ? 'is-invalid' : ''}">
+                                        <div class="invalid-feedback d-block" th:if="${#fields.hasErrors('firstName')}"
+                                            th:errors="*{firstName}"></div>
                                     </div>
                                     <div class="col-md-6">
                                         <label class="form-label small text-muted fw-bold">Nazwisko</label>
                                         <input type="text" class="form-control" th:field="*{lastName}"
-                                               th:classappend="${#fields.hasErrors('lastName') ? 'is-invalid' : ''}">
-                                        <div class="invalid-feedback d-block" th:if="${#fields.hasErrors('lastName')}" th:errors="*{lastName}"></div>
+                                            th:classappend="${#fields.hasErrors('lastName') ? 'is-invalid' : ''}">
+                                        <div class="invalid-feedback d-block" th:if="${#fields.hasErrors('lastName')}"
+                                            th:errors="*{lastName}"></div>
                                     </div>
-                                    <div class="col-md-12">
+                                    <div class="col-md-6">
                                         <label class="form-label small text-muted fw-bold">Adres Email</label>
                                         <input type="email" class="form-control" th:field="*{email}"
-                                               th:classappend="${#fields.hasErrors('email') ? 'is-invalid' : ''}">
-                                        <div class="invalid-feedback d-block" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></div>
+                                            th:classappend="${#fields.hasErrors('email') ? 'is-invalid' : ''}">
+                                        <div class="invalid-feedback d-block" th:if="${#fields.hasErrors('email')}"
+                                            th:errors="*{email}"></div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label small text-muted fw-bold">Numer telefonu</label>
+                                        <input type="tel" class="form-control" th:field="*{phoneNumber}"
+                                            th:classappend="${#fields.hasErrors('phoneNumber') ? 'is-invalid' : ''}"
+                                            placeholder="np. 123456789">
+                                        <div class="invalid-feedback d-block"
+                                            th:if="${#fields.hasErrors('phoneNumber')}" th:errors="*{phoneNumber}">
+                                        </div>
                                     </div>
                                     <div class="col-12 text-end mt-4">
-                                        <button type="submit" class="btn btn-primary rounded-pill px-4 shadow-sm">Zapisz dane</button>
+                                        <button type="submit" class="btn btn-primary rounded-pill px-4 shadow-sm">Zapisz
+                                            dane</button>
                                     </div>
                                 </div>
                             </form>
                         </div>
                     </div>
 
-                    <div class="card border-0 shadow-sm rounded-4 mb-4">
+                    <div id="address-card" class="card border-0 shadow-sm rounded-4 mb-4">
                         <div class="card-header bg-white p-4 border-bottom">
                             <h6 class="fw-bold mb-0 text-primary">Adres domyślny (do wysyłki)</h6>
                         </div>
                         <div class="card-body p-4">
-                            <form>
-                                <div class="row g-3">
-                                    <div class="col-12">
-                                        <label class="form-label small text-muted fw-bold">Ulica i numer</label>
-                                        <input type="text" class="form-control" placeholder="np. Kwiatowa 15/3">
-                                    </div>
-                                    <div class="col-md-4">
-                                        <label class="form-label small text-muted fw-bold">Kod pocztowy</label>
-                                        <input type="text" class="form-control" placeholder="00-000">
-                                    </div>
-                                    <div class="col-md-8">
-                                        <label class="form-label small text-muted fw-bold">Miasto</label>
-                                        <input type="text" class="form-control" placeholder="Warszawa">
-                                    </div>
-                                    <div class="col-12 text-end mt-4">
-                                        <button class="btn btn-outline-primary rounded-pill px-4">Zaktualizuj adres</button>
-                                    </div>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
-
-                    <div class="card border-0 shadow-sm rounded-4 mb-4">
-                        <div class="card-header bg-white p-4 border-bottom">
-                            <h6 class="fw-bold mb-0 text-primary">Zmiana hasła</h6>
-                        </div>
-                        <div class="card-body p-4">
-                            <form th:action="@{/client/settings}" th:object="${settings}" method="post" novalidate>
+                            <form th:action="@{/moje-konto/ustawienia/address#address-card}" th:object="${settings}"
+                                method="post" novalidate>
                                 <input type="hidden" th:field="*{firstName}">
                                 <input type="hidden" th:field="*{lastName}">
                                 <input type="hidden" th:field="*{email}">
                                 <div class="row g-3">
-                                    <div class="col-md-12">
-                                        <label class="form-label small text-muted fw-bold">Aktualne hasło</label>
-                                        <input type="password" class="form-control" th:field="*{currentPassword}"
-                                               th:classappend="${#fields.hasErrors('currentPassword') ? 'is-invalid' : ''}">
-                                        <div class="invalid-feedback d-block" th:if="${#fields.hasErrors('currentPassword')}" th:errors="*{currentPassword}"></div>
-                                    </div>
                                     <div class="col-md-6">
-                                        <label class="form-label small text-muted fw-bold">Nowe hasło</label>
-                                        <input type="password" class="form-control" th:field="*{newPassword}"
-                                               th:classappend="${#fields.hasErrors('newPassword') ? 'is-invalid' : ''}">
-                                        <div class="invalid-feedback d-block" th:if="${#fields.hasErrors('newPassword')}" th:errors="*{newPassword}"></div>
+                                        <label class="form-label small text-muted fw-bold">Ulica</label>
+                                        <input type="text" class="form-control" th:field="*{address.street}"
+                                            th:classappend="${#fields.hasErrors('address.street') ? 'is-invalid' : ''}"
+                                            placeholder="np. Kwiatowa" maxlength="100">
+                                        <div class="invalid-feedback d-block"
+                                            th:if="${#fields.hasErrors('address.street')}"
+                                            th:errors="*{address.street}"></div>
                                     </div>
-                                    <div class="col-md-6">
-                                        <label class="form-label small text-muted fw-bold">Powtórz nowe hasło</label>
-                                        <input type="password" class="form-control">
+                                    <div class="col-md-3">
+                                        <label class="form-label small text-muted fw-bold">Nr domu</label>
+                                        <input type="text" class="form-control" th:field="*{address.houseNumber}"
+                                            th:classappend="${#fields.hasErrors('address.houseNumber') ? 'is-invalid' : ''}"
+                                            placeholder="np. 15" maxlength="10">
+                                        <div class="invalid-feedback d-block"
+                                            th:if="${#fields.hasErrors('address.houseNumber')}"
+                                            th:errors="*{address.houseNumber}"></div>
                                     </div>
-                                    <div class="col-12 text-end mt-4">
-                                        <button type="submit" class="btn btn-outline-primary rounded-pill px-4">Zmień hasło</button>
+                                    <div class="col-md-3">
+                                        <label class="form-label small text-muted fw-bold">Nr lokalu</label>
+                                        <input type="text" class="form-control" th:field="*{address.apartmentNumber}"
+                                            th:classappend="${#fields.hasErrors('address.apartmentNumber') ? 'is-invalid' : ''}"
+                                            placeholder="opcjonalnie" maxlength="10">
+                                        <div class="invalid-feedback d-block"
+                                            th:if="${#fields.hasErrors('address.apartmentNumber')}"
+                                            th:errors="*{address.apartmentNumber}"></div>
                                     </div>
+                                    <div class="col-md-4">
+                                        <label class="form-label small text-muted fw-bold">Kod pocztowy</label>
+                                        <input type="text" class="form-control" th:field="*{address.zipCode}"
+                                            id="zipCode"
+                                            th:classappend="${#fields.hasErrors('address.zipCode') ? 'is-invalid' : ''}"
+                                            placeholder="00-000" maxlength="6">
+                                        <div class="invalid-feedback d-block"
+                                            th:if="${#fields.hasErrors('address.zipCode')}"
+                                            th:errors="*{address.zipCode}"></div>
+                                    </div>
+                                    <div class="col-md-8">
+                                        <label class="form-label small text-muted fw-bold">Miasto</label>
+                                        <input type="text" class="form-control" th:field="*{address.city}"
+                                            th:classappend="${#fields.hasErrors('address.city') ? 'is-invalid' : ''}"
+                                            placeholder="Warszawa" maxlength="100">
+                                        <div class="invalid-feedback d-block"
+                                            th:if="${#fields.hasErrors('address.city')}" th:errors="*{address.city}">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-12 text-end mt-4">
+                                    <button type="submit" class="btn btn-outline-primary rounded-pill px-4">Zaktualizuj
+                                        adres</button>
                                 </div>
                             </form>
                         </div>
                     </div>
-
-                    <div class="card border-0 shadow-sm rounded-4">
-                        <div class="card-header bg-white p-4 border-bottom">
-                            <h6 class="fw-bold mb-0 text-primary">Preferencje powiadomień</h6>
-                        </div>
-                        <div class="card-body p-4">
-                            <div class="form-check form-switch mb-3">
-                                <input class="form-check-input" type="checkbox" id="notifEmail" checked>
-                                <label class="form-check-label" for="notifEmail">Powiadomienia o statusie zamówienia (Email)</label>
-                            </div>
-                            <div class="form-check form-switch mb-3">
-                                <input class="form-check-input" type="checkbox" id="notifSms">
-                                <label class="form-check-label" for="notifSms">Powiadomienia SMS</label>
-                            </div>
-                            <div class="form-check form-switch">
-                                <input class="form-check-input" type="checkbox" id="newsletter">
-                                <label class="form-check-label" for="newsletter">Newsletter i promocje</label>
-                            </div>
-                        </div>
-                    </div>
-
                 </div>
+
+                <div id="password-card" class="card border-0 shadow-sm rounded-4 mb-4">
+                    <div class="card-header bg-white p-4 border-bottom">
+                        <h6 class="fw-bold mb-0 text-primary">Zmiana hasła</h6>
+                    </div>
+                    <div class="card-body p-4">
+                        <form th:action="@{/moje-konto/ustawienia/password#password-card}" th:object="${settings}"
+                            method="post" novalidate>
+                            <input type="hidden" th:field="*{firstName}">
+                            <input type="hidden" th:field="*{lastName}">
+                            <input type="hidden" th:field="*{email}">
+                            <div class="row g-3">
+                                <div class="col-md-12">
+                                    <label class="form-label small text-muted fw-bold">Aktualne hasło</label>
+                                    <input type="password" class="form-control" th:field="*{currentPassword}"
+                                        th:classappend="${#fields.hasErrors('currentPassword') ? 'is-invalid' : ''}"
+                                        required>
+                                    <div class="invalid-feedback d-block"
+                                        th:if="${#fields.hasErrors('currentPassword')}" th:errors="*{currentPassword}">
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label small text-muted fw-bold">Nowe hasło</label>
+                                    <input type="password" class="form-control" th:field="*{newPassword}"
+                                        th:classappend="${#fields.hasErrors('newPassword') ? 'is-invalid' : ''}"
+                                        required minlength="8">
+                                    <div class="invalid-feedback d-block" th:if="${#fields.hasErrors('newPassword')}"
+                                        th:errors="*{newPassword}">
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label small text-muted fw-bold">Powtórz nowe hasło</label>
+                                    <input type="password" class="form-control" th:field="*{confirmPassword}"
+                                        th:classappend="${#fields.hasErrors('confirmPassword') ? 'is-invalid' : ''}"
+                                        required minlength="8">
+                                    <div class="invalid-feedback d-block"
+                                        th:if="${#fields.hasErrors('confirmPassword')}" th:errors="*{confirmPassword}">
+                                    </div>
+                                </div>
+                                <div class="col-12 text-end mt-4">
+                                    <button type="submit" class="btn btn-outline-primary rounded-pill px-4">Zmień
+                                        hasło</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <div id="notifications-card" class="card border-0 shadow-sm rounded-4">
+                    <div class="card-header bg-white p-4 border-bottom">
+                        <h6 class="fw-bold mb-0 text-primary">Preferencje powiadomień</h6>
+                    </div>
+                    <div class="card-body p-4">
+                        <form th:action="@{/moje-konto/ustawienia/notifications#notifications-card}"
+                            th:object="${settings}" method="post">
+                            <input type="hidden" th:field="*{firstName}">
+                            <input type="hidden" th:field="*{lastName}">
+                            <input type="hidden" th:field="*{email}">
+                            <div class="form-check form-switch mb-3">
+                                <input class="form-check-input" type="checkbox" th:field="*{notifEmail}"
+                                    id="notifEmail">
+                                <label class="form-check-label ms-2" for="notifEmail">Powiadomienia o statusie
+                                    zamówienia
+                                    (Email)</label>
+                            </div>
+                            <div class="form-check form-switch mb-3">
+                                <input class="form-check-input" type="checkbox" th:field="*{notifSms}" id="notifSms">
+                                <label class="form-check-label ms-2" for="notifSms">Powiadomienia SMS</label>
+                            </div>
+                            <div class="form-check form-switch mb-4">
+                                <input class="form-check-input" type="checkbox" th:field="*{newsletter}"
+                                    id="newsletter">
+                                <label class="form-check-label ms-2" for="newsletter">Newsletter i promocje</label>
+                            </div>
+                            <div class="text-end">
+                                <button type="submit" class="btn btn-outline-primary rounded-pill px-4">Zapisz
+                                    preferencje</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
             </div>
         </div>
-    </section>
+        </div>
+        <footer th:replace="~{fragments/footer :: footer}"></footer>
 
-    <footer th:replace="~{fragments/footer :: footer}"></footer>
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                const zipInput = document.getElementById('zipCode');
+                if (zipInput) {
+                    zipInput.addEventListener('input', function (e) {
+                        let value = e.target.value.replace(/\D/g, '');
+                        if (value.length > 5) value = value.slice(0, 5);
+
+                        if (value.length > 2) {
+                            e.target.value = value.slice(0, 2) + '-' + value.slice(2);
+                        } else {
+                            e.target.value = value;
+                        }
+                    });
+
+                    zipInput.addEventListener('keydown', function (e) {
+                        if (e.key === '-' && e.target.value.length === 2) {
+                        } else if (e.key !== 'Backspace' && e.key !== 'Delete' && e.key !== 'ArrowLeft' && e.key !== 'ArrowRight' && e.key !== 'Tab' && !/^\d$/.test(e.key)) {
+                            e.preventDefault();
+                        }
+                    });
+                }
+            });
+        </script>
 </body>
+
 </html>

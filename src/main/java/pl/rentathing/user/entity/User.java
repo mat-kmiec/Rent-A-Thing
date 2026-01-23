@@ -44,6 +44,18 @@ public class User implements UserDetails {
     @Builder.Default
     private boolean locked = false;
 
+    @Column(length = 20)
+    private String phoneNumber;
+
+    @Builder.Default
+    private boolean notifEmail = true;
+
+    @Builder.Default
+    private boolean notifSms = false;
+
+    @Builder.Default
+    private boolean newsletter = false;
+
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private Address address;
 
