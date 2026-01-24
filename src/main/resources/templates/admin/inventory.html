@@ -351,12 +351,19 @@
                 <div class="p-3 p-md-4 border-bottom border-light bg-light bg-opacity-25">
                   <div class="row g-2 align-items-center">
                     <div class="col-12 col-md-6">
-                      <div class="input-group">
-          <span class="input-group-text bg-white border-end-0 rounded-start-pill ps-3">
+                      <form th:action="@{/admin/magazyn}" method="get">
+                        <div class="input-group">
+        <span class="input-group-text bg-white border-end-0 rounded-start-pill ps-3">
             <i class="fa-solid fa-magnifying-glass text-muted"></i>
-          </span>
-                        <input type="text" id="category-search" class="form-control bg-white border-start-0 rounded-end-pill shadow-none" placeholder="Szukaj kategorii..."/>
-                      </div>
+        </span>
+                          <input type="text"
+                                 name="category"
+                                 th:value="${searchQuery}"
+                                 class="form-control bg-white border-start-0 rounded-end-pill shadow-none"
+                                 placeholder="Szukaj kategorii..."/>
+                          <button type="submit" style="display: none;"></button>
+                        </div>
+                      </form>
                     </div>
                     <div class="col-6 col-md-4">
                       <select class="form-select rounded-pill bg-white border shadow-none cursor-pointer">
