@@ -1,50 +1,53 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
-                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
-                   https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
 
     <changeSet id="20260113-2-seed-users" author="mateusz kmiec">
         <!--        PASSWORD = Secret1324-->
         <insert tableName="users">
-            <column name="first_name" value="Jan"/>
-            <column name="last_name" value="Kowalski"/>
-            <column name="email" value="admin@admin.pl"/>
-            <column name="password" value="$2a$10$Rr49N6mdjbSPLlXttYMbCOfAFEzPg/ZcLqPn9DWszt2zAO/20HocC"/>
-            <column name="role" value="ROLE_ADMIN"/>
-            <column name="enabled" valueBoolean="true"/>
-            <column name="locked" valueBoolean="false"/>
+            <column name="first_name" value="Jan" />
+            <column name="last_name" value="Kowalski" />
+            <column name="email" value="admin@admin.pl" />
+            <column name="password"
+                value="$2a$10$Rr49N6mdjbSPLlXttYMbCOfAFEzPg/ZcLqPn9DWszt2zAO/20HocC" />
+            <column name="role" value="ROLE_ADMIN" />
+            <column name="enabled" valueBoolean="true" />
+            <column name="locked" valueBoolean="false" />
         </insert>
 
         <insert tableName="users">
             <!--    PASSWORD Marta2026           -->
-            <column name="first_name" value="Marta"/>
-            <column name="last_name" value="Nowak"/>
-            <column name="email" value="user@user.com"/>
-            <column name="password" value="$2a$10$paAaspYGsNEJgLlCURtVlOIpfrWwhg6HoOxGX7fnNuB0ftQwImE.y"/>
-            <column name="role" value="ROLE_USER"/>
-            <column name="enabled" valueBoolean="true"/>
-            <column name="locked" valueBoolean="false"/>
+            <column name="first_name" value="Marta" />
+            <column name="last_name" value="Nowak" />
+            <column name="email" value="user@user.com" />
+            <column name="password"
+                value="$2a$10$paAaspYGsNEJgLlCURtVlOIpfrWwhg6HoOxGX7fnNuB0ftQwImE.y" />
+            <column name="role" value="ROLE_USER" />
+            <column name="enabled" valueBoolean="true" />
+            <column name="locked" valueBoolean="false" />
         </insert>
         <insert tableName="users">
             <!--    PASSWORD Blocked2026        -->
-            <column name="first_name" value="Krzysztof"/>
-            <column name="last_name" value="Jakis"/>
-            <column name="email" value="krzysztof.jakis@example.com"/>
-            <column name="password" value="$2a$10$8g5n2bJ1qK4vL6m9oP3sRtXyZaB2cD5eF7gH8iJ0kL1mN2oP3qR4s"/>
-            <column name="role" value="ROLE_USER"/>
-            <column name="enabled" valueBoolean="true"/>
-            <column name="locked" valueBoolean="true"/>
+            <column name="first_name" value="Krzysztof" />
+            <column name="last_name" value="Jakiś" />
+            <column name="email" value="krzysztof.jakis@example.com" />
+            <column name="password"
+                value="$2a$10$8g5n2bJ1qK4vL6m9oP3sRtXyZaB2cD5eF7gH8iJ0kL1mN2oP3qR4s" />
+            <column name="role" value="ROLE_USER" />
+            <column name="enabled" valueBoolean="true" />
+            <column name="locked" valueBoolean="true" />
         </insert>
         <insert tableName="users">
             <!--    PASSWORD Test123123        -->
-            <column name="first_name" value="Niewiem"/>
-            <column name="last_name" value="Bezimienny"/>
-            <column name="email" value="nwmbez@example.com"/>
-            <column name="password" value="$2a$10$VvYHFj6K8L9w0N7r4M3qRuFc1N5vX8m3k6L7P8q0R1s2T3u4V5w6X"/>
-            <column name="role" value="ROLE_USER"/>
-            <column name="enabled" valueBoolean="false"/>
-            <column name="locked" valueBoolean="false"/>
+            <column name="first_name" value="Niewiem" />
+            <column name="last_name" value="Bezimienny" />
+            <column name="email" value="nwmbez@example.com" />
+            <column name="password"
+                value="$2a$10$VvYHFj6K8L9w0N7r4M3qRuFc1N5vX8m3k6L7P8q0R1s2T3u4V5w6X" />
+            <column name="role" value="ROLE_USER" />
+            <column name="enabled" valueBoolean="false" />
+            <column name="locked" valueBoolean="false" />
         </insert>
     </changeSet>
 </databaseChangeLog>

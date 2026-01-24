@@ -13,24 +13,29 @@ import java.util.Optional;
 
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {
-    Optional<User> findByEmail(String email);
-    Page<User> findAll(Pageable pageable);
-    Page<User> findByRole(Role role, Pageable pageable);
-    Page<User> findByLocked(boolean locked, Pageable pageable);
-    Page<User> findByEnabled(boolean enabled, Pageable pageable);
-    
-    @Query("SELECT u FROM User u WHERE " +
-           "(:role IS NULL OR u.role = :role) AND " +
-           "(:search IS NULL OR u.firstName LIKE %:search% OR u.lastName LIKE %:search% OR u.email LIKE %:search%)")
-    Page<User> searchUsers(@Param("search") String search, @Param("role") Role role, Pageable pageable);
-    
-    @Query("SELECT u FROM User u WHERE " +
-           "(:role IS NULL OR u.role = :role) AND " +
-           "(:search IS NULL OR u.firstName LIKE %:search% OR u.lastName LIKE %:search% OR u.email LIKE %:search%) AND " +
-           "(:statusLocked IS NULL OR u.locked = :statusLocked) AND " +
-           "(:statusDisabled IS NULL OR u.enabled = :statusDisabled)")
-    Page<User> searchUsersWithStatus(@Param("search") String search, @Param("role") Role role, 
-                                     @Param("statusLocked") Boolean statusLocked, 
-                                     @Param("statusDisabled") Boolean statusDisabled, 
-                                     Pageable pageable);
+       Optional<User> findByEmail(String email);
+
+       Page<User> findAll(Pageable pageable);
+
+       Page<User> findByRole(Role role, Pageable pageable);
+
+       Page<User> findByLocked(boolean locked, Pageable pageable);
+
+       Page<User> findByEnabled(boolean enabled, Pageable pageable);
+
+       @Query("SELECT u FROM User u WHERE " +
+                     "(:role IS NULL OR u.role = :role) AND " +
+                     "(:search IS NULL OR LOWER(u.firstName) LIKE LOWER(CONCAT('%', :search, '%')) OR LOWER(u.lastName) LIKE LOWER(CONCAT('%', :search, '%')) OR LOWER(u.email) LIKE LOWER(CONCAT('%', :search, '%')))")
+       Page<User> searchUsers(@Param("search") String search, @Param("role") Role role, Pageable pageable);
+
+       @Query("SELECT u FROM User u WHERE " +
+                     "(:role IS NULL OR u.role = :role) AND " +
+                     "(:search IS NULL OR LOWER(u.firstName) LIKE LOWER(CONCAT('%', :search, '%')) OR LOWER(u.lastName) LIKE LOWER(CONCAT('%', :search, '%')) OR LOWER(u.email) LIKE LOWER(CONCAT('%', :search, '%'))) AND "
+                     +
+                     "(:statusLocked IS NULL OR u.locked = :statusLocked) AND " +
+                     "(:statusDisabled IS NULL OR u.enabled = :statusDisabled)")
+       Page<User> searchUsersWithStatus(@Param("search") String search, @Param("role") Role role,
+                     @Param("statusLocked") Boolean statusLocked,
+                     @Param("statusDisabled") Boolean statusDisabled,
+                     Pageable pageable);
 }

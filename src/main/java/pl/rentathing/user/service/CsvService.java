@@ -13,22 +13,21 @@ public class CsvService {
 
     public String generateUsersCsv(List<UserListDTO> users) throws Exception {
         StringWriter sw = new StringWriter();
+        sw.write('\uFEFF');
         CSVWriter writer = new CSVWriter(sw);
 
-        // Nagłówki
-        String[] header = {"ID", "Imię", "Nazwisko", "Email", "Rola", "Aktywny", "Zablokowany"};
+        String[] header = { "ID", "Imię", "Nazwisko", "Email", "Rola", "Aktywny", "Zablokowany" };
         writer.writeNext(header);
 
-        // Dane użytkowników
         for (UserListDTO user : users) {
             String[] line = {
-                user.getId().toString(),
-                user.getFirstName(),
-                user.getLastName(),
-                user.getEmail(),
-                user.getRole(),
-                user.getEnabled() ? "Tak" : "Nie",
-                user.getLocked() ? "Tak" : "Nie"
+                    user.getId().toString(),
+                    user.getFirstName(),
+                    user.getLastName(),
+                    user.getEmail(),
+                    user.getRole(),
+                    user.getEnabled() ? "Tak" : "Nie",
+                    user.getLocked() ? "Tak" : "Nie"
             };
             writer.writeNext(line);
         }
