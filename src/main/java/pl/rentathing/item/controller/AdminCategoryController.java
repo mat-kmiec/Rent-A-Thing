@@ -1,25 +1,23 @@
 package pl.rentathing.item.controller;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.*;
-import pl.rentathing.item.dto.CategoryDto;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import pl.rentathing.item.service.CategoryService;
-
-import java.util.List;
 
 @Controller
 @RequestMapping("/admin")
 @RequiredArgsConstructor
-@CrossOrigin("*")
 public class AdminCategoryController {
 
     private final CategoryService categoryService;
 
     @GetMapping("/magazyn")
-    public String inventoryPage() {
+    public String inventoryPage(Model model) {
+        model.addAttribute("categories", categoryService.getAllCategories());
+
         return "admin/inventory";
     }
-
 }

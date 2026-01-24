@@ -272,6 +272,7 @@
                             <div>
                               <span
                                 class="fw-bold d-block text-dark text-wrap"
+
                                 style="max-width: 250px"
                                 >Sony Alpha a7 III</span
                               >
@@ -380,49 +381,48 @@
                     </tr>
                     </thead>
                     <tbody id="category-table-body">
+                    <tr th:each="cat : ${categories}">
+
+                      <td class="ps-4">
+                        <div class="category-img-wrapper border rounded-3 bg-light d-flex align-items-center justify-content-center" style="width: 45px; height: 45px;">
+                          <i class="fa-solid text-primary" th:classappend="${cat.iconClass != null ? cat.iconClass : 'fa-folder'}"></i>
+                        </div>
+                      </td>
+
+                      <td>
+                        <div class="d-flex align-items-center">
+                          <span class="fw-bold text-dark" th:text="${cat.name}">Nazwa Kategorii</span>
+                        </div>
+                      </td>
+
+                      <td class="d-none d-md-table-cell">
+            <span class="text-muted small text-wrap d-block" style="max-width: 350px"
+                  th:text="${cat.description != null ? cat.description : 'Brak opisu'}">
+                Przykładowy opis...
+            </span>
+                      </td>
+
+                      <td class="text-center">
+            <span class="badge bg-light text-dark border rounded-pill px-3"
+                  th:text="${cat.itemCount}">0</span>
+                      </td>
+
+                      <td class="text-end pe-4">
+                        <div class="btn-group">
+                          <button class="btn btn-sm btn-white border shadow-sm rounded-start-pill">
+                            <i class="fa-solid fa-pen text-muted"></i>
+                          </button>
+                          <button class="btn btn-sm btn-white border shadow-sm rounded-end-pill text-danger">
+                            <i class="fa-solid fa-trash-can"></i>
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
                     </tbody>
                   </table>
                 </div>
               </div>
 
-              <script>
-                document.addEventListener('DOMContentLoaded', loadCategories);
-
-                async function loadCategories() {
-                    try {
-                        const response = await fetch('/admin/api/categories');
-                        const categories = await response.json();
-
-                        const tbody = document.getElementById('category-table-body');
-                        const totalCount = document.getElementById('category-total-count');
-
-                        tbody.innerHTML = '';
-                        totalCount.textContent = categories.length;
-
-                        categories.forEach(cat => {
-                            tbody.innerHTML += `
-                                <tr>
-                                    <td class="ps-4">
-                                        <div class="category-img-wrapper border rounded-3 bg-light d-flex align-items-center justify-content-center" style="width: 45px; height: 45px;">
-                                            <i class="fa-solid ${cat.iconClass || 'fa-folder'} text-muted"></i>
-                                        </div>
-                                    </td>
-                                    <td><span class="fw-bold text-dark">${cat.name}</span></td>
-                                    <td class="d-none d-md-table-cell"><span class="text-muted small">${cat.description || 'Brak opisu'}</span></td>
-                                    <td class="text-center"><span class="badge bg-light text-dark border rounded-pill px-3">${cat.itemCount}</span></td>
-                                    <td class="text-end pe-4">
-                                        <div class="btn-group">
-                                            <button class="btn btn-sm btn-white border shadow-sm rounded-start-pill"><i class="fa-solid fa-pen"></i></button>
-                                            <button class="btn btn-sm btn-white border shadow-sm rounded-end-pill text-danger"><i class="fa-solid fa-trash-can"></i></button>
-                                        </div>
-                                    </td>
-                                </tr>`;
-                        });
-                    } catch (err) {
-                        console.error("Błąd ładowania:", err);
-                    }
-                }
-              </script>
             </div>
           </div>
         </div>
