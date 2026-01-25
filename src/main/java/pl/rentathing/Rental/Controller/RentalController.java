@@ -11,14 +11,13 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import pl.rentathing.Rental.Dto.RentalCreateDto;
 import pl.rentathing.Rental.Dto.RentalSummaryDto;
 import pl.rentathing.Rental.Service.RentalService;
-import pl.rentathing.Rental.exception.DateNotAvailableException;
-import pl.rentathing.Rental.exception.PastDateException;
-import pl.rentathing.Rental.exception.StartAfterEndDateException;
 import pl.rentathing.auth.service.AuthService;
 import pl.rentathing.item.dto.ItemDetailsDTO;
-import pl.rentathing.item.exception.ItemNotFoundException;
 import pl.rentathing.item.service.ItemService;
+import pl.rentathing.Rental.exception.RentalException;
+import pl.rentathing.item.exception.ItemException;
 import pl.rentathing.user.entity.User;
+import pl.rentathing.user.exception.UserException;
 import pl.rentathing.user.repository.UserRepository;
 
 import java.time.LocalDate;
@@ -38,8 +37,7 @@ public class RentalController {
             @RequestParam(name = "przedmiot") Long itemId,
             @RequestParam(name = "start", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
             @RequestParam(name = "koniec", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate,
-            Model model
-    ) {
+            Model model) {
         if (!model.containsAttribute("rentalCreateDto")) {
             RentalCreateDto rentalCreateDto = rentalService.prepareRentalDto(itemId, startDate, endDate);
             model.addAttribute("rentalCreateDto", rentalCreateDto);
@@ -58,22 +56,21 @@ public class RentalController {
     }
 
     @GetMapping("/sukces")
-    public String showRentalSuccess(Model model){
-        if (!model.containsAttribute("rentalSummary")){
+    public String showRentalSuccess(Model model) {
+        if (!model.containsAttribute("rentalSummary")) {
             return "redirect:/katalog";
         }
         return "rental/succes";
     }
 
-
     @PostMapping("/potwierdz")
     public String confirmRental(
             @Valid @ModelAttribute("rentalCreateDto") RentalCreateDto rentalCreateDto,
             BindingResult bindingResult,
-            RedirectAttributes redirectAttributes
-    ) {
+            RedirectAttributes redirectAttributes) {
         if (bindingResult.hasErrors()) {
-            redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.rentalCreateDto", bindingResult);
+            redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.rentalCreateDto",
+                    bindingResult);
             redirectAttributes.addFlashAttribute("rentalCreateDto", rentalCreateDto);
             redirectAttributes.addFlashAttribute("toastType", "warning");
             redirectAttributes.addFlashAttribute("toastMessage", "Popraw błędy w formularzu.");
@@ -86,7 +83,7 @@ public class RentalController {
             redirectAttributes.addFlashAttribute("rentalSummary", summary);
             return "redirect:/wypozyczenia/sukces";
 
-        } catch (DateNotAvailableException | ItemNotFoundException | StartAfterEndDateException | PastDateException e ) {
+        } catch (RentalException | ItemException | UserException e) {
             redirectAttributes.addFlashAttribute("toastType", "error");
             redirectAttributes.addFlashAttribute("toastMessage", e.getMessage());
 

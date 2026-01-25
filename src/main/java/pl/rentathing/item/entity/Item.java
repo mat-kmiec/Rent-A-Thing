@@ -35,9 +35,11 @@ public class Item {
     @Column(nullable = false, precision = 10, scale = 2)
     private BigDecimal pricePerDay;
 
-    @Min(0) @Max(100)
+    @Min(0)
+    @Max(100)
     private Integer discountedPercent;
 
+    @Builder.Default
     private boolean deposit = false;
 
     @PositiveOrZero
@@ -50,22 +52,28 @@ public class Item {
     @JoinColumn(name = "category_id", nullable = false)
     private Category category;
 
-    @DecimalMin("0.0") @DecimalMax("5.0")
+    @DecimalMin("0.0")
+    @DecimalMax("5.0")
     private Double averageRating;
 
     @PositiveOrZero
+    @Builder.Default
     private Integer reviewCount = 0;
 
     @Column(nullable = false)
+    @Builder.Default
     private Boolean available = true;
 
+    @Builder.Default
     private Boolean canBeShipped = true;
 
+    @Builder.Default
     private Boolean canBePickedUp = true;
 
     @PositiveOrZero
     private BigDecimal shippingPrice;
 
+    @Builder.Default
     private Boolean isNew = true;
 
     @UpdateTimestamp
@@ -83,7 +91,7 @@ public class Item {
     private String sku;
 
     @Min(1)
+    @Builder.Default
     private Integer minRentalDays = 1;
-
 
 }
