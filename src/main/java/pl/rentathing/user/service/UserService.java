@@ -12,6 +12,8 @@ import pl.rentathing.user.dto.UserSettingsDTO;
 import pl.rentathing.user.entity.Address;
 import pl.rentathing.user.entity.Role;
 import pl.rentathing.user.entity.User;
+import pl.rentathing.user.exception.InvalidPasswordException;
+import pl.rentathing.user.exception.UserNotFoundException;
 import pl.rentathing.user.repository.UserRepository;
 
 import java.util.Optional;
@@ -79,7 +81,7 @@ public class UserService {
 
     public void updateUserSettings(Long userId, UserSettingsDTO settingsDTO) {
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("Użytkownik nie znaleziony"));
+                .orElseThrow(() -> new UserNotFoundException(userId));
 
         user.setFirstName(settingsDTO.getFirstName());
         user.setLastName(settingsDTO.getLastName());
@@ -91,10 +93,10 @@ public class UserService {
 
         if (settingsDTO.getNewPassword() != null && !settingsDTO.getNewPassword().isEmpty()) {
             if (settingsDTO.getCurrentPassword() == null || settingsDTO.getCurrentPassword().isEmpty()) {
-                throw new RuntimeException("Aktualne hasło jest wymagane do zmiany hasła");
+                throw new InvalidPasswordException("Aktualne hasło jest wymagane do zmiany hasła");
             }
             if (!passwordEncoder.matches(settingsDTO.getCurrentPassword(), user.getPassword())) {
-                throw new RuntimeException("Aktualne hasło jest nieprawidłowe");
+                throw new InvalidPasswordException("Aktualne hasło jest nieprawidłowe");
             }
             user.setPassword(passwordEncoder.encode(settingsDTO.getNewPassword()));
         }
@@ -121,14 +123,14 @@ public class UserService {
 
     public void blockUser(Long userId) {
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("Użytkownik nie znaleziony"));
+                .orElseThrow(() -> new UserNotFoundException(userId));
         user.setLocked(true);
         userRepository.save(user);
     }
 
     public void unblockUser(Long userId) {
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("Użytkownik nie znaleziony"));
+                .orElseThrow(() -> new UserNotFoundException(userId));
         user.setLocked(false);
         userRepository.save(user);
     }

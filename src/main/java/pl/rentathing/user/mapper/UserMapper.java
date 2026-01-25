@@ -1,6 +1,5 @@
 package pl.rentathing.user.mapper;
 
-
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import pl.rentathing.auth.dto.RegisterRequest;
@@ -14,5 +13,10 @@ public interface UserMapper {
     @Mapping(target = "role", ignore = true)
     @Mapping(target = "enabled", ignore = true)
     @Mapping(target = "locked", ignore = true)
+    @Mapping(target = "phoneNumber", ignore = true)
+    @Mapping(target = "notifEmail", ignore = true)
+    @Mapping(target = "notifSms", ignore = true)
+    @Mapping(target = "newsletter", ignore = true)
+    @Mapping(target = "address", ignore = true)
     User toEntity(RegisterRequest registerRequest);
 }

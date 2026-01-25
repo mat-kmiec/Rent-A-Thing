@@ -54,9 +54,11 @@ public class Rental {
     private PaymentMethod paymentMethod;
 
     @Column(nullable = false)
+    @Builder.Default
     private boolean depositPaid = false;
 
     @Column(nullable = false)
+    @Builder.Default
     private boolean invoiceRequested = false;
 
     @PositiveOrZero
@@ -64,6 +66,7 @@ public class Rental {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
+    @Builder.Default
     private RentalStatus status = RentalStatus.PENDING;
 
     @Column(length = 1024)
@@ -75,11 +78,5 @@ public class Rental {
     @CreationTimestamp
     @Column(updatable = false)
     private LocalDateTime createdAt;
-
-
-
-
-
-
 
 }
