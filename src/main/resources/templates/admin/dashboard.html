@@ -96,9 +96,10 @@
                                 <div class="stat-icon bg-primary-subtle text-primary rounded-3">
                                     <i class="fa-solid fa-box-open"></i>
                                 </div>
-                                <span class="badge bg-primary bg-opacity-10 text-primary rounded-pill">42 aktywne</span>
+                                <span class="badge bg-primary bg-opacity-10 text-primary rounded-pill"
+                                    th:text="${activeRentalsCount} + ' aktywne'">42 aktywne</span>
                             </div>
-                            <h3 class="fw-bold text-dark mb-0">86%</h3>
+                            <h3 class="fw-bold text-dark mb-0" th:text="${utilizationPercentage} + '%'">86%</h3>
                             <span class="text-muted small text-uppercase fw-bold">Wykorzystanie zasobów</span>
                         </div>
                     </div>
@@ -110,9 +111,10 @@
                                 <div class="stat-icon bg-warning-subtle text-warning rounded-3">
                                     <i class="fa-solid fa-rotate-left"></i>
                                 </div>
-                                <span class="badge bg-danger bg-opacity-10 text-danger rounded-pill">2 opóźnione</span>
+                                <span class="badge bg-danger bg-opacity-10 text-danger rounded-pill"
+                                    th:text="${overdueCount} + ' opóźnione'">2 opóźnione</span>
                             </div>
-                            <h3 class="fw-bold text-dark mb-0">8</h3>
+                            <h3 class="fw-bold text-dark mb-0" th:text="${returnsTodayCount}">8</h3>
                             <span class="text-muted small text-uppercase fw-bold">Do zwrotu dzisiaj</span>
                         </div>
                     </div>
@@ -124,9 +126,11 @@
                                 <div class="stat-icon bg-info-subtle text-info rounded-3">
                                     <i class="fa-solid fa-users"></i>
                                 </div>
-                                <span class="badge bg-info bg-opacity-10 text-info rounded-pill">+5 nowych</span>
+                                <span class="badge bg-info bg-opacity-10 text-info rounded-pill"
+                                    th:text="${'+' + newUsersCount + ' nowych'}">+5 nowych</span>
                             </div>
-                            <h3 class="fw-bold text-dark mb-0">1,204</h3>
+                            <h3 class="fw-bold text-dark mb-0"
+                                th:text="${#numbers.formatInteger(totalUsersCount, 1, 'DEFAULT')}">1,204</h3>
                             <span class="text-muted small text-uppercase fw-bold">Zarejestrowanych kont</span>
                         </div>
                     </div>

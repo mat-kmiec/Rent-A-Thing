@@ -55,4 +55,8 @@ public interface RentalRepository extends JpaRepository<Rental, Long> {
     List<Rental> findByStatus(RentalStatus status);
 
     List<Rental> findByStatusIn(List<RentalStatus> statuses);
+
+    long countByStatus(RentalStatus status);
+
+    long countByEndDateTimeBetween(LocalDateTime start, LocalDateTime end);
 }
