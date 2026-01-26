@@ -222,6 +222,7 @@
                             <div>
                               <span
                                 class="fw-bold d-block text-dark text-wrap"
+
                                 style="max-width: 250px"
                                 >Sony Alpha a7 III</span
                               >
@@ -300,20 +301,34 @@
                 <div class="p-3 p-md-4 border-bottom border-light bg-light bg-opacity-25">
                   <div class="row g-2 align-items-center">
                     <div class="col-12 col-md-6">
-                      <div class="input-group">
-          <span class="input-group-text bg-white border-end-0 rounded-start-pill ps-3">
+                      <form th:action="@{/admin/magazyn}" method="get">
+                        <div class="input-group">
+        <span class="input-group-text bg-white border-end-0 rounded-start-pill ps-3">
             <i class="fa-solid fa-magnifying-glass text-muted"></i>
-          </span>
-                        <input type="text" id="category-search" class="form-control bg-white border-start-0 rounded-end-pill shadow-none" placeholder="Szukaj kategorii..."/>
-                      </div>
+        </span>
+                          <input type="text"
+                                 name="category"
+                                 th:value="${searchQuery}"
+                                 class="form-control bg-white border-start-0 rounded-end-pill shadow-none"
+                                 placeholder="Szukaj kategorii..."/>
+                          <button type="submit" style="display: none;"></button>
+                        </div>
+                      </form>
                     </div>
                     <div class="col-6 col-md-4">
-                      <select class="form-select rounded-pill bg-white border shadow-none cursor-pointer">
-                        <option selected>Sortuj: Nazwa (A-Z)</option>
+                      <select class="form-select border-0 shadow-none bg-light rounded-pill ps-3"
+                              style="width: 180px;"
+                              onchange="applyFilters()">
+                        <option value="idDesc" th:selected="${currentSort == 'idDesc'}">Najnowsze</option>
+                        <option value="idAsc" th:selected="${currentSort == 'idAsc'}">Najstarsze</option>
+                        <option value="nameAsc" th:selected="${currentSort == 'nameAsc'}">Nazwa A-Z</option>
+                        <option value="nameDesc" th:selected="${currentSort == 'nameDesc'}">Nazwa Z-A</option>
                       </select>
                     </div>
                     <div class="col-6 col-md-2 text-end">
-                      <span class="text-muted small fw-medium">Łącznie: <span id="category-total-count">0</span></span>
+    <span class="text-muted small fw-medium">
+        Łącznie: <span th:text="${categories != null ? categories.size() : 0}">0</span>
+    </span>
                     </div>
                   </div>
                 </div>
@@ -330,49 +345,59 @@
                     </tr>
                     </thead>
                     <tbody id="category-table-body">
+                    <tr th:each="cat : ${categories}">
+
+                      <td class="ps-4">
+                        <div class="category-img-wrapper border rounded-3 bg-light d-flex align-items-center justify-content-center" style="width: 45px; height: 45px;">
+                          <i class="fa-solid text-primary" th:classappend="${cat.iconClass != null ? cat.iconClass : 'fa-folder'}"></i>
+                        </div>
+                      </td>
+
+                      <td>
+                        <div class="d-flex align-items-center">
+                          <span class="fw-bold text-dark" th:text="${cat.name}">Nazwa Kategorii</span>
+                        </div>
+                      </td>
+
+                      <td class="d-none d-md-table-cell">
+            <span class="text-muted small text-wrap d-block" style="max-width: 350px"
+                  th:text="${cat.description != null ? cat.description : 'Brak opisu'}">
+                Przykładowy opis...
+            </span>
+                      </td>
+
+                      <td class="text-center">
+            <span class="badge bg-light text-dark border rounded-pill px-3"
+                  th:text="${cat.itemCount}">0</span>
+                      </td>
+
+                      <td class="text-end pe-4">
+                        <div class="btn-group">
+                          <button class="btn btn-sm btn-white border shadow-sm rounded-start-pill"
+                                  data-bs-toggle="modal"
+                                  data-bs-target="#editCategoryModal"
+                                  th:data-id="${cat.id}"
+                                  th:data-name="${cat.name}"
+                                  th:data-icon="${cat.iconClass}"
+                                  th:data-desc="${cat.description}"
+                                  onclick="fillEditModal(this)">
+                            <i class="fa-solid fa-pen text-muted"></i>
+                          </button>
+                          <form th:action="@{/admin/magazyn/delete/{id}(id=${cat.id})}" method="post"
+                                style="display: inline;"
+                                onsubmit="return confirm('Czy na pewno chcesz usunąć tę kategorię?')">
+                            <button type="submit" class="btn btn-sm btn-white border shadow-sm rounded-end-pill text-danger">
+                              <i class="fa-solid fa-trash-can"></i>
+                            </button>
+                          </form>
+                        </div>
+                      </td>
+                    </tr>
                     </tbody>
                   </table>
                 </div>
               </div>
 
-              <script>
-                document.addEventListener('DOMContentLoaded', loadCategories);
-
-                async function loadCategories() {
-                    try {
-                        const response = await fetch('/admin/api/categories');
-                        const categories = await response.json();
-
-                        const tbody = document.getElementById('category-table-body');
-                        const totalCount = document.getElementById('category-total-count');
-
-                        tbody.innerHTML = '';
-                        totalCount.textContent = categories.length;
-
-                        categories.forEach(cat => {
-                            tbody.innerHTML += `
-                                <tr>
-                                    <td class="ps-4">
-                                        <div class="category-img-wrapper border rounded-3 bg-light d-flex align-items-center justify-content-center" style="width: 45px; height: 45px;">
-                                            <i class="fa-solid ${cat.iconClass || 'fa-folder'} text-muted"></i>
-                                        </div>
-                                    </td>
-                                    <td><span class="fw-bold text-dark">${cat.name}</span></td>
-                                    <td class="d-none d-md-table-cell"><span class="text-muted small">${cat.description || 'Brak opisu'}</span></td>
-                                    <td class="text-center"><span class="badge bg-light text-dark border rounded-pill px-3">${cat.itemCount}</span></td>
-                                    <td class="text-end pe-4">
-                                        <div class="btn-group">
-                                            <button class="btn btn-sm btn-white border shadow-sm rounded-start-pill"><i class="fa-solid fa-pen"></i></button>
-                                            <button class="btn btn-sm btn-white border shadow-sm rounded-end-pill text-danger"><i class="fa-solid fa-trash-can"></i></button>
-                                        </div>
-                                    </td>
-                                </tr>`;
-                        });
-                    } catch (err) {
-                        console.error("Błąd ładowania:", err);
-                    }
-                }
-              </script>
             </div>
           </div>
         </div>
@@ -411,80 +436,91 @@
             ></button>
           </div>
           <div class="modal-body">
-            <form>
+            <form th:action="@{/admin/magazyn/add}" method="post">
               <div class="mb-3">
-                <label
-                  class="form-label small text-muted text-uppercase fw-bold"
-                  >Nazwa Kategorii</label
-                >
-                <input
-                  type="text"
-                  class="form-control rounded-3"
-                  placeholder="np. Sprzęt Wodny"
-                />
+                <label class="form-label small text-muted text-uppercase fw-bold">Nazwa Kategorii</label>
+                <input type="text" name="name" class="form-control rounded-3" placeholder="np. Sprzęt Wodny" required />
               </div>
 
               <div class="mb-3">
-                <label
-                  class="form-label small text-muted text-uppercase fw-bold"
-                  >Zdjęcie Promujące</label
-                >
-                <input
-                  type="file"
-                  class="form-control rounded-3"
-                  id="categoryImage"
-                />
-                <div class="form-text small">
-                  Formaty: JPG, PNG. Zalecany rozmiar: 600x400px.
-                </div>
-              </div>
-
-              <div class="mb-3">
-                <label
-                  class="form-label small text-muted text-uppercase fw-bold"
-                  >Ikona (FontAwesome)</label
-                >
+                <label class="form-label small text-muted text-uppercase fw-bold">Ikona (FontAwesome)</label>
                 <div class="input-group">
-                  <span class="input-group-text bg-light border-end-0"
-                    ><i class="fa-solid fa-icons"></i
-                  ></span>
-                  <input
-                    type="text"
-                    class="form-control rounded-end-3"
-                    placeholder="np. fa-water"
-                  />
+                  <span class="input-group-text bg-light border-end-0"><i class="fa-solid fa-icons"></i></span>
+                  <input type="text" name="iconClass" class="form-control rounded-end-3" placeholder="np. fa-water" />
                 </div>
               </div>
 
               <div class="mb-3">
-                <label
-                  class="form-label small text-muted text-uppercase fw-bold"
-                  >Opis</label
-                >
-                <textarea
-                  class="form-control rounded-3"
-                  rows="2"
-                  placeholder="Krótki opis widoczny dla klienta..."
-                ></textarea>
+                <label class="form-label small text-muted text-uppercase fw-bold">Opis</label>
+                <textarea name="description" class="form-control rounded-3" rows="2" placeholder="Krótki opis..."></textarea>
+              </div>
+
+              <div class="modal-footer border-0 pt-3 px-0 pb-0">
+                <button type="button" class="btn btn-light rounded-pill px-4" data-bs-dismiss="modal">Anuluj</button>
+                <button type="submit" class="btn btn-primary rounded-pill px-4">Utwórz</button>
               </div>
             </form>
-          </div>
-          <div class="modal-footer border-0 pt-0">
-            <button
-              type="button"
-              class="btn btn-light rounded-pill px-4"
-              data-bs-dismiss="modal"
-            >
-              Anuluj
-            </button>
-            <button type="button" class="btn btn-primary rounded-pill px-4">
-              Utwórz
-            </button>
           </div>
         </div>
       </div>
     </div>
+    <div class="modal fade" id="editCategoryModal" tabindex="-1" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow rounded-4">
+          <div class="modal-header border-0 pb-0">
+            <h5 class="modal-title fw-bold">Edytuj Kategorię</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <form th:action="@{/admin/magazyn/edit}" method="post">
+            <div class="modal-body">
+              <input type="hidden" name="id" id="edit-id">
 
+              <div class="mb-3">
+                <label class="form-label small text-muted text-uppercase fw-bold">Nazwa</label>
+                <input type="text" name="name" id="edit-name" class="form-control rounded-3" required />
+              </div>
+              <div class="mb-3">
+                <label class="form-label small text-muted text-uppercase fw-bold">Ikona (FontAwesome)</label>
+                <input type="text" name="iconClass" id="edit-icon" class="form-control rounded-3" />
+              </div>
+              <div class="mb-3">
+                <label class="form-label small text-muted text-uppercase fw-bold">Opis</label>
+                <textarea name="description" id="edit-desc" class="form-control rounded-3" rows="2"></textarea>
+              </div>
+            </div>
+            <div class="modal-footer border-0 pt-0">
+              <button type="button" class="btn btn-light rounded-pill px-4" data-bs-dismiss="modal">Anuluj</button>
+              <button type="submit" class="btn btn-primary rounded-pill px-4">Zapisz zmiany</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+      function fillEditModal(btn) {
+          document.getElementById('edit-id').value = btn.getAttribute('data-id');
+          document.getElementById('edit-name').value = btn.getAttribute('data-name');
+          document.getElementById('edit-icon').value = btn.getAttribute('data-icon');
+          document.getElementById('edit-desc').value = btn.getAttribute('data-desc');
+      }
+    </script>
+    <script>
+      function applyFilters() {
+          const sortSelect = document.querySelector('select[onchange="applyFilters()"]');
+          const sortValue = sortSelect.value;
+
+          const searchInput = document.querySelector('input[name="category"]');
+          const searchValue = searchInput ? searchInput.value : '';
+
+          let url = window.location.pathname + '?sort=' + sortValue;
+
+          if (searchValue) {
+              url += '&category=' + encodeURIComponent(searchValue);
+          }
+
+          window.location.href = url + '#categories';
+      }
+    </script>
   </body>
 </html>
