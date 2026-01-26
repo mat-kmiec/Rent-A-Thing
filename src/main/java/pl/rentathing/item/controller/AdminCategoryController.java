@@ -3,10 +3,7 @@ package pl.rentathing.item.controller;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import pl.rentathing.item.dto.CategoryDto;
 import pl.rentathing.item.service.CategoryService;
 
@@ -43,6 +40,11 @@ public class AdminCategoryController {
 
         categoryService.addCategory(name, description, iconClass);
 
+        return "redirect:/admin/magazyn#categories";
+    }
+    @PostMapping("/magazyn/delete/{id}")
+    public String deleteCategory(@PathVariable Long id) {
+        categoryService.deleteCategory(id);
         return "redirect:/admin/magazyn#categories";
     }
 }
