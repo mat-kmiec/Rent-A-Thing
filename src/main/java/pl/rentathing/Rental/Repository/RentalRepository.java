@@ -12,6 +12,7 @@ import pl.rentathing.user.entity.User;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 @Repository
 public interface RentalRepository extends JpaRepository<Rental, Long> {
@@ -36,4 +37,8 @@ public interface RentalRepository extends JpaRepository<Rental, Long> {
             @Param("search") String search,
             @Param("status") RentalStatus status,
             Pageable pageable);
+
+    Optional<Rental> findByIdAndUser(Long id, User user);
+
+
 }
