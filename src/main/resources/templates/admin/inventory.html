@@ -371,7 +371,9 @@
                       </select>
                     </div>
                     <div class="col-6 col-md-2 text-end">
-                      <span class="text-muted small fw-medium">Łącznie: <span id="category-total-count">0</span></span>
+    <span class="text-muted small fw-medium">
+        Łącznie: <span th:text="${categories != null ? categories.size() : 0}">0</span>
+    </span>
                     </div>
                   </div>
                 </div>
@@ -468,75 +470,30 @@
             ></button>
           </div>
           <div class="modal-body">
-            <form>
+            <form th:action="@{/admin/magazyn/add}" method="post">
               <div class="mb-3">
-                <label
-                  class="form-label small text-muted text-uppercase fw-bold"
-                  >Nazwa Kategorii</label
-                >
-                <input
-                  type="text"
-                  class="form-control rounded-3"
-                  placeholder="np. Sprzęt Wodny"
-                />
+                <label class="form-label small text-muted text-uppercase fw-bold">Nazwa Kategorii</label>
+                <input type="text" name="name" class="form-control rounded-3" placeholder="np. Sprzęt Wodny" required />
               </div>
 
               <div class="mb-3">
-                <label
-                  class="form-label small text-muted text-uppercase fw-bold"
-                  >Zdjęcie Promujące</label
-                >
-                <input
-                  type="file"
-                  class="form-control rounded-3"
-                  id="categoryImage"
-                />
-                <div class="form-text small">
-                  Formaty: JPG, PNG. Zalecany rozmiar: 600x400px.
-                </div>
-              </div>
-
-              <div class="mb-3">
-                <label
-                  class="form-label small text-muted text-uppercase fw-bold"
-                  >Ikona (FontAwesome)</label
-                >
+                <label class="form-label small text-muted text-uppercase fw-bold">Ikona (FontAwesome)</label>
                 <div class="input-group">
-                  <span class="input-group-text bg-light border-end-0"
-                    ><i class="fa-solid fa-icons"></i
-                  ></span>
-                  <input
-                    type="text"
-                    class="form-control rounded-end-3"
-                    placeholder="np. fa-water"
-                  />
+                  <span class="input-group-text bg-light border-end-0"><i class="fa-solid fa-icons"></i></span>
+                  <input type="text" name="iconClass" class="form-control rounded-end-3" placeholder="np. fa-water" />
                 </div>
               </div>
 
               <div class="mb-3">
-                <label
-                  class="form-label small text-muted text-uppercase fw-bold"
-                  >Opis</label
-                >
-                <textarea
-                  class="form-control rounded-3"
-                  rows="2"
-                  placeholder="Krótki opis widoczny dla klienta..."
-                ></textarea>
+                <label class="form-label small text-muted text-uppercase fw-bold">Opis</label>
+                <textarea name="description" class="form-control rounded-3" rows="2" placeholder="Krótki opis..."></textarea>
+              </div>
+
+              <div class="modal-footer border-0 pt-3 px-0 pb-0">
+                <button type="button" class="btn btn-light rounded-pill px-4" data-bs-dismiss="modal">Anuluj</button>
+                <button type="submit" class="btn btn-primary rounded-pill px-4">Utwórz</button>
               </div>
             </form>
-          </div>
-          <div class="modal-footer border-0 pt-0">
-            <button
-              type="button"
-              class="btn btn-light rounded-pill px-4"
-              data-bs-dismiss="modal"
-            >
-              Anuluj
-            </button>
-            <button type="button" class="btn btn-primary rounded-pill px-4">
-              Utwórz
-            </button>
           </div>
         </div>
       </div>

@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import pl.rentathing.item.dto.CategoryDto;
@@ -34,5 +35,14 @@ public class AdminCategoryController {
         model.addAttribute("categories", categories);
         model.addAttribute("searchQuery", search);
         return "admin/inventory";
+    }
+    @PostMapping("/magazyn/add")
+    public String addCategory(@RequestParam String name,
+                              @RequestParam(required = false) String description,
+                              @RequestParam(required = false) String iconClass) {
+
+        categoryService.addCategory(name, description, iconClass);
+
+        return "redirect:/admin/magazyn#categories";
     }
 }

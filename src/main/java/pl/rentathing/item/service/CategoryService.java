@@ -28,4 +28,12 @@ public class CategoryService {
                         (c.getDescription() != null && c.getDescription().toLowerCase().contains(lowerQuery)))
                 .toList();
     }
+    public void addCategory(String name, String description, String iconClass) {
+        Category category = new Category();
+        category.setName(name);
+        category.setDescription(description);
+        category.setIconClass(iconClass);
+
+        categoryRepository.save(category);
+    }
 }
