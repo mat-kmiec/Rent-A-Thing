@@ -1,44 +1,47 @@
-
-    document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function() {
     const reviewForm = document.getElementById('reviewForm');
     const loadMoreBtn = document.getElementById('load-more-reviews');
-    const itemId = loadMoreBtn.getAttribute('data-item-id');
-    const reviewModal = new bootstrap.Modal(document.getElementById('addReviewModal'));
+    const modalElement = document.getElementById('addReviewModal');
+    if (!reviewForm || !modalElement) return;
+
+    const reviewModal = new bootstrap.Modal(modalElement);
+    const itemId = loadMoreBtn ? loadMoreBtn.getAttribute('data-item-id') : document.getElementById('itemId').value;
 
     reviewForm.addEventListener('submit', function(e) {
-    e.preventDefault();
+        e.preventDefault();
+        const csrfTokenNode = document.querySelector('meta[name="_csrf"]');
+        const csrfHeaderNode = document.querySelector('meta[name="_csrf_header"]');
 
-    const csrfToken = document.querySelector('meta[name="_csrf"]').getAttribute('content');
-    const csrfHeader = document.querySelector('meta[name="_csrf_header"]').getAttribute('content');
+        if (!csrfTokenNode || !csrfHeaderNode) {
+            console.error("Brak tokenów CSRF w nagłówku strony!");
+            return;
+        }
 
-    const data = {
-    authorName: document.getElementById('reviewAuthor').value,
-    rating: parseInt(document.getElementById('reviewRating').value),
-    content: document.getElementById('reviewContent').value
-};
+        const data = {
+            authorName: document.getElementById('reviewAuthor').value,
+            rating: parseInt(document.getElementById('reviewRating').value),
+            content: document.getElementById('reviewContent').value
+        };
 
-    fetch(`/api/reviews/${itemId}`, {
-    method: 'POST',
-    headers: {
-    'Content-Type': 'application/json',
-    [csrfHeader]: csrfToken
-},
-    body: JSON.stringify(data)
-})
-    .then(response => {
-    if (response.ok) {
-    reviewModal.hide();
-    const currentPath = window.location.pathname;
-    window.location.href = currentPath + '?success';
-} else {
-    const currentPath = window.location.pathname;
-    window.location.href = currentPath + '?error';
-}
-})
-    .catch(error => {
-    console.error('Error:', error);
-    const currentPath = window.location.pathname;
-    window.location.href = currentPath + '?error';
-});
-});
+        fetch(`/api/reviews/${itemId}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                [csrfHeaderNode.getAttribute('content')]: csrfTokenNode.getAttribute('content')
+            },
+            body: JSON.stringify(data)
+        })
+            .then(response => {
+                if (response.ok) {
+                    reviewModal.hide();
+                    window.location.search = 'success';
+                } else {
+                    window.location.search = 'error';
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                window.location.search = 'error';
+            });
+    });
 });

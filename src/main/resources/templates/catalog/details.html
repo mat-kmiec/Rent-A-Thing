@@ -39,7 +39,7 @@
                         </th:block>
 
                         <span class="text-muted ms-2 fw-medium"
-                              th:text="'(' + ${item.averageRating} + ' / ' + ${item.reviewCount} + ' opinie)'"></span>
+                              th:text="'(' + ${item.averageRating} + ' / ' + ${item.reviewCount} + ' opinii)'"></span>
                     </div>
                 </div>
 
@@ -134,6 +134,44 @@
         </div>
     </div>
 </section>
+<div class="modal fade" id="addReviewModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow rounded-4">
+            <div class="modal-header border-0 pb-0">
+                <h5 class="modal-title fw-bold">Dodaj opinię</h5>
+                <button type="button" class="btn-close shadow-none" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form id="reviewForm">
+                    <div class="mb-3">
+                        <label for="reviewAuthor" class="form-label small fw-bold">Twoje imię</label>
+                        <input type="text" class="form-control bg-light border-0 shadow-none" id="reviewAuthor" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="reviewRating" class="form-label small fw-bold">Ocena (1-5)</label>
+                        <select class="form-select bg-light border-0 shadow-none" id="reviewRating" required>
+                            <option value="5">5 - Świetny</option>
+                            <option value="4">4 - Dobry</option>
+                            <option value="3">3 - Przeciętny</option>
+                            <option value="2">2 - Słaby</option>
+                            <option value="1">1 - Bardzo słaby</option>
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="reviewContent" class="form-label small fw-bold">Komentarz</label>
+                        <textarea class="form-control bg-light border-0 shadow-none" id="reviewContent" rows="4" required></textarea>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary w-100 rounded-pill fw-bold py-2 shadow-sm">
+                        Opublikuj opinię
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
 
 <div th:replace="~{fragments/footer :: footer}"></div>
 <div th:replace="~{fragments/toast :: toast}"></div>
