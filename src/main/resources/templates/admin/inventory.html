@@ -366,8 +366,13 @@
                       </form>
                     </div>
                     <div class="col-6 col-md-4">
-                      <select class="form-select rounded-pill bg-white border shadow-none cursor-pointer">
-                        <option selected>Sortuj: Nazwa (A-Z)</option>
+                      <select class="form-select border-0 shadow-none bg-light rounded-pill ps-3"
+                              style="width: 180px;"
+                              onchange="applyFilters()">
+                        <option value="idDesc" th:selected="${currentSort == 'idDesc'}">Najnowsze</option>
+                        <option value="idAsc" th:selected="${currentSort == 'idAsc'}">Najstarsze</option>
+                        <option value="nameAsc" th:selected="${currentSort == 'nameAsc'}">Nazwa A-Z</option>
+                        <option value="nameDesc" th:selected="${currentSort == 'nameDesc'}">Nazwa Z-A</option>
                       </select>
                     </div>
                     <div class="col-6 col-md-2 text-end">
@@ -548,6 +553,23 @@
           document.getElementById('edit-name').value = btn.getAttribute('data-name');
           document.getElementById('edit-icon').value = btn.getAttribute('data-icon');
           document.getElementById('edit-desc').value = btn.getAttribute('data-desc');
+      }
+    </script>
+    <script>
+      function applyFilters() {
+          const sortSelect = document.querySelector('select[onchange="applyFilters()"]');
+          const sortValue = sortSelect.value;
+
+          const searchInput = document.querySelector('input[name="category"]');
+          const searchValue = searchInput ? searchInput.value : '';
+
+          let url = window.location.pathname + '?sort=' + sortValue;
+
+          if (searchValue) {
+              url += '&category=' + encodeURIComponent(searchValue);
+          }
+
+          window.location.href = url + '#categories';
       }
     </script>
   </body>

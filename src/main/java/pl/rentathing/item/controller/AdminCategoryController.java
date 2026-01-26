@@ -19,16 +19,12 @@ public class AdminCategoryController {
     @GetMapping("/magazyn")
     public String inventoryPage(
             @RequestParam(name = "category", required = false) String search,
-            org.springframework.ui.Model model) {
+            @RequestParam(name = "sort", required = false, defaultValue = "idDesc") String sort,
+            Model model) {
 
-        List<CategoryDto> categories;
+        List<CategoryDto> categories = categoryService.searchAndSortCategories(search, sort);
 
-        if (search != null && !search.trim().isEmpty()) {
-            categories = categoryService.searchCategories(search);
-        } else {
-            categories = categoryService.getAllCategories();
-        }
-
+        model.addAttribute("currentSort", sort);
         model.addAttribute("categories", categories);
         model.addAttribute("searchQuery", search);
         return "admin/inventory";

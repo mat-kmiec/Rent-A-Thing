@@ -7,6 +7,7 @@ import pl.rentathing.item.entity.Category;
 import pl.rentathing.item.mapper.CategoryMapper;
 import pl.rentathing.item.repository.CategoryRepository;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
 
@@ -48,5 +49,38 @@ public class CategoryService {
         category.setIconClass(iconClass);
 
         categoryRepository.save(category);
+    }
+    public List<CategoryDto> searchAndSortCategories(String query, String sort) {
+        List<Category> categories;
+
+        if (query != null && !query.isEmpty()) {
+            categories = categoryRepository.findByNameContainingIgnoreCase(query);
+        } else {
+            categories = categoryRepository.findAll();
+        }
+
+        switch (sort) {
+            case "nameAsc":
+                categories.sort((c1, c2) -> c1.getName().compareToIgnoreCase(c2.getName()));
+                break;
+            case "nameDesc":
+                categories.sort((c1, c2) -> c2.getName().compareToIgnoreCase(c1.getName()));
+                break;
+            case "idAsc":
+                categories.sort(Comparator.comparing(Category::getId));
+                break;
+            default:
+                categories.sort((c1, c2) -> c2.getId().compareTo(c1.getId()));
+        }
+
+        return categories.stream().map(this::convertToDto).toList();
+    }
+    private CategoryDto convertToDto(Category category) {
+        CategoryDto dto = new CategoryDto();
+        dto.setId(category.getId());
+        dto.setName(category.getName());
+        dto.setDescription(category.getDescription());
+        dto.setIconClass(category.getIconClass());
+        return dto;
     }
 }
