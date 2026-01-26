@@ -27,7 +27,7 @@
                 <th:block sec:authorize="isAuthenticated()">
 
                     <li sec:authorize="hasRole('ADMIN')" class="nav-item ms-lg-3 mt-3 mt-lg-0 w-100 w-lg-auto">
-                        <a th:href="@{/admin/dashboard}" class="btn btn-dark px-4 rounded-pill w-100 w-lg-auto text-nowrap">
+                        <a th:href="@{/admin}" class="btn btn-dark px-4 rounded-pill w-100 w-lg-auto text-nowrap">
                             <i class="fa-solid fa-lock me-1"></i> Panel Admina
                         </a>
                     </li>

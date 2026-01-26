@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<nav class="navbar navbar-expand-lg fixed-top navbar-dark bg-dark shadow py-3" th:fragment="admin-nav(activePage)">
+    <div class="container-fluid px-4">
+        <a class="navbar-brand fw-bold text-white fs-4 d-flex align-items-center" href="/admin/dashboard">
+            <i class="fa-solid fa-layer-group text-primary me-2"></i>
+            Rent-A-Thing
+            <span class="badge bg-primary fs-xs ms-2 text-uppercase ls-1">Admin Panel</span>
+        </a>
+        <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#adminNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="adminNav">
+            <ul class="navbar-nav ms-4 me-auto align-items-center fw-medium">
+                <li class="nav-item">
+                    <a class="nav-link" th:classappend="${activePage == 'dashboard' ? 'active' : ''}" href="/admin">
+                        <i class="fa-solid fa-chart-line me-1"></i> Kokpit
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" th:classappend="${activePage == 'inventory' ? 'active' : ''}" href="/admin/inventory">
+                        <i class="fa-solid fa-boxes-stacked me-1"></i> Magazyn
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" th:classappend="${activePage == 'rentals' ? 'active' : ''}" href="/admin/rentals">
+                        <i class="fa-regular fa-calendar-check me-1"></i> Wypożyczenia
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" th:classappend="${activePage == 'users' ? 'active' : ''}" href="/admin/users">
+                        <i class="fa-solid fa-users me-1"></i> Użytkownicy
+                    </a>
+                </li>
+            </ul>
+            <div class="d-flex align-items-center gap-3 text-white">
+                <div class="d-none d-lg-block text-end lh-1">
+                    <small class="d-block text-white-50 fs-xs">Zalogowany jako</small>
+                    <span class="fw-bold">Administrator</span>
+                </div>
+                <div class="vr bg-secondary mx-1 d-none d-lg-block"></div>
+                <form th:action="@{/logout}" method="post">
+                    <button class="btn btn-outline-light btn-sm rounded-pill px-3">
+                        <i class="fa-solid fa-right-from-bracket"></i>
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</nav>
+</html>
