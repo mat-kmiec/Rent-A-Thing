@@ -1,16 +1,24 @@
 package pl.rentathing.Rental.Service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import pl.rentathing.Rental.Dto.RentalCreateDto;
+import pl.rentathing.Rental.Dto.RentalDetailsDto;
+import pl.rentathing.Rental.Dto.RentalHistoryDto;
 import pl.rentathing.Rental.Dto.RentalSummaryDto;
 import pl.rentathing.Rental.Entity.DeliveryMethod;
 import pl.rentathing.Rental.Entity.PaymentMethod;
 import pl.rentathing.Rental.Entity.Rental;
 import pl.rentathing.Rental.Entity.RentalStatus;
+import pl.rentathing.Rental.Mapper.RentalMapper;
 import pl.rentathing.Rental.Repository.RentalRepository;
 import pl.rentathing.Rental.exception.DateNotAvailableException;
+import pl.rentathing.Rental.exception.RentalNotFoundException;
 import pl.rentathing.auth.service.AuthService;
 import pl.rentathing.item.entity.Item;
 import pl.rentathing.item.exception.ItemNotFoundException;
@@ -33,6 +41,7 @@ public class RentalService {
     private final RentalPriceCalculator priceCalculator;
     private final AuthService authService;
     private final RentalAvailibilityService rentalAvailibilityService;
+    private final RentalMapper rentalMapper;
 
     @Transactional
     public RentalSummaryDto createRental(RentalCreateDto dto) {
@@ -93,6 +102,34 @@ public class RentalService {
 
         return dto;
     }
+
+    public Page<RentalHistoryDto> getUserRentalHistory(User user, String search, String status, String sort, int page) {
+        Sort sortOrder = sort.equalsIgnoreCase("asc") ?
+                Sort.by("startDateTime").ascending() :
+                Sort.by("startDateTime").descending();
+
+        Pageable pageable = PageRequest.of(page, 10, sortOrder);
+
+        RentalStatus rentalStatus = parseStatus(status);
+        String searchParam = (search == null || search.isEmpty()) ? null : search;
+        return rentalRepository.findFilteredRentals(user, searchParam, rentalStatus, pageable)
+                .map(rentalMapper::toHistoryDto);
+    }
+
+    public RentalDetailsDto getRentalDetails(Long id, User user) {
+        Rental rental = rentalRepository.findByIdAndUser(id, user)
+                .orElseThrow(RentalNotFoundException::new);
+
+        return rentalMapper.toDetailsDto(rental);
+    }
+
+    private RentalStatus parseStatus(String status) {
+        if (status != null && !status.isEmpty() && !status.equalsIgnoreCase("Wszystkie")) {
+            try { return RentalStatus.valueOf(status); } catch (Exception ignored) {}
+        }
+        return null;
+    }
+
 
 
 
