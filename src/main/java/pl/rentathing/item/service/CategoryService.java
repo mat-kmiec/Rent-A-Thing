@@ -20,5 +20,12 @@ public class CategoryService {
         List<Category> categories = categoryRepository.findAll();
         return categoryMapper.toDtoList(categories);
     }
-
+    public List<CategoryDto> searchCategories(String query) {
+        String lowerQuery = query.toLowerCase();
+        return categoryMapper.toDtoList(categoryRepository.findAll())
+                .stream()
+                .filter(c -> c.getName().toLowerCase().contains(lowerQuery) ||
+                        (c.getDescription() != null && c.getDescription().toLowerCase().contains(lowerQuery)))
+                .toList();
+    }
 }
