@@ -39,4 +39,14 @@ public class CategoryService {
     public void deleteCategory(Long id) {
         categoryRepository.deleteById(id);
     }
+    public void updateCategory(Long id, String name, String description, String iconClass) {
+        Category category = categoryRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Nie znaleziono kategorii o ID: " + id));
+
+        category.setName(name);
+        category.setDescription(description);
+        category.setIconClass(iconClass);
+
+        categoryRepository.save(category);
+    }
 }

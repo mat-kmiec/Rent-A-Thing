@@ -33,6 +33,7 @@ public class AdminCategoryController {
         model.addAttribute("searchQuery", search);
         return "admin/inventory";
     }
+
     @PostMapping("/magazyn/add")
     public String addCategory(@RequestParam String name,
                               @RequestParam(required = false) String description,
@@ -42,9 +43,19 @@ public class AdminCategoryController {
 
         return "redirect:/admin/magazyn#categories";
     }
+
     @PostMapping("/magazyn/delete/{id}")
     public String deleteCategory(@PathVariable Long id) {
         categoryService.deleteCategory(id);
+        return "redirect:/admin/magazyn#categories";
+    }
+
+    @PostMapping("/magazyn/edit")
+    public String editCategory(@RequestParam Long id,
+                               @RequestParam String name,
+                               @RequestParam String description,
+                               @RequestParam String iconClass) {
+        categoryService.updateCategory(id, name, description, iconClass);
         return "redirect:/admin/magazyn#categories";
     }
 }
