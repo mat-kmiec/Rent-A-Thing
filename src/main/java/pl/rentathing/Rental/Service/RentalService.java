@@ -1,6 +1,10 @@
 package pl.rentathing.Rental.Service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import pl.rentathing.Rental.Dto.RentalCreateDto;
@@ -93,6 +97,29 @@ public class RentalService {
 
         return dto;
     }
+
+    public Page<Rental> getUserRentalHistory(User user, String search, String status, String sort, int page) {
+        Sort sortOrder = sort.equalsIgnoreCase("asc") ?
+                Sort.by("startDateTime").ascending() :
+                Sort.by("startDateTime").descending();
+
+        Pageable pageable = PageRequest.of(page, 10, sortOrder);
+
+        RentalStatus rentalStatus = null;
+        if (status != null && !status.isEmpty() && !status.equalsIgnoreCase("Wszystkie")) {
+            try {
+                rentalStatus = RentalStatus.valueOf(status);
+            } catch (IllegalArgumentException e) {
+
+            }
+        }
+
+        String searchParam = (search == null || search.isEmpty()) ? null : search;
+
+        return rentalRepository.findFilteredRentals(user, searchParam, rentalStatus, pageable);
+    }
+
+
 
 
 
