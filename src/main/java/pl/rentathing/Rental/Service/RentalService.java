@@ -7,10 +7,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import pl.rentathing.Rental.Dto.RentalCreateDto;
-import pl.rentathing.Rental.Dto.RentalDetailsDto;
-import pl.rentathing.Rental.Dto.RentalHistoryDto;
-import pl.rentathing.Rental.Dto.RentalSummaryDto;
+import pl.rentathing.Rental.Dto.*;
 import pl.rentathing.Rental.Entity.DeliveryMethod;
 import pl.rentathing.Rental.Entity.PaymentMethod;
 import pl.rentathing.Rental.Entity.Rental;
@@ -128,6 +125,17 @@ public class RentalService {
             try { return RentalStatus.valueOf(status); } catch (Exception ignored) {}
         }
         return null;
+    }
+
+    public Page<RentalAdminListDto> getRentals(String search, RentalStatus status, String category, String returnDate, Pageable pageable) {
+        String cleanSearch = (search != null && !search.isBlank()) ? search : null;
+        String cleanCategory = (category != null && !category.isBlank()) ? category : null;
+        java.time.LocalDate date = (returnDate != null && !returnDate.isBlank())
+                ? java.time.LocalDate.parse(returnDate)
+                : null;
+
+        return rentalRepository.findAllFiltered(cleanSearch, status, cleanCategory, date, pageable)
+                .map(rentalMapper::toAdminListDto);
     }
 
 

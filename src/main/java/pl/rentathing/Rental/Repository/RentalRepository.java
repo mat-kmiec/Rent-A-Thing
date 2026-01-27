@@ -40,5 +40,22 @@ public interface RentalRepository extends JpaRepository<Rental, Long> {
 
     Optional<Rental> findByIdAndUser(Long id, User user);
 
+    @Query("SELECT r FROM Rental r " +
+            "LEFT JOIN r.item i " +
+            "LEFT JOIN r.user u " +
+            "WHERE (:search IS NULL OR " +
+            "   LOWER(i.title) LIKE LOWER(CONCAT('%', :search, '%')) OR " +
+            "   LOWER(u.lastName) LIKE LOWER(CONCAT('%', :search, '%')) OR " +
+            "   CAST(r.id AS string) LIKE CONCAT('%', :search, '%')) " +
+            "AND (:status IS NULL OR r.status = :status) " +
+            "AND (:category IS NULL OR i.category.name = :category) " +
+            "AND (:returnDate IS NULL OR CAST(r.endDateTime AS date) = :returnDate)")
+    Page<Rental> findAllFiltered(
+            @Param("search") String search,
+            @Param("status") RentalStatus status,
+            @Param("category") String category,
+            @Param("returnDate") java.time.LocalDate returnDate,
+            Pageable pageable);
+
 
 }

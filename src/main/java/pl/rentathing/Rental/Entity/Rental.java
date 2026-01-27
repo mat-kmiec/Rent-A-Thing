@@ -67,7 +67,7 @@ public class Rental {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     @Builder.Default
-    private RentalStatus status = RentalStatus.PENDING;
+    private RentalStatus status = RentalStatus.NEW;
 
     @Column(length = 1024)
     private String handOverNotes;
