@@ -1,5 +1,6 @@
 package pl.rentathing.Rental.Service;
 
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -136,6 +137,48 @@ public class RentalService {
 
         return rentalRepository.findAllFiltered(cleanSearch, status, cleanCategory, date, pageable)
                 .map(rentalMapper::toAdminListDto);
+
+    }
+
+    public RentalAdminDetailsDto getRentalDetails(Long id) {
+        return rentalRepository.findByIdWithDetails(id)
+                .map(rentalMapper::toAdminDetailsDto)
+                .orElseThrow(RentalNotFoundException::new);
+    }
+
+    @Transactional
+    public void markDepositAsPaid(Long id) {
+        Rental rental = rentalRepository.findById(id).orElseThrow();
+        rental.setDepositPaid(true);
+    }
+
+    @Transactional
+    public void cancelRental(Long id) {
+        Rental rental = rentalRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Rental not found"));
+
+        rental.setStatus(RentalStatus.CANCELLED);
+        rental.getItem().setAvailable(true);
+
+        rentalRepository.save(rental);
+    }
+
+    @Transactional
+    public void updateStatus(Long id, RentalStatus newStatus) {
+        Rental rental = rentalRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Nie znaleziono wypożyczenia"));
+
+        rental.setStatus(newStatus);
+
+        if (newStatus == RentalStatus.COMPLETED || newStatus == RentalStatus.CANCELLED) {
+            rental.getItem().setAvailable(true);
+        }
+
+        if (newStatus == RentalStatus.ACTIVE) {
+            rental.getItem().setAvailable(false);
+        }
+
+        rentalRepository.save(rental);
     }
 
 

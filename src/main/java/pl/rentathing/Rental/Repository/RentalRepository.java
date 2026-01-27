@@ -21,7 +21,7 @@ public interface RentalRepository extends JpaRepository<Rental, Long> {
     SELECT COUNT(r) > 0 FROM Rental r 
     WHERE r.item.id = :itemId 
     AND (
-        (r.status IN ('PENDING', 'ACTIVE', 'OVERDUE') AND r.startDateTime <= :end AND r.endDateTime >= :start)
+        (r.status IN ('NEW', 'PENDING', 'ACTIVE', 'OVERDUE') AND r.startDateTime <= :end AND r.endDateTime >= :start)
     )
 """)
     boolean existsConflictWithBuffer(@Param("itemId") Long itemId,
@@ -56,6 +56,14 @@ public interface RentalRepository extends JpaRepository<Rental, Long> {
             @Param("category") String category,
             @Param("returnDate") java.time.LocalDate returnDate,
             Pageable pageable);
+
+    @Query("SELECT r FROM Rental r " +
+            "JOIN FETCH r.item i " +
+            "JOIN FETCH i.category " +
+            "JOIN FETCH r.user u " +
+            "LEFT JOIN FETCH u.address " +
+            "WHERE r.id = :id")
+    Optional<Rental> findByIdWithDetails(@Param("id") Long id);
 
 
 }

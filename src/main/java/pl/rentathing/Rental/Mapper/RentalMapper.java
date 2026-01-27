@@ -2,10 +2,13 @@ package pl.rentathing.Rental.Mapper;
 
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.Named;
+import pl.rentathing.Rental.Dto.RentalAdminDetailsDto;
 import pl.rentathing.Rental.Dto.RentalAdminListDto;
 import pl.rentathing.Rental.Dto.RentalDetailsDto;
 import pl.rentathing.Rental.Dto.RentalHistoryDto;
 import pl.rentathing.Rental.Entity.Rental;
+import pl.rentathing.user.entity.Address;
 
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
@@ -48,5 +51,29 @@ public interface RentalMapper {
             long days = ChronoUnit.DAYS.between(rental.getEndDateTime(), now);
             return days == 0 ? "Dzisiaj po terminie" : "+" + days + " dni po terminie";
         }
+    }
+
+    @Mapping(target = "userFullName", expression = "java(rental.getUser().getFirstName() + \" \" + rental.getUser().getLastName())")
+    @Mapping(target = "userEmail", source = "user.email")
+    @Mapping(target = "userPhone", source = "user.phoneNumber")
+    @Mapping(target = "fullAddress", source = "user.address", qualifiedByName = "mapAddress")
+    @Mapping(target = "itemTitle", source = "item.title")
+    @Mapping(target = "itemSku", source = "item.sku")
+    @Mapping(target = "itemCategoryName", source = "item.category.name")
+    @Mapping(target = "itemCategoryIcon", source = "item.category.iconClass")
+    @Mapping(target = "itemImageUrl", source = "item.imageUrl")
+    @Mapping(target = "statusDisplayName", source = "status.displayName")
+    @Mapping(target = "statusBadgeClass", source = "status.badgeClass")
+    @Mapping(target = "overdue", expression = "java(rental.getStatus() == pl.rentathing.Rental.Entity.RentalStatus.ACTIVE && java.time.LocalDateTime.now().isAfter(rental.getEndDateTime()))")
+    @Mapping(target = "durationDays", expression = "java(java.time.Duration.between(rental.getStartDateTime(), rental.getEndDateTime()).toDays())")
+    RentalAdminDetailsDto toAdminDetailsDto(Rental rental);
+
+    @Named("mapAddress")
+    default String mapAddress(Address address) {
+        if (address == null) return "Brak adresu";
+        String apt = (address.getApartmentNumber() != null && !address.getApartmentNumber().isEmpty())
+                ? "/" + address.getApartmentNumber() : "";
+        return String.format("%s %s%s, %s %s",
+                address.getStreet(), address.getHouseNumber(), apt, address.getZipCode(), address.getCity());
     }
 }

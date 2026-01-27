@@ -126,11 +126,60 @@
                             </td>
                             <td class="text-end pe-4">
                                 <button th:if="${rental.status.name() == 'ACTIVE'}"
-                                        class="btn btn-sm btn-success rounded-pill px-3 shadow-sm">
-                                    <i class="fa-solid fa-check me-1"></i> Zwrot
+                                        class="btn btn-sm btn-success rounded-pill px-3 shadow-sm"
+                                        data-bs-toggle="modal"
+                                        th:data-bs-target="'#returnModal' + ${rental.id}">
+                                    <i class="fa-solid fa-arrow-rotate-left me-1"></i> Zwrot
                                 </button>
                                 <button th:if="${rental.isOverdue}" class="btn btn-sm btn-outline-danger rounded-pill px-3">Wezwij</button>
-                                <button th:unless="${rental.status.name() == 'ACTIVE'}" class="btn btn-sm btn-light border rounded-pill px-3">Szczegóły</button>
+                                <a th:href="@{/admin/rentals/{id}(id=${rental.id})}"
+                                   class="btn btn-sm btn-light border rounded-pill px-3">
+                                    <i class="fa-solid fa-eye me-1"></i> Szczegóły
+                                </a>
+                                <div th:if="${rental.status.name() == 'ACTIVE'}"
+                                     class="modal fade"
+                                     th:id="'returnModal' + ${rental.id}"
+                                     tabindex="-1"
+                                     aria-hidden="true">
+                                    <div class="modal-dialog modal-dialog-centered modal-sm" style="max-width: 380px;">
+                                        <div class="modal-content border-0 shadow-lg rounded-5">
+                                            <form th:action="@{/admin/rentals/{id}/return(id=${rental.id})}" method="post">
+                                                <div class="modal-body p-4 text-center">
+
+                                                    <div class="bg-success bg-opacity-10 text-success rounded-circle d-flex align-items-center justify-content-center mx-auto mb-4"
+                                                         style="width: 70px; height: 70px;">
+                                                        <i class="fa-solid fa-arrow-rotate-left fs-2"></i>
+                                                    </div>
+
+                                                    <h4 class="fw-bold mb-2">Zatwierdzić zwrot?</h4>
+                                                    <p class="text-muted small mb-4">
+                                                        Przedmiot: <strong class="text-dark" th:text="${rental.itemTitle}">Sprzęt</strong><br>
+                                                        Klient: <span th:text="${rental.userFullName}">Użytkownik</span>
+                                                    </p>
+
+                                                    <div class="mb-4 text-start">
+                                                        <label class="form-label small fw-bold text-muted ms-2">Notatki ze zwrotu</label>
+                                                        <textarea name="returnNotes"
+                                                                  class="form-control border-0 bg-light rounded-4 p-3 shadow-none small"
+                                                                  rows="3"
+                                                                  placeholder="W jakim stanie jest przedmiot?"></textarea>
+                                                    </div>
+
+                                                    <div class="d-grid gap-2">
+                                                        <button type="submit" class="btn btn-dark rounded-pill py-3 fw-bold">
+                                                            Zatwierdź odbiór
+                                                        </button>
+                                                        <button type="button" class="btn btn-light rounded-pill py-3 fw-bold text-muted border-0"
+                                                                data-bs-dismiss="modal">
+                                                            Anuluj
+                                                        </button>
+                                                    </div>
+
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
                             </td>
                         </tr>
                         </tbody>
