@@ -22,6 +22,12 @@ import pl.rentathing.user.repository.UserRepository;
 
 import java.time.LocalDate;
 
+/**
+ * Controller for handling rental-related operations.
+ * Provides endpoints for displaying the rental form, confirming rental requests,
+ * and showing success messages after successful rentals.
+ * Utilizes services for item management, authentication, and rental processing.
+ */
 @Controller
 @RequestMapping("/wypozyczenia")
 @RequiredArgsConstructor
@@ -32,6 +38,17 @@ public class RentalController {
     private final UserRepository userRepository;
     private final AuthService authService;
 
+    /**
+     * Handles GET requests to display the rental form for a specific item.
+     * Prepares and populates the necessary data for the rental form, including item details,
+     * rental information, and the current user.
+     *
+     * @param itemId the ID of the item being rented
+     * @param startDate the optional start date of the rental, formatted as ISO date
+     * @param endDate the optional end date of the rental, formatted as ISO date
+     * @param model the model used to add attributes for rendering the view
+     * @return the name of the view template for the rental form, or a redirect URL if the item is not available
+     */
     @GetMapping("/formularz")
     public String showRentalForm(
             @RequestParam(name = "przedmiot") Long itemId,
@@ -55,6 +72,15 @@ public class RentalController {
         return "rental/form";
     }
 
+    /**
+     * Handles the request to display the rental success page.
+     * If the required rental summary attribute is not present in the model,
+     * it redirects to the catalog page instead.
+     *
+     * @param model the model containing attributes passed to the view
+     * @return the name of the view to be resolved, either the success page
+     *         or redirection to the catalog page
+     */
     @GetMapping("/sukces")
     public String showRentalSuccess(Model model) {
         if (!model.containsAttribute("rentalSummary")) {
@@ -63,6 +89,16 @@ public class RentalController {
         return "rental/succes";
     }
 
+    /**
+     * Handles the confirmation of a rental process by validating the input data,
+     * processing the rental creation, and redirecting to the appropriate view based on the outcome.
+     *
+     * @param rentalCreateDto The data transfer object containing the details of the rental to be created.
+     * @param bindingResult The object that holds the result of the validation and potential validation errors.
+     * @param redirectAttributes The object used to add flash attributes to the redirect response.
+     * @return A string representing the redirection URL, which varies depending on the validation status
+     *         and result of the rental creation process.
+     */
     @PostMapping("/potwierdz")
     public String confirmRental(
             @Valid @ModelAttribute("rentalCreateDto") RentalCreateDto rentalCreateDto,

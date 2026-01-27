@@ -6,6 +6,23 @@ import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDate;
 
+/**
+ * Represents a Data Transfer Object (DTO) for creating a new rental.
+ *
+ * This class is used to encapsulate data required for initiating a rental operation.
+ * It includes information about the item, rental dates, customer details,
+ * delivery preferences, and payment methods.
+ *
+ * Fields:
+ * - itemId: The unique identifier of the item to be rented.
+ * - startDate: The start date of the rental period. Must be the current or a future date.
+ * - endDate: The end date of the rental period.
+ * - firstName: The first name of the customer. This field is mandatory.
+ * - lastName: The last name of the customer. This field is mandatory.
+ * - email: The email address of the customer, validated for proper format.
+ * - deliveryMethod: The delivery method for the rented item, selected by the customer.
+ * - payment: The selected payment method for the rental.
+ */
 @Data
 public class RentalCreateDto {
 

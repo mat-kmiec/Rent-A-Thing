@@ -17,6 +17,15 @@ import java.time.LocalDate;
 import java.util.List;
 
 
+/**
+ * Service responsible for exporting rental data to a CSV format.
+ * It retrieves rental data within a specified date range from the repository
+ * and maps it into a format suitable for export using OpenCSV.
+ *
+ * Dependencies:
+ * - RentalRepository: Used to fetch rental data from the database.
+ * - RentalMapper: Used to transform Rental entities into DTOs for export.
+ */
 @Service
 @RequiredArgsConstructor
 public class RentalExportService {
@@ -24,6 +33,17 @@ public class RentalExportService {
     private final RentalRepository rentalRepository;
     private final RentalMapper rentalMapper;
 
+    /**
+     * Exports rental data within the specified date range to a CSV format.
+     *
+     * This method retrieves rental records matching the provided start and end dates, converts them
+     * into a structured format suitable for CSV export, and generates a CSV file as a byte array.
+     * The generated CSV uses ';' as the separator and does not apply quotes to all fields.
+     *
+     * @param from the start date of the rental period, inclusive
+     * @param to the end date of the rental period, inclusive
+     * @return a byte array representing the CSV file containing rental data
+     */
     public byte[] exportRentalsToCsv(LocalDate from, LocalDate to) {
         List<Rental> rentals = rentalRepository.findAllByStartDateTimeBetweenWithDetails(
                 from.atStartOfDay(),

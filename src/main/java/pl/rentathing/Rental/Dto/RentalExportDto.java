@@ -6,6 +6,23 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
+/**
+ * Data Transfer Object (DTO) used for exporting rental information.
+ *
+ * This class is designed for scenarios where rental data needs to be exported,
+ * such as generating reports or exporting to a CSV file. It encapsulates fundamental
+ * rental details including the rental ID, item title, customer details, rental duration,
+ * costs, and status.
+ *
+ * Key Fields:
+ * - id: The unique identifier of the rental record.
+ * - itemTitle: The title of the rented item.
+ * - userFullName: The full name of the customer who rented the item.
+ * - startDateTime: The start date and time of the rental period.
+ * - endDateTime: The end date and time of the rental period.
+ * - totalCost: The total cost associated with the rental.
+ * - status: The current status of the rental.
+ */
 @Getter @Setter
 public class RentalExportDto {
     @CsvBindByName(column = "ID")

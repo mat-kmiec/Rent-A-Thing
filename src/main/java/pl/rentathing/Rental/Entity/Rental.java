@@ -11,6 +11,12 @@ import pl.rentathing.user.entity.User;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
+/**
+ * Represents a rental entity that tracks information about an item being rented by a user.
+ *
+ * This entity stores details about the rented item, user, rental time frames, payment,
+ * delivery, and additional options such as deposits or shipping costs.
+ */
 @Entity
 @Table(name = "rentals")
 @Getter
