@@ -181,6 +181,22 @@ public class RentalService {
         rentalRepository.save(rental);
     }
 
+    @Transactional
+    public void processReturn(Long id, String returnNotes) {
+        Rental rental = rentalRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Nie znaleziono wypożyczenia o ID: " + id));
+
+        rental.setStatus(RentalStatus.COMPLETED);
+        rental.setReturnDateTime(LocalDateTime.now());
+        rental.setReturnNotes(returnNotes);
+
+        if (rental.getItem() != null) {
+            rental.getItem().setAvailable(true);
+        }
+
+        rentalRepository.save(rental);
+    }
+
 
 
 

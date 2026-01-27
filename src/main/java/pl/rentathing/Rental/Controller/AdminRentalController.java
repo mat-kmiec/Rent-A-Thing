@@ -94,4 +94,15 @@ public class AdminRentalController {
                 .contentType(MediaType.parseMediaType("text/csv; charset=UTF-8"))
                 .body(csvContent);
     }
+
+    @PostMapping("/{id}/return")
+    public String handleReturn(@PathVariable Long id, @RequestParam(required = false) String returnNotes, RedirectAttributes ra) {
+        try {
+            rentalService.processReturn(id, returnNotes);
+            ra.addFlashAttribute("success", "Przedmiot został pomyślnie odebrany i zwrócony do puli.");
+        } catch (Exception e) {
+            ra.addFlashAttribute("error", "Wystąpił błąd podczas procesowania zwrotu: " + e.getMessage());
+        }
+        return "redirect:/admin/rentals/" + id;
+    }
 }
