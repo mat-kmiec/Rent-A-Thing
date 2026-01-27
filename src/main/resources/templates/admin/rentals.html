@@ -14,8 +14,9 @@
                 <p class="text-muted small mb-0">Zarządzaj wszystkimi transakcjami w jednym miejscu.</p>
             </div>
             <div class="d-flex gap-2">
-                <button class="btn btn-white border shadow-sm rounded-pill">
-                    <i class="fa-solid fa-download me-2"></i> Eksportuj
+                <button class="btn btn-white border shadow-sm rounded-pill px-4"
+                        data-bs-toggle="modal" data-bs-target="#exportModal">
+                    <i class="fa-solid fa-file-csv me-2 text-success"></i> Eksportuj do CSV
                 </button>
                 <button class="btn btn-dark rounded-pill shadow-sm">
                     <i class="fa-solid fa-plus me-2"></i> Nowe Wypożyczenie
@@ -228,6 +229,48 @@
         </div>
     </div>
 </main>
+
+<div class="modal fade" id="exportModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-sm" style="max-width: 400px;">
+        <div class="modal-content border-0 shadow-lg rounded-5 overflow-hidden">
+            <form th:action="@{/admin/rentals/export}" method="get">
+                <div class="modal-body p-4 text-center">
+                    <div class="bg-success bg-opacity-10 text-success rounded-circle d-flex align-items-center justify-content-center mx-auto mb-4"
+                         style="width: 70px; height: 70px;">
+                        <i class="fa-solid fa-download fs-2"></i>
+                    </div>
+
+                    <h4 class="fw-bold mb-2">Eksportuj Raport</h4>
+                    <p class="text-muted small mb-4 px-3">Wybierz zakres dat (rozpoczęcia wynajmu), który ma trafić do pliku .csv</p>
+
+                    <div class="row g-3 mb-4">
+                        <div class="col-12 text-start">
+                            <label class="form-label small fw-bold text-muted ms-2 text-uppercase">Data od</label>
+                            <input type="date" name="from"
+                                   class="form-control border-0 bg-light rounded-4 p-3 shadow-none fw-medium"
+                                   required th:value="${#temporals.format(#temporals.createNow().minusMonths(1), 'yyyy-MM-dd')}">
+                        </div>
+                        <div class="col-12 text-start">
+                            <label class="form-label small fw-bold text-muted ms-2 text-uppercase">Data do</label>
+                            <input type="date" name="to"
+                                   class="form-control border-0 bg-light rounded-4 p-3 shadow-none fw-medium"
+                                   required th:value="${#temporals.format(#temporals.createNow(), 'yyyy-MM-dd')}">
+                        </div>
+                    </div>
+
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-dark rounded-pill py-3 fw-bold shadow-sm">
+                            Generuj i pobierz
+                        </button>
+                        <button type="button" class="btn btn-light rounded-pill py-3 fw-bold text-muted border-0" data-bs-dismiss="modal">
+                            Anuluj
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
 
 <footer th:replace="~{fragments/footer-admin :: footer-admin}"></footer>
 </body>

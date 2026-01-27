@@ -12,6 +12,7 @@ import pl.rentathing.user.entity.User;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -64,6 +65,16 @@ public interface RentalRepository extends JpaRepository<Rental, Long> {
             "LEFT JOIN FETCH u.address " +
             "WHERE r.id = :id")
     Optional<Rental> findByIdWithDetails(@Param("id") Long id);
+
+    @Query("SELECT r FROM Rental r " +
+            "JOIN FETCH r.item i " +
+            "JOIN FETCH r.user u " +
+            "WHERE r.startDateTime >= :start AND r.startDateTime <= :end " +
+            "ORDER BY r.startDateTime DESC")
+    List<Rental> findAllByStartDateTimeBetweenWithDetails(
+            @Param("start") LocalDateTime start,
+            @Param("end") LocalDateTime end
+    );
 
 
 }

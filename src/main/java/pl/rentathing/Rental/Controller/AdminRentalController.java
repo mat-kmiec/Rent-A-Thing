@@ -5,6 +5,10 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -12,8 +16,11 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import pl.rentathing.Rental.Dto.RentalAdminListDto;
 import pl.rentathing.Rental.Entity.Rental;
 import pl.rentathing.Rental.Entity.RentalStatus;
+import pl.rentathing.Rental.Service.RentalExportService;
 import pl.rentathing.Rental.Service.RentalService;
 import pl.rentathing.item.service.CategoryService;
+
+import java.time.LocalDate;
 
 @Controller
 @RequestMapping("/admin/rentals")
@@ -22,6 +29,7 @@ public class AdminRentalController {
 
     private final RentalService rentalService;
     private final CategoryService categoryService;
+    private final RentalExportService rentalExportService;
 
     @GetMapping
     public String listRentals(
@@ -70,5 +78,20 @@ public class AdminRentalController {
             ra.addFlashAttribute("error", "Nie udało się zmienić statusu.");
         }
         return "redirect:/admin/rentals/" + id;
+    }
+
+    @GetMapping("/export")
+    public ResponseEntity<byte[]> exportToCsv(
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate from,
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate to) {
+
+        byte[] csvContent = rentalExportService.exportRentalsToCsv(from, to);
+
+        String fileName = String.format("wypozyczenia_%s_do_%s.csv", from, to);
+
+        return ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + fileName)
+                .contentType(MediaType.parseMediaType("text/csv; charset=UTF-8"))
+                .body(csvContent);
     }
 }

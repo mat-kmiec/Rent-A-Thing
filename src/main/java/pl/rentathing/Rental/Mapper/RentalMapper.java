@@ -3,15 +3,13 @@ package pl.rentathing.Rental.Mapper;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Named;
-import pl.rentathing.Rental.Dto.RentalAdminDetailsDto;
-import pl.rentathing.Rental.Dto.RentalAdminListDto;
-import pl.rentathing.Rental.Dto.RentalDetailsDto;
-import pl.rentathing.Rental.Dto.RentalHistoryDto;
+import pl.rentathing.Rental.Dto.*;
 import pl.rentathing.Rental.Entity.Rental;
 import pl.rentathing.user.entity.Address;
 
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
+import java.util.List;
 
 @Mapper(componentModel = "spring", imports = {LocalDateTime.class, ChronoUnit.class})
 public interface RentalMapper {
@@ -76,4 +74,14 @@ public interface RentalMapper {
         return String.format("%s %s%s, %s %s",
                 address.getStreet(), address.getHouseNumber(), apt, address.getZipCode(), address.getCity());
     }
+
+    @Mapping(target = "itemTitle", source = "item.title")
+    @Mapping(target = "userFullName", expression = "java(rental.getUser().getFirstName() + \" \" + rental.getUser().getLastName())")
+    @Mapping(target = "startDateTime", source = "startDateTime", dateFormat = "yyyy-MM-dd HH:mm")
+    @Mapping(target = "endDateTime", source = "endDateTime", dateFormat = "yyyy-MM-dd HH:mm")
+    @Mapping(target = "status", source = "status.displayName")
+    @Mapping(target = "totalCost", expression = "java(rental.getTotalCost() != null ? rental.getTotalCost().toString() + \" zł\" : \"0 zł\")")
+    RentalExportDto toExportDto(Rental rental);
+
+    List<RentalExportDto> toExportDtoList(List<Rental> rentals);
 }
