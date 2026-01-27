@@ -5,8 +5,11 @@ import org.mapstruct.Mapping;
 import org.mapstruct.Named;
 import pl.rentathing.Rental.Dto.*;
 import pl.rentathing.Rental.Entity.Rental;
+import pl.rentathing.item.entity.Item;
 import pl.rentathing.user.entity.Address;
+import pl.rentathing.user.entity.User;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
@@ -84,4 +87,25 @@ public interface RentalMapper {
     RentalExportDto toExportDto(Rental rental);
 
     List<RentalExportDto> toExportDtoList(List<Rental> rentals);
+
+    default UserSearchDto toUserSearchDto(User user) {
+        return new UserSearchDto(
+                user.getId(),
+                user.getFirstName() + " " + user.getLastName() + " (" + user.getEmail() + ")",
+                user.getEmail()
+        );
+    }
+
+    default ItemSearchDto toItemSearchDto(Item item) {
+        return new ItemSearchDto(
+                item.getId(),
+                item.getTitle(),
+                item.getSku(),
+                item.getImageUrl(),
+                item.getPricePerDay(),
+                item.getDepositPrice() != null ? item.getDepositPrice() : BigDecimal.ZERO,
+                item.getShippingPrice() != null ? item.getShippingPrice() : BigDecimal.ZERO,
+                item.getCanBeShipped() != null ? item.getCanBeShipped() : false
+        );
+    }
 }

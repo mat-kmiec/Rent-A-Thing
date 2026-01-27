@@ -27,6 +27,8 @@ import pl.rentathing.user.repository.UserRepository;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -197,9 +199,69 @@ public class RentalService {
         rentalRepository.save(rental);
     }
 
+    @Transactional(readOnly = true)
+    public List<UserSearchDto> searchUsersForAdmin(String query) {
+        return userRepository.searchUsersForAdmin(query, PageRequest.of(0, 10))
+                .stream()
+                .map(rentalMapper::toUserSearchDto)
+                .toList();
+    }
 
+    public List<ItemSearchDto> searchItemsForAdmin(String query) {
+        List<Item> items = itemRepository.searchAllItemsForAdmin(query, PageRequest.of(0, 10));
 
+        return items.stream()
+                .map(item -> new ItemSearchDto(
+                        item.getId(),
+                        item.getTitle(),
+                        item.getSku(),
+                        item.getImageUrl(),
+                        item.getPricePerDay(),
+                        item.getDepositPrice() != null ? item.getDepositPrice() : BigDecimal.ZERO,
+                        item.getShippingPrice() != null ? item.getShippingPrice() : BigDecimal.ZERO,
+                        item.getCanBeShipped() != null ? item.getCanBeShipped() : false
+                ))
+                .collect(Collectors.toList());
+    }
 
+    @Transactional
+    public void createRentalByAdmin(AdminRentalCreateDto dto) {
+        Item item = itemRepository.findById(dto.getItemId())
+                .orElseThrow(() -> new ItemNotFoundException("Nie znaleziono przedmiotu"));
 
+        User user = userRepository.findById(dto.getUserId())
+                .orElseThrow(() -> new EntityNotFoundException("Nie znaleziono użytkownika"));
 
+        if (!rentalAvailibilityService.isAvailable(item.getId(), dto.getStartDate(), dto.getEndDate())) {
+            throw new DateNotAvailableException();
+        }
+
+        long days = priceCalculator.calculateRentalDays(dto.getStartDate(), dto.getEndDate());
+        BigDecimal pricePerDay = priceCalculator.calculateDiscountedPrice(item);
+        BigDecimal shippingCost = priceCalculator.calculateShippingCost(item, dto.getDeliveryMethod().name());
+        BigDecimal deposit = priceCalculator.calculateDeposit(item);
+        BigDecimal totalCost = pricePerDay.multiply(BigDecimal.valueOf(days)).add(shippingCost);
+
+        Rental rental = Rental.builder()
+                .item(item)
+                .user(user)
+                .startDateTime(dto.getStartDate().atStartOfDay())
+                .endDateTime(dto.getEndDate().atTime(23, 59, 59))
+                .totalCost(totalCost)
+                .shippingCost(shippingCost)
+                .deposit(deposit)
+                .deliveryMethod(dto.getDeliveryMethod())
+                .paymentMethod(dto.getPaymentMethod())
+                .status(RentalStatus.ACTIVE)
+                .depositPaid(dto.isMarkDepositPaid())
+                .invoiceRequested(false)
+                .createdAt(LocalDateTime.now())
+                .build();
+
+        if (rental.getStatus() == RentalStatus.ACTIVE) {
+            item.setAvailable(false);
+        }
+
+        rentalRepository.save(rental);
+    }
 }

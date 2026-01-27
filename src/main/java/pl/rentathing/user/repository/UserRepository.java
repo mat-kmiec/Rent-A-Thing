@@ -9,6 +9,7 @@ import org.springframework.stereotype.Repository;
 import pl.rentathing.user.entity.Role;
 import pl.rentathing.user.entity.User;
 
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -38,4 +39,10 @@ public interface UserRepository extends JpaRepository<User, Long> {
                      @Param("statusLocked") Boolean statusLocked,
                      @Param("statusDisabled") Boolean statusDisabled,
                      Pageable pageable);
+
+    @Query("SELECT u FROM User u WHERE " +
+            "LOWER(u.firstName) LIKE LOWER(CONCAT('%', :query, '%')) OR " +
+            "LOWER(u.lastName) LIKE LOWER(CONCAT('%', :query, '%')) OR " +
+            "LOWER(u.email) LIKE LOWER(CONCAT('%', :query, '%'))")
+    List<User> searchUsersForAdmin(@Param("query") String query, Pageable pageable);
 }

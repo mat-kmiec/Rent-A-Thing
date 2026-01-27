@@ -1,5 +1,6 @@
 package pl.rentathing.Rental.Controller;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -11,16 +12,20 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import pl.rentathing.Rental.Dto.AdminRentalCreateDto;
+import pl.rentathing.Rental.Dto.ItemSearchDto;
 import pl.rentathing.Rental.Dto.RentalAdminListDto;
-import pl.rentathing.Rental.Entity.Rental;
+import pl.rentathing.Rental.Dto.UserSearchDto;
 import pl.rentathing.Rental.Entity.RentalStatus;
 import pl.rentathing.Rental.Service.RentalExportService;
 import pl.rentathing.Rental.Service.RentalService;
 import pl.rentathing.item.service.CategoryService;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Controller
 @RequestMapping("/admin/rentals")
@@ -104,5 +109,45 @@ public class AdminRentalController {
             ra.addFlashAttribute("error", "Wystąpił błąd podczas procesowania zwrotu: " + e.getMessage());
         }
         return "redirect:/admin/rentals/" + id;
+    }
+
+    @GetMapping("/create")
+    public String showCreateForm(Model model) {
+        model.addAttribute("rentalDto", new AdminRentalCreateDto());
+        return "admin/rental-create";
+    }
+
+    @PostMapping("/create")
+    public String processCreateForm(@Valid @ModelAttribute("rentalDto") AdminRentalCreateDto dto,
+                                    BindingResult result,
+                                    Model model,
+                                    RedirectAttributes redirectAttributes) {
+
+        if (result.hasErrors()) {
+            return "admin/rental-create";
+        }
+
+        try {
+            rentalService.createRentalByAdmin(dto);
+            redirectAttributes.addFlashAttribute("success", "Pomyślnie utworzono nowe wypożyczenie.");
+
+            return "redirect:/admin/rentals";
+
+        } catch (Exception e) {
+            model.addAttribute("error", e.getMessage());
+            return "admin/rental-create";
+        }
+    }
+
+    @GetMapping("/api/users/search")
+    @ResponseBody
+    public ResponseEntity<List<UserSearchDto>> searchUsers(@RequestParam String query) {
+        return ResponseEntity.ok(rentalService.searchUsersForAdmin(query));
+    }
+
+    @GetMapping("/api/items/search")
+    @ResponseBody
+    public ResponseEntity<List<ItemSearchDto>> searchItems(@RequestParam String query) {
+        return ResponseEntity.ok(rentalService.searchItemsForAdmin(query));
     }
 }
