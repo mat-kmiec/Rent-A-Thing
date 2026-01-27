@@ -16,13 +16,16 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import pl.rentathing.Rental.Dto.RentalAdminCreateDto;
+import pl.rentathing.Rental.exception.RentalException;
 import pl.rentathing.item.dto.ItemSearchDto;
 import pl.rentathing.Rental.Dto.RentalAdminListDto;
+import pl.rentathing.item.exception.ItemException;
 import pl.rentathing.user.dto.UserSearchDto;
 import pl.rentathing.Rental.Entity.RentalStatus;
 import pl.rentathing.Rental.Service.RentalExportService;
 import pl.rentathing.Rental.Service.RentalService;
 import pl.rentathing.item.service.CategoryService;
+import pl.rentathing.user.exception.UserException;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -95,7 +98,8 @@ public class AdminRentalController {
     @PostMapping("/{id}/pay-deposit")
     public String handleDeposit(@PathVariable Long id, RedirectAttributes ra) {
         rentalService.markDepositAsPaid(id);
-        ra.addFlashAttribute("success", "Kaucja została odnotowana jako wpłacona.");
+        ra.addFlashAttribute("toastType", "success");
+        ra.addFlashAttribute("toastMessage", "Kaucja została odnotowana jako wpłacona.");
         return "redirect:/admin/rentals/" + id;
     }
 
@@ -110,7 +114,8 @@ public class AdminRentalController {
     @PostMapping("/{id}/cancel")
     public String handleCancel(@PathVariable Long id, RedirectAttributes ra) {
         rentalService.cancelRental(id);
-        ra.addFlashAttribute("info", "Wypożyczenie zostało anulowane.");
+        ra.addFlashAttribute("toastType", "info");
+        ra.addFlashAttribute("toastMessage", "Wypożyczenie zostało anulowane.");
         return "redirect:/admin/rentals/" + id;
     }
 
@@ -126,9 +131,11 @@ public class AdminRentalController {
     public String updateStatus(@PathVariable Long id, @RequestParam RentalStatus newStatus, RedirectAttributes ra) {
         try {
             rentalService.updateStatus(id, newStatus);
-            ra.addFlashAttribute("success", "Status wypożyczenia został zmieniony na: " + newStatus.getDisplayName());
+            ra.addFlashAttribute("toastType", "success");
+            ra.addFlashAttribute("toastMessage", "Status zmieniony na: " + newStatus.getDisplayName());
         } catch (Exception e) {
-            ra.addFlashAttribute("error", "Nie udało się zmienić statusu.");
+            ra.addFlashAttribute("toastType", "error");
+            ra.addFlashAttribute("toastMessage", "Błąd: " + e.getMessage());
         }
         return "redirect:/admin/rentals/" + id;
     }
@@ -142,18 +149,30 @@ public class AdminRentalController {
      *         along with appropriate headers for file download
      */
     @GetMapping("/export")
-    public ResponseEntity<byte[]> exportToCsv(
-            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate from,
-            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate to) {
+    public Object exportToCsv(
+                               @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate from,
+                               @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate to,
+                               RedirectAttributes ra) {
 
-        byte[] csvContent = rentalExportService.exportRentalsToCsv(from, to);
+        if (to.isBefore(from)) {
+            ra.addFlashAttribute("toastType", "warning");
+            ra.addFlashAttribute("toastMessage", "Data końcowa nie może być wcześniejsza niż początkowa.");
+            return "redirect:/admin/rentals";
+        }
 
-        String fileName = String.format("wypozyczenia_%s_do_%s.csv", from, to);
+        try {
+            byte[] csvContent = rentalExportService.exportRentalsToCsv(from, to);
+            String fileName = String.format("wypozyczenia_%s_do_%s.csv", from, to);
 
-        return ResponseEntity.ok()
-                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + fileName)
-                .contentType(MediaType.parseMediaType("text/csv; charset=UTF-8"))
-                .body(csvContent);
+            return ResponseEntity.ok()
+                    .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + fileName)
+                    .contentType(MediaType.parseMediaType("text/csv; charset=UTF-8"))
+                    .body(csvContent);
+        } catch (Exception e) {
+            ra.addFlashAttribute("toastType", "error");
+            ra.addFlashAttribute("toastMessage", "Błąd generowania raportu.");
+            return "redirect:/admin/rentals";
+        }
     }
 
     /**
@@ -168,9 +187,11 @@ public class AdminRentalController {
     public String handleReturn(@PathVariable Long id, @RequestParam(required = false) String returnNotes, RedirectAttributes ra) {
         try {
             rentalService.processReturn(id, returnNotes);
-            ra.addFlashAttribute("success", "Przedmiot został pomyślnie odebrany i zwrócony do puli.");
+            ra.addFlashAttribute("toastType", "success");
+            ra.addFlashAttribute("toastMessage", "Przedmiot został pomyślnie odebrany.");
         } catch (Exception e) {
-            ra.addFlashAttribute("error", "Wystąpił błąd podczas procesowania zwrotu: " + e.getMessage());
+            ra.addFlashAttribute("toastType", "error");
+            ra.addFlashAttribute("toastMessage", "Błąd zwrotu: " + e.getMessage());
         }
         return "redirect:/admin/rentals/" + id;
     }
@@ -184,7 +205,9 @@ public class AdminRentalController {
      */
     @GetMapping("/create")
     public String showCreateForm(Model model) {
-        model.addAttribute("rentalDto", new RentalAdminCreateDto());
+        if (!model.containsAttribute("rentalDto")) {
+            model.addAttribute("rentalDto", new RentalAdminCreateDto());
+        }
         return "admin/rental-create";
     }
 
@@ -204,18 +227,34 @@ public class AdminRentalController {
                                     RedirectAttributes redirectAttributes) {
 
         if (result.hasErrors()) {
-            return "admin/rental-create";
+            redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.rentalDto", result);
+            redirectAttributes.addFlashAttribute("rentalDto", dto);
+            redirectAttributes.addFlashAttribute("toastType", "warning");
+            redirectAttributes.addFlashAttribute("toastMessage", "Popraw błędy w formularzu.");
+
+            return "redirect:/admin/rentals/create";
         }
 
         try {
             rentalService.createRentalByAdmin(dto);
-            redirectAttributes.addFlashAttribute("success", "Pomyślnie utworzono nowe wypożyczenie.");
+            redirectAttributes.addFlashAttribute("toastType", "success");
+            redirectAttributes.addFlashAttribute("toastMessage", "Pomyślnie utworzono nowe wypożyczenie.");
 
             return "redirect:/admin/rentals";
 
+        } catch (RentalException | ItemException | UserException e) {
+            redirectAttributes.addFlashAttribute("toastType", "error");
+            redirectAttributes.addFlashAttribute("toastMessage", e.getMessage());
+            redirectAttributes.addFlashAttribute("rentalDto", dto);
+
+            return "redirect:/admin/rentals/create";
+
         } catch (Exception e) {
-            model.addAttribute("error", e.getMessage());
-            return "admin/rental-create";
+            redirectAttributes.addFlashAttribute("toastType", "error");
+            redirectAttributes.addFlashAttribute("toastMessage", "Wystąpił nieoczekiwany błąd serwera.");
+            redirectAttributes.addFlashAttribute("rentalDto", dto);
+
+            return "redirect:/admin/rentals/create";
         }
     }
 
