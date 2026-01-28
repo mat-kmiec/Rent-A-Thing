@@ -135,92 +135,59 @@
                             </form>
                         </div>
                     </div>
+                    <div id="password-card" class="card border-0 shadow-sm rounded-4 mb-4">
+                        <div class="card-header bg-white p-4 border-bottom">
+                            <h6 class="fw-bold mb-0 text-primary">Zmiana hasła</h6>
+                        </div>
+                        <div class="card-body p-4">
+                            <form th:action="@{/moje-konto/ustawienia/password#password-card}" th:object="${settings}"
+                                  method="post" novalidate>
+                                <input type="hidden" th:field="*{firstName}">
+                                <input type="hidden" th:field="*{lastName}">
+                                <input type="hidden" th:field="*{email}">
+                                <div class="row g-3">
+                                    <div class="col-md-12">
+                                        <label class="form-label small text-muted fw-bold">Aktualne hasło</label>
+                                        <input type="password" class="form-control" th:field="*{currentPassword}"
+                                               th:classappend="${#fields.hasErrors('currentPassword') ? 'is-invalid' : ''}"
+                                               required>
+                                        <div class="invalid-feedback d-block"
+                                             th:if="${#fields.hasErrors('currentPassword')}" th:errors="*{currentPassword}">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label small text-muted fw-bold">Nowe hasło</label>
+                                        <input type="password" class="form-control" th:field="*{newPassword}"
+                                               th:classappend="${#fields.hasErrors('newPassword') ? 'is-invalid' : ''}"
+                                               required minlength="8">
+                                        <div class="invalid-feedback d-block" th:if="${#fields.hasErrors('newPassword')}"
+                                             th:errors="*{newPassword}">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label small text-muted fw-bold">Powtórz nowe hasło</label>
+                                        <input type="password" class="form-control" th:field="*{confirmPassword}"
+                                               th:classappend="${#fields.hasErrors('confirmPassword') ? 'is-invalid' : ''}"
+                                               required minlength="8">
+                                        <div class="invalid-feedback d-block"
+                                             th:if="${#fields.hasErrors('confirmPassword')}" th:errors="*{confirmPassword}">
+                                        </div>
+                                    </div>
+                                    <div class="col-12 text-end mt-4">
+                                        <button type="submit" class="btn btn-outline-primary rounded-pill px-4">Zmień
+                                            hasło</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
                 </div>
 
-                <div id="password-card" class="card border-0 shadow-sm rounded-4 mb-4">
-                    <div class="card-header bg-white p-4 border-bottom">
-                        <h6 class="fw-bold mb-0 text-primary">Zmiana hasła</h6>
-                    </div>
-                    <div class="card-body p-4">
-                        <form th:action="@{/moje-konto/ustawienia/password#password-card}" th:object="${settings}"
-                            method="post" novalidate>
-                            <input type="hidden" th:field="*{firstName}">
-                            <input type="hidden" th:field="*{lastName}">
-                            <input type="hidden" th:field="*{email}">
-                            <div class="row g-3">
-                                <div class="col-md-12">
-                                    <label class="form-label small text-muted fw-bold">Aktualne hasło</label>
-                                    <input type="password" class="form-control" th:field="*{currentPassword}"
-                                        th:classappend="${#fields.hasErrors('currentPassword') ? 'is-invalid' : ''}"
-                                        required>
-                                    <div class="invalid-feedback d-block"
-                                        th:if="${#fields.hasErrors('currentPassword')}" th:errors="*{currentPassword}">
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <label class="form-label small text-muted fw-bold">Nowe hasło</label>
-                                    <input type="password" class="form-control" th:field="*{newPassword}"
-                                        th:classappend="${#fields.hasErrors('newPassword') ? 'is-invalid' : ''}"
-                                        required minlength="8">
-                                    <div class="invalid-feedback d-block" th:if="${#fields.hasErrors('newPassword')}"
-                                        th:errors="*{newPassword}">
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <label class="form-label small text-muted fw-bold">Powtórz nowe hasło</label>
-                                    <input type="password" class="form-control" th:field="*{confirmPassword}"
-                                        th:classappend="${#fields.hasErrors('confirmPassword') ? 'is-invalid' : ''}"
-                                        required minlength="8">
-                                    <div class="invalid-feedback d-block"
-                                        th:if="${#fields.hasErrors('confirmPassword')}" th:errors="*{confirmPassword}">
-                                    </div>
-                                </div>
-                                <div class="col-12 text-end mt-4">
-                                    <button type="submit" class="btn btn-outline-primary rounded-pill px-4">Zmień
-                                        hasło</button>
-                                </div>
-                            </div>
-                        </form>
-                    </div>
-                </div>
 
-                <div id="notifications-card" class="card border-0 shadow-sm rounded-4">
-                    <div class="card-header bg-white p-4 border-bottom">
-                        <h6 class="fw-bold mb-0 text-primary">Preferencje powiadomień</h6>
-                    </div>
-                    <div class="card-body p-4">
-                        <form th:action="@{/moje-konto/ustawienia/notifications#notifications-card}"
-                            th:object="${settings}" method="post">
-                            <input type="hidden" th:field="*{firstName}">
-                            <input type="hidden" th:field="*{lastName}">
-                            <input type="hidden" th:field="*{email}">
-                            <div class="form-check form-switch mb-3">
-                                <input class="form-check-input" type="checkbox" th:field="*{notifEmail}"
-                                    id="notifEmail">
-                                <label class="form-check-label ms-2" for="notifEmail">Powiadomienia o statusie
-                                    zamówienia
-                                    (Email)</label>
-                            </div>
-                            <div class="form-check form-switch mb-3">
-                                <input class="form-check-input" type="checkbox" th:field="*{notifSms}" id="notifSms">
-                                <label class="form-check-label ms-2" for="notifSms">Powiadomienia SMS</label>
-                            </div>
-                            <div class="form-check form-switch mb-4">
-                                <input class="form-check-input" type="checkbox" th:field="*{newsletter}"
-                                    id="newsletter">
-                                <label class="form-check-label ms-2" for="newsletter">Newsletter i promocje</label>
-                            </div>
-                            <div class="text-end">
-                                <button type="submit" class="btn btn-outline-primary rounded-pill px-4">Zapisz
-                                    preferencje</button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
 
             </div>
         </div>
-        </div>
+    </section>
         <footer th:replace="~{fragments/footer :: footer}"></footer>
 
         <script>
