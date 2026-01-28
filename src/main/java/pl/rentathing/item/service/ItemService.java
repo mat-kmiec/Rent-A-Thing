@@ -2,17 +2,23 @@ package pl.rentathing.item.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
+import pl.rentathing.item.dto.ItemAdminListDTO;
 import pl.rentathing.item.dto.ItemDetailsDTO;
 import pl.rentathing.item.dto.ItemFormDTO;
+import pl.rentathing.item.dto.ItemSearchCriteria;
 import pl.rentathing.item.entity.Category;
 import pl.rentathing.item.entity.Item;
 import pl.rentathing.item.exception.ItemNotFoundException;
 import pl.rentathing.item.mapper.ItemMapper;
 import pl.rentathing.item.repository.CategoryRepository;
 import pl.rentathing.item.repository.ItemRepository;
+import pl.rentathing.item.repository.ItemSpecifications;
 
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -110,5 +116,20 @@ public class ItemService {
                 item.getPricePerDay().multiply(BigDecimal.valueOf(item.getDiscountedPercent()))
                         .divide(BigDecimal.valueOf(100), 2, RoundingMode.HALF_UP)
         );
+    }
+
+    public Page<ItemAdminListDTO> getAdminItemsPage(ItemSearchCriteria criteria, Pageable pageable) {
+        Specification<Item> spec = ItemSpecifications.build(criteria);
+
+        return itemRepository.findAll(spec, pageable)
+                .map(item -> ItemAdminListDTO.builder()
+                        .id(item.getId())
+                        .title(item.getTitle())
+                        .description(item.getDescription())
+                        .categoryName(item.getCategory().getName())
+                        .pricePerDay(item.getPricePerDay())
+                        .available(item.getAvailable())
+                        .imageUrl(item.getImageUrl())
+                        .build());
     }
 }
