@@ -1,343 +1,234 @@
 <!DOCTYPE html>
 <html lang="pl" xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Wypożyczenia | Panel Administratora</title>
-    
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    
-    <link rel="stylesheet" th:href="@{/css/home.css}" href="../css/style.css">
-    <link rel="stylesheet" th:href="@{/css/admin.css}" href="../css/admin.css">
-</head>
-<body class="bg-light">
+<head th:replace="~{fragments/head-admin :: admin-head('Wypozyczenia')}"></head>
+<body class="bg-light d-flex flex-column min-vh-100">
 
 <nav th:replace="~{fragments/nav-admin :: admin-nav('rentals')}"></nav>
 
-    <main class="py-4">
-        <div class="container-fluid px-4">
-            
-            <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center mb-4 gap-3">
-                <div>
-                    <h2 class="fw-bold mb-0 text-dark">Wypożyczenia</h2>
-                    <p class="text-muted small mb-0">Monitoruj zwroty i historię transakcji.</p>
+<main class="py-4 flex-grow-1">
+    <div class="container-fluid px-4">
+
+        <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center mb-4 gap-3">
+            <div>
+                <h2 class="fw-bold mb-0 text-dark">Wypożyczenia</h2>
+                <p class="text-muted small mb-0">Zarządzaj wszystkimi transakcjami w jednym miejscu.</p>
+            </div>
+            <div class="d-flex gap-2">
+                <button class="btn btn-white border shadow-sm rounded-pill px-4"
+                        data-bs-toggle="modal" data-bs-target="#exportModal">
+                    <i class="fa-solid fa-file-csv me-2 text-success"></i> Eksportuj do CSV
+                </button>
+
+                <a th:href="@{/admin/rentals/create}" class="btn btn-dark rounded-pill shadow-sm px-4">
+                    <i class="fa-solid fa-plus me-2"></i> Nowe Wypożyczenie
+                </a>
+            </div>
+        </div>
+
+        <div class="card border-0 shadow-sm rounded-4 overflow-hidden">
+            <div class="card-header bg-white border-bottom border-light p-4">
+                <form th:action="@{/admin/rentals}" method="get">
+                    <div class="row g-3">
+                        <div class="col-12 col-xl-4">
+                        <label class="form-label small fw-bold text-muted ps-2 mb-1">Wyszukiwanie</label>
+                        <div class="input-group">
+        <span class="input-group-text bg-light border-end-0 rounded-start-pill ps-3">
+            <i class="fa-solid fa-magnifying-glass text-muted"></i>
+        </span>
+                            <input type="text" name="search" th:value="${param.search}"
+                                   class="form-control bg-light border-start-0 rounded-end-pill shadow-none"
+                                   placeholder="ID, przedmiot...">
+                        </div>
+                    </div>
+
+                        <div class="col-6 col-md-4 col-xl-2">
+                            <label class="form-label small fw-bold text-muted ps-2 mb-1">Status</label>
+                            <select name="status" class="form-select rounded-pill bg-light border-0 shadow-none cursor-pointer">
+                                <option value="">Wszystkie statusy</option>
+                                <option th:each="s : ${statuses}"
+                                        th:value="${s}"
+                                        th:text="${s.displayName}"
+                                        th:selected="${#strings.equals(param.status, s.name())}">
+                                </option>
+                            </select>
+                        </div>
+
+                        <div class="col-6 col-md-4 col-xl-2">
+                            <label class="form-label small fw-bold text-muted ps-2 mb-1">Kategoria</label>
+                            <select name="category" class="form-select rounded-pill bg-light border-0 shadow-none cursor-pointer">
+                                <option value="">Wszystkie kat.</option>
+                                <option th:each="cat : ${categories}"
+                                        th:value="${cat.name}"
+                                        th:text="${cat.name}"
+                                        th:selected="${#strings.equals(param.category, cat.name)}">Kategoria</option>
+                            </select>
+                        </div>
+
+                        <div class="col-12 col-md-4 col-xl-2">
+                            <label class="form-label small fw-bold text-muted ps-2 mb-1">Data zwrotu</label>
+                            <input type="date" name="returnDate" th:value="${param.returnDate}"
+                                   class="form-control rounded-pill bg-light border-0 shadow-none text-muted">
+                        </div>
+
+                        <div class="col-12 col-xl-2 d-flex align-items-end gap-2">
+                            <button type="submit" class="btn btn-dark rounded-pill w-100 border-0 fw-medium">
+                                Filtruj
+                            </button>
+                            <a th:href="@{/admin/rentals}" class="btn btn-light rounded-pill border-0 fw-medium">
+                                <i class="fa-solid fa-rotate-left"></i>
+                            </a>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+            <div class="card-body p-0">
+                <div th:if="${rentals.totalElements > 0}" class="table-responsive">
+                    <table class="table table-hover align-middle mb-0 text-nowrap">
+                        <thead class="bg-light small text-uppercase text-muted">
+                        <tr>
+                            <th class="ps-4">Przedmiot</th>
+                            <th>Klient</th>
+                            <th>Termin Zwrotu</th>
+                            <th>Status</th>
+                            <th class="text-end pe-4">Akcja</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="rental : ${rentals.content}">
+                            <td class="ps-4">
+                                <div class="d-flex align-items-center">
+                                    <div class="avatar-md rounded-3 d-flex align-items-center justify-content-center me-3 border"
+                                         style="width: 48px; height: 48px;"
+                                         th:classappend="${rental.isOverdue ? 'bg-danger bg-opacity-10 border-danger border-opacity-25' : 'bg-light'}">
+
+                                        <i th:class="'fa-solid ' + ${rental.categoryIcon} + ' fs-4 ' + ${rental.isOverdue ? 'text-danger' : 'text-primary'}"></i>
+                                    </div>
+                                    <div>
+                                        <span class="fw-bold d-block text-dark" th:text="${rental.itemTitle}">Sony Alpha a7 III</span>
+                                        <small class="text-muted" th:text="'#ID: ' + ${rental.id}">#ID: 4092</small>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="d-flex align-items-center">
+                                    <div class="rounded-circle bg-dark text-white d-flex align-items-center justify-content-center me-2 shadow-sm"
+                                         style="width: 32px; height: 32px; font-size: 0.7rem; font-weight: 700; letter-spacing: -0.5px; flex-shrink: 0;">
+                                        <span th:text="${rental.userInitials}" style="margin-top: 1px;">MK</span>
+                                    </div>
+
+                                    <span class="fw-medium text-dark" th:text="${rental.userFullName}">Marek Kowalski</span>
+                                </div>
+                            </td>
+                            <td>
+                                <span class="fw-bold" th:classappend="${rental.isOverdue ? 'text-danger' : 'text-dark'}"
+                                      th:text="${#temporals.format(rental.endDateTime, 'dd.MM.yyyy, HH:mm')}">Dzisiaj, 14:00</span>
+                                <small class="d-block" th:classappend="${rental.isOverdue ? 'text-danger' : 'text-muted'}"
+                                       th:text="${rental.timeDiffMessage}">Zostało 2h</small>
+                            </td>
+                            <td>
+                                <span class="badge rounded-pill px-3 py-2"
+                                      th:classappend="${rental.status.badgeClass}"
+                                      th:text="${rental.status.displayName}">Aktywne</span>
+                            </td>
+                            <td class="text-end pe-4">
+                                <button th:if="${rental.isOverdue}" class="btn btn-sm btn-outline-danger rounded-pill px-3">Wezwij</button>
+                                <a th:href="@{/admin/rentals/{id}(id=${rental.id})}"
+                                   class="btn btn-sm btn-light border rounded-pill px-3">
+                                    <i class="fa-solid fa-eye me-1"></i> Szczegóły
+                                </a>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
                 </div>
-                <div class="d-flex gap-2">
-                    <button class="btn btn-white border shadow-sm rounded-pill">
-                        <i class="fa-solid fa-download me-2"></i> Raport
-                    </button>
-                    <button class="btn btn-dark rounded-pill shadow-sm">
-                        <i class="fa-solid fa-plus me-2"></i> Nowe Wypożyczenie
-                    </button>
+
+                <div th:if="${rentals.totalElements == 0}" class="text-center py-5">
+                    <div class="avatar-lg bg-light rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 80px; height: 80px;">
+                        <i class="fa-solid fa-magnifying-glass text-muted fa-2x"></i>
+                    </div>
+                    <h5 class="fw-bold text-dark">Nie znaleźliśmy żadnych wypożyczeń</h5>
+                    <p class="text-muted small mb-4">Spróbuj zmienić parametry wyszukiwania lub zresetuj filtry, aby zobaczyć wszystkie transakcje.</p>
+                    <a th:href="@{/admin/rentals}" class="btn btn-dark rounded-pill px-4 shadow-sm border-0">
+                        <i class="fa-solid fa-rotate-left me-2"></i> Wyczyść filtry
+                    </a>
                 </div>
             </div>
 
-            <div class="card border-0 shadow-sm rounded-4 overflow-hidden">
-                
-                <div class="card-header bg-white border-bottom border-light p-4 pb-0">
-                    <div class="row g-3 mb-4">
-                        <div class="col-12 col-md-5">
-                            <div class="input-group">
-                                <span class="input-group-text bg-light border-end-0 rounded-start-pill ps-3">
-                                    <i class="fa-solid fa-magnifying-glass text-muted"></i>
-                                </span>
-                                <input type="text" class="form-control bg-light border-start-0 rounded-end-pill shadow-none" placeholder="Szukaj (ID, Przedmiot, Klient)...">
-                            </div>
-                        </div>
-                        <div class="col-6 col-md-3">
-                            <input type="date" class="form-control rounded-pill bg-light border-0 shadow-none text-muted">
-                        </div>
-                        <div class="col-6 col-md-2">
-                            <select class="form-select rounded-pill bg-light border-0 shadow-none cursor-pointer">
-                                <option selected>Wszystkie kat.</option>
-                                <option>Pojazdy</option>
-                                <option>Elektronika</option>
-                            </select>
-                        </div>
-                    </div>
-
-                    <ul class="nav nav-tabs card-header-tabs" id="rentalTabs" role="tablist">
-                        <li class="nav-item">
-                            <button class="nav-link active fw-medium text-dark py-2 px-3" id="active-tab" data-bs-toggle="tab" data-bs-target="#active" type="button">
-                                Aktywne <span class="badge bg-primary bg-opacity-10 text-primary ms-1 rounded-pill">12</span>
-                            </button>
-                        </li>
-                        <li class="nav-item">
-                            <button class="nav-link fw-medium text-danger py-2 px-3" id="overdue-tab" data-bs-toggle="tab" data-bs-target="#overdue" type="button">
-                                Opóźnione <span class="badge bg-danger text-white ms-1 rounded-pill">2</span>
-                            </button>
-                        </li>
-                        <li class="nav-item">
-                            <button class="nav-link fw-medium text-muted py-2 px-3" id="history-tab" data-bs-toggle="tab" data-bs-target="#history" type="button">
-                                Historia
-                            </button>
-                        </li>
-                    </ul>
-                </div>
-
-                <div class="card-body p-0">
-                    <div class="tab-content" id="rentalTabsContent">
-                        
-                        <div class="tab-pane fade show active" id="active" role="tabpanel">
-                            <div class="table-responsive">
-                                <table class="table table-hover align-middle mb-0 text-nowrap">
-                                    <thead class="bg-light small text-uppercase text-muted">
-                                        <tr>
-                                            <th class="ps-4">Przedmiot</th>
-                                            <th class="d-none d-md-table-cell">Klient</th>
-                                            <th class="d-none d-lg-table-cell">Data Zwrotu</th>
-                                            <th>Status</th>
-                                            <th class="text-end pe-4">Akcja</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr>
-                                            <td class="ps-4">
-                                                <div class="d-flex align-items-center">
-                                                    <div class="avatar-md bg-light rounded-3 d-flex align-items-center justify-content-center me-3 border">
-                                                        <i class="fa-solid fa-camera text-primary"></i>
-                                                    </div>
-                                                    <div>
-                                                        <span class="fw-bold d-block text-dark">Sony Alpha a7 III</span>
-                                                        <small class="text-muted">#ID: 4092</small>
-                                                        <small class="d-md-none text-primary d-block mt-1">Marek K.</small>
-                                                    </div>
-                                                </div>
-                                            </td>
-                                            <td class="d-none d-md-table-cell">
-                                                <div class="d-flex align-items-center">
-                                                    <div class="avatar-xs bg-dark text-white rounded-circle d-flex align-items-center justify-content-center me-2">MK</div>
-                                                    <span>Marek Kowalski</span>
-                                                </div>
-                                            </td>
-                                            <td class="d-none d-lg-table-cell">
-                                                <span class="text-dark fw-bold">Dzisiaj, 14:00</span>
-                                                <small class="text-muted d-block">Pozostało: 2h</small>
-                                            </td>
-                                            <td><span class="badge bg-warning bg-opacity-10 text-warning text-dark rounded-pill px-2">W trakcie</span></td>
-                                            <td class="text-end pe-4">
-                                                <button class="btn btn-sm btn-success rounded-pill px-3 shadow-sm" data-bs-toggle="modal" data-bs-target="#confirmReturnModal">
-                                                    <i class="fa-solid fa-check me-1"></i> Zwrot
-                                                </button>
-                                                <button class="btn btn-sm btn-light border rounded-circle ms-1 d-md-none" data-bs-toggle="modal" data-bs-target="#reportIssueModal">
-                                                    <i class="fa-solid fa-triangle-exclamation text-danger"></i>
-                                                </button>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td class="ps-4">
-                                                <div class="d-flex align-items-center">
-                                                    <div class="avatar-md bg-light rounded-3 d-flex align-items-center justify-content-center me-3 border">
-                                                        <i class="fa-solid fa-car text-success"></i>
-                                                    </div>
-                                                    <div>
-                                                        <span class="fw-bold d-block text-dark">Toyota Yaris</span>
-                                                        <small class="text-muted">#ID: 1102</small>
-                                                    </div>
-                                                </div>
-                                            </td>
-                                            <td class="d-none d-md-table-cell">
-                                                <div class="d-flex align-items-center">
-                                                    <div class="avatar-xs bg-info text-white rounded-circle d-flex align-items-center justify-content-center me-2">AN</div>
-                                                    <span>Anna Nowak</span>
-                                                </div>
-                                            </td>
-                                            <td class="d-none d-lg-table-cell">
-                                                <span>Jutro, 10:00</span>
-                                            </td>
-                                            <td><span class="badge bg-warning bg-opacity-10 text-warning text-dark rounded-pill px-2">W trakcie</span></td>
-                                            <td class="text-end pe-4">
-                                                <div class="btn-group d-none d-md-inline-flex">
-                                                    <button class="btn btn-sm btn-outline-success rounded-start-pill" data-bs-toggle="modal" data-bs-target="#confirmReturnModal">Zwrot</button>
-                                                    <button class="btn btn-sm btn-outline-danger rounded-end-pill" data-bs-toggle="modal" data-bs-target="#reportIssueModal" title="Zgłoś uszkodzenie">
-                                                        <i class="fa-solid fa-triangle-exclamation"></i>
-                                                    </button>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-
-                        <div class="tab-pane fade" id="overdue" role="tabpanel">
-                            <div class="table-responsive">
-                                <table class="table table-hover align-middle mb-0 text-nowrap">
-                                    <thead class="bg-light-danger text-danger small text-uppercase">
-                                        <tr>
-                                            <th class="ps-4">Przedmiot</th>
-                                            <th class="d-none d-md-table-cell">Klient</th>
-                                            <th>Opóźnienie</th>
-                                            <th class="text-end pe-4">Akcja</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr>
-                                            <td class="ps-4">
-                                                <div class="d-flex align-items-center">
-                                                    <div class="avatar-md bg-danger bg-opacity-10 text-danger rounded-3 d-flex align-items-center justify-content-center me-3 border border-danger border-opacity-25">
-                                                        <i class="fa-solid fa-hammer"></i>
-                                                    </div>
-                                                    <div>
-                                                        <span class="fw-bold d-block text-dark">Młot Udarowy</span>
-                                                        <small class="text-danger fw-bold"><i class="fa-solid fa-circle-exclamation"></i> Kontakt wymagany</small>
-                                                    </div>
-                                                </div>
-                                            </td>
-                                            <td class="d-none d-md-table-cell">Piotr Jakiś</td>
-                                            <td class="text-danger fw-bold">+4 dni</td>
-                                            <td class="text-end pe-4">
-                                                <button class="btn btn-sm btn-danger rounded-pill px-3 shadow-sm">
-                                                    <i class="fa-solid fa-envelope me-1"></i> Wezwij
-                                                </button>
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-
-                        <div class="tab-pane fade" id="history" role="tabpanel">
-                            <div class="table-responsive">
-                                <table class="table table-hover align-middle mb-0 text-nowrap">
-                                    <thead class="bg-light small text-uppercase text-muted">
-                                        <tr>
-                                            <th class="ps-4">Przedmiot</th>
-                                            <th class="d-none d-md-table-cell">Zwrócono</th>
-                                            <th>Koszt</th>
-                                            <th>Status</th>
-                                            <th class="text-end pe-4">Opcje</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr>
-                                            <td class="ps-4 fw-medium">Dron DJI Mavic 3</td>
-                                            <td class="d-none d-md-table-cell text-muted small">12.01.2024</td>
-                                            <td class="fw-bold">450.00 zł</td>
-                                            <td><span class="badge bg-secondary bg-opacity-10 text-secondary rounded-pill">Zakończono</span></td>
-                                            <td class="text-end pe-4">
-                                                <button class="btn btn-sm btn-white border rounded-pill shadow-sm">Szczegóły</button>
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-
-                    </div>
-                </div>
-                
-                <div class="card-footer bg-white border-top border-light py-3 px-4">
-                    <nav class="d-flex justify-content-end">
+            <div th:if="${rentals.totalElements > 0}" class="card-footer bg-white border-top border-light py-3 px-4">
+                <div class="d-flex flex-column flex-md-row justify-content-between align-items-center gap-3">
+                    <small class="text-muted" th:text="'Pokazano ' + ${rentals.numberOfElements} + ' z ' + ${rentals.totalElements} + ' wypożyczeń'">Pokazano</small>
+                    <nav th:if="${rentals.totalPages > 1}">
                         <ul class="pagination pagination-sm mb-0">
-                            <li class="page-item disabled"><a class="page-link" href="#"><i class="fa-solid fa-chevron-left"></i></a></li>
-                            <li class="page-item active"><a class="page-link" href="#">1</a></li>
-                            <li class="page-item"><a class="page-link" href="#">2</a></li>
-                            <li class="page-item"><a class="page-link" href="#"><i class="fa-solid fa-chevron-right"></i></a></li>
+                            <li class="page-item" th:classappend="${rentals.first ? 'disabled' : ''}">
+                                <a class="page-link border-0 bg-light rounded-circle mx-1"
+                                   th:href="@{/admin/rentals(page=${rentals.number - 1}, search=${param.search}, status=${param.status}, category=${param.category}, returnDate=${param.returnDate})}">
+                                    <i class="fa-solid fa-chevron-left"></i>
+                                </a>
+                            </li>
+                            <li class="page-item" th:each="i : ${#numbers.sequence(0, rentals.totalPages - 1)}"
+                                th:classappend="${i == rentals.number ? 'active' : ''}">
+                                <a class="page-link border-0 rounded-circle mx-1"
+                                   th:href="@{/admin/rentals(page=${i}, search=${param.search}, status=${param.status}, category=${param.category}, returnDate=${param.returnDate})}"
+                                   th:text="${i + 1}">1</a>
+                            </li>
+                            <li class="page-item" th:classappend="${rentals.last ? 'disabled' : ''}">
+                                <a class="page-link border-0 bg-light rounded-circle mx-1"
+                                   th:href="@{/admin/rentals(page=${rentals.number + 1}, search=${param.search}, status=${param.status}, category=${param.category}, returnDate=${param.returnDate})}">
+                                    <i class="fa-solid fa-chevron-right"></i>
+                                </a>
+                            </li>
                         </ul>
                     </nav>
                 </div>
             </div>
         </div>
-    </main>
+    </div>
+</main>
 
-    <div class="modal fade" id="confirmReturnModal" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content border-0 shadow rounded-4">
-                <div class="modal-header border-0 pb-0">
-                    <h5 class="modal-title fw-bold">Zatwierdź Zwrot</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body p-4">
-                    <div class="d-flex align-items-center mb-4 p-3 bg-light rounded-3">
-                        <div class="avatar-md bg-white border rounded-3 d-flex align-items-center justify-content-center me-3">
-                            <i class="fa-solid fa-camera text-primary fs-5"></i>
+<div class="modal fade" id="exportModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-sm" style="max-width: 400px;">
+        <div class="modal-content border-0 shadow-lg rounded-5 overflow-hidden">
+            <form th:action="@{/admin/rentals/export}" method="get">
+                <div class="modal-body p-4 text-center">
+                    <div class="bg-success bg-opacity-10 text-success rounded-circle d-flex align-items-center justify-content-center mx-auto mb-4"
+                         style="width: 70px; height: 70px;">
+                        <i class="fa-solid fa-download fs-2"></i>
+                    </div>
+
+                    <h4 class="fw-bold mb-2">Eksportuj Raport</h4>
+                    <p class="text-muted small mb-4 px-3">Wybierz zakres dat, który ma trafić do pliku .csv</p>
+
+                    <div class="row g-3 mb-4">
+                        <div class="col-12 text-start">
+                            <label class="form-label small fw-bold text-muted ms-2 text-uppercase">Data od</label>
+                            <input type="date" name="from"
+                                   class="form-control border-0 bg-light rounded-4 p-3 shadow-none fw-medium"
+                                   required th:value="${#temporals.format(#temporals.createNow().minusMonths(1), 'yyyy-MM-dd')}">
                         </div>
-                        <div>
-                            <h6 class="fw-bold mb-0">Sony Alpha a7 III</h6>
-                            <small class="text-muted">Klient: Marek Kowalski</small>
+                        <div class="col-12 text-start">
+                            <label class="form-label small fw-bold text-muted ms-2 text-uppercase">Data do</label>
+                            <input type="date" name="to"
+                                   class="form-control border-0 bg-light rounded-4 p-3 shadow-none fw-medium"
+                                   required th:value="${#temporals.format(#temporals.createNow(), 'yyyy-MM-dd')}">
                         </div>
                     </div>
 
-                    <form>
-                        <div class="form-check mb-3">
-                            <input class="form-check-input" type="checkbox" id="conditionCheck" checked>
-                            <label class="form-check-label" for="conditionCheck">
-                                Stan techniczny bez zastrzeżeń
-                            </label>
-                        </div>
-                        <div class="form-check mb-4">
-                            <input class="form-check-input" type="checkbox" id="accessoriesCheck" checked>
-                            <label class="form-check-label" for="accessoriesCheck">
-                                Kompletne wyposażenie (kable, torba)
-                            </label>
-                        </div>
-                        
-                        <div class="mb-3">
-                            <label class="form-label small text-muted text-uppercase fw-bold">Uwagi (opcjonalne)</label>
-                            <textarea class="form-control rounded-3" rows="2"></textarea>
-                        </div>
-                    </form>
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-dark rounded-pill py-3 fw-bold shadow-sm">
+                            Generuj i pobierz
+                        </button>
+                        <button type="button" class="btn btn-light rounded-pill py-3 fw-bold text-muted border-0" data-bs-dismiss="modal">
+                            Anuluj
+                        </button>
+                    </div>
                 </div>
-                <div class="modal-footer border-0 pt-0">
-                    <button type="button" class="btn btn-light rounded-pill px-4" data-bs-dismiss="modal">Anuluj</button>
-                    <button type="button" class="btn btn-success rounded-pill px-4 shadow-sm">
-                        <i class="fa-solid fa-check me-2"></i> Potwierdź zwrot
-                    </button>
-                </div>
-            </div>
+            </form>
         </div>
     </div>
+</div>
 
-    <div class="modal fade" id="reportIssueModal" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content border-0 shadow rounded-4">
-                <div class="modal-header border-0 pb-0">
-                    <h5 class="modal-title fw-bold text-danger">
-                        <i class="fa-solid fa-triangle-exclamation me-2"></i> Zgłoś Problem
-                    </h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body p-4">
-                    <p class="small text-muted mb-3">Użyj tego formularza, jeśli przedmiot został zwrócony uszkodzony, brudny lub niekompletny.</p>
-                    
-                    <form>
-                        <div class="mb-3">
-                            <label class="form-label small text-muted text-uppercase fw-bold">Typ problemu</label>
-                            <select class="form-select rounded-3">
-                                <option value="damage">Uszkodzenie mechaniczne</option>
-                                <option value="cleaning">Wymaga czyszczenia</option>
-                                <option value="missing">Brak elementu zestawu</option>
-                            </select>
-                        </div>
-
-                        <div class="mb-3">
-                            <label class="form-label small text-muted text-uppercase fw-bold">Opis usterki</label>
-                            <textarea class="form-control rounded-3" rows="3" placeholder="Opisz dokładnie problem..."></textarea>
-                        </div>
-
-                        <div class="mb-4">
-                            <label class="form-label small text-muted text-uppercase fw-bold">Dodatkowa opłata (Karny koszt)</label>
-                            <div class="input-group">
-                                <input type="number" class="form-control rounded-start-3" placeholder="0.00">
-                                <span class="input-group-text bg-light border-start-0 rounded-end-3">PLN</span>
-                            </div>
-                            <div class="form-text text-danger small">Kwota zostanie doliczona do rachunku klienta.</div>
-                        </div>
-                    </form>
-                </div>
-                <div class="modal-footer border-0 pt-0">
-                    <button type="button" class="btn btn-light rounded-pill px-4" data-bs-dismiss="modal">Anuluj</button>
-                    <button type="button" class="btn btn-danger rounded-pill px-4 shadow-sm">
-                        Zapisz incydent
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<div th:replace="~{fragments/toast :: toast}"></div>
+<footer th:replace="~{fragments/footer-admin :: footer-admin}"></footer>
 </body>
 </html>

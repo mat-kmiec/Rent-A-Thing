@@ -54,4 +54,5 @@ public class AdminCategoryController {
         categoryService.updateCategory(id, name, description, iconClass);
         return "redirect:/admin/magazyn#categories";
     }
+
 }

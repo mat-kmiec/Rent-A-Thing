@@ -7,6 +7,11 @@ import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 
+/**
+ * RentalPriceCalculator is a utility class responsible for calculating various rental-related
+ * values such as rental days, discounted prices, shipping costs, and deposit amounts for an item.
+ * This class is annotated with @Component, making it a Spring-managed bean.
+ */
 @Component
 public class RentalPriceCalculator {
 
