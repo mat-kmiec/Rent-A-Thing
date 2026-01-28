@@ -10,6 +10,6 @@ public class AdminDashboardController {
 
     @GetMapping
     public String getDashboard(){
-        return "admin/dashboard";
+        return "redirect:/admin/inventory";
     }
 }
