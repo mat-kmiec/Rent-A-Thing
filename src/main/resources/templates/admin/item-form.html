@@ -18,82 +18,172 @@
 
                 <form th:action="@{/admin/inventory/save}" th:object="${item}" method="post" enctype="multipart/form-data">
                     <input type="hidden" th:field="*{id}">
-
                     <div class="card border-0 shadow-sm rounded-4 overflow-hidden">
                         <div class="card-body p-4 p-lg-5">
+
+                            <div th:if="${#fields.hasGlobalErrors()}" class="alert alert-danger">
+                                <p th:each="err : ${#fields.globalErrors()}" th:text="${err}" class="mb-0"></p>
+                            </div>
 
                             <div class="row g-4">
                                 <div class="col-md-4">
                                     <label class="form-label small text-muted text-uppercase fw-bold">Zdjęcie produktu</label>
 
                                     <div class="image-upload-wrapper border rounded-4 mb-3 d-flex align-items-center justify-content-center bg-light position-relative overflow-hidden"
-                                         style="height: 250px;">
+                                         style="height: 300px;">
 
-                                        <div id="placeholderIcon" class="text-center text-muted" th:classappend="${item.imageUrl != null ? 'd-none' : ''}">
+                                        <div id="placeholderIcon" class="text-center text-muted"
+                                             th:classappend="${item.currentImageUrl != null ? 'd-none' : ''}">
                                             <i class="fa-solid fa-cloud-arrow-up fa-3x mb-2"></i>
                                             <p class="small mb-0">Kliknij, aby wgrać</p>
                                         </div>
 
                                         <img id="imagePreview"
-                                             th:src="${item.imageUrl != null ? item.imageUrl : '#'}"
+                                             th:src="${item.currentImageUrl != null ? item.currentImageUrl : '#'}"
                                              class="img-fluid w-100 h-100 object-fit-cover position-absolute top-0 start-0"
-                                             th:classappend="${item.imageUrl == null ? 'd-none' : ''}"
+                                             th:classappend="${item.currentImageUrl == null ? 'd-none' : ''}"
                                              alt=" ">
 
                                         <input type="file" class="form-control position-absolute top-0 start-0 w-100 h-100 opacity-0 cursor-pointer"
                                                id="imageFile" name="imageFile" accept="image/*" onchange="previewImage(this)">
                                     </div>
+
+                                    <div class="alert alert-info py-2 small">
+                                        <i class="fa-solid fa-info-circle me-1"></i>
+                                        Formaty: JPG, PNG. Max 5MB.
+                                    </div>
+                                    <div class="text-danger small" th:if="${#fields.hasErrors('imageFile')}" th:errors="*{imageFile}">Błąd pliku</div>
                                 </div>
 
                                 <div class="col-md-8">
                                     <div class="row g-3">
 
                                         <div class="col-12">
-                                            <label for="title" class="form-label small text-muted text-uppercase fw-bold">Nazwa przedmiotu</label>
+                                            <label for="title" class="form-label small text-muted text-uppercase fw-bold">Nazwa przedmiotu *</label>
                                             <input type="text" class="form-control form-control-lg rounded-3" id="title" th:field="*{title}"
-                                                   placeholder="np. Dron DJI Mavic 3"
+                                                   placeholder="np. Dron DJI Mavic 3" required
                                                    th:classappend="${#fields.hasErrors('title')} ? 'is-invalid' : ''">
                                             <div class="invalid-feedback" th:errors="*{title}">Błąd nazwy</div>
                                         </div>
 
                                         <div class="col-md-6">
-                                            <label for="category" class="form-label small text-muted text-uppercase fw-bold">Kategoria</label>
-                                            <select class="form-select rounded-3" id="category" th:field="*{category}">
+                                            <label for="categoryId" class="form-label small text-muted text-uppercase fw-bold">Kategoria *</label>
+                                            <select class="form-select rounded-3" id="categoryId" th:field="*{categoryId}" required
+                                                    th:classappend="${#fields.hasErrors('categoryId')} ? 'is-invalid' : ''">
                                                 <option value="" disabled selected>Wybierz kategorię...</option>
                                                 <option th:each="cat : ${categories}"
                                                         th:value="${cat.id}"
                                                         th:text="${cat.name}">Elektronika</option>
                                             </select>
+                                            <div class="invalid-feedback" th:errors="*{categoryId}">Wybierz kategorię</div>
                                         </div>
 
                                         <div class="col-md-6">
-                                            <label for="pricePerDay" class="form-label small text-muted text-uppercase fw-bold">Cena za dobę (PLN)</label>
+                                            <label for="sku" class="form-label small text-muted text-uppercase fw-bold">Kod SKU / Seryjny *</label>
+                                            <input type="text" class="form-control rounded-3" id="sku" th:field="*{sku}" placeholder="np. DRON-DJI-001" required
+                                                   th:classappend="${#fields.hasErrors('sku')} ? 'is-invalid' : ''">
+                                            <div class="invalid-feedback" th:errors="*{sku}">Błąd SKU</div>
+                                        </div>
+
+                                        <div class="col-12 mt-4"><h6 class="border-bottom pb-2">Finanse i Wynajem</h6></div>
+
+                                        <div class="col-md-4">
+                                            <label for="pricePerDay" class="form-label small text-muted text-uppercase fw-bold">Cena za dobę *</label>
+                                            <div class="input-group has-validation">
+                                                <input type="number" step="0.01" min="0" class="form-control" id="pricePerDay" th:field="*{pricePerDay}" placeholder="0.00" required
+                                                       th:classappend="${#fields.hasErrors('pricePerDay')} ? 'is-invalid' : ''">
+                                                <span class="input-group-text bg-light text-muted">PLN</span>
+                                                <div class="invalid-feedback" th:errors="*{pricePerDay}">Błąd ceny</div>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-4">
+                                            <label for="discountedPercent" class="form-label small text-muted text-uppercase fw-bold">Rabat (%)</label>
                                             <div class="input-group">
-                                                <input type="number" step="0.01" min="0" class="form-control rounded-start-3" id="pricePerDay" th:field="*{pricePerDay}" placeholder="0.00">
-                                                <span class="input-group-text bg-light text-muted border-start-0 rounded-end-3">zł</span>
+                                                <input type="number" step="1" min="0" max="100" class="form-control" id="discountedPercent" th:field="*{discountedPercent}" placeholder="0">
+                                                <span class="input-group-text bg-light text-muted">%</span>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-4">
+                                            <label for="minRentalDays" class="form-label small text-muted text-uppercase fw-bold">Min. dni wynajmu</label>
+                                            <input type="number" min="1" class="form-control" id="minRentalDays" th:field="*{minRentalDays}">
+                                        </div>
+
+                                        <div class="col-md-12">
+                                            <div class="card bg-light border-0 p-3">
+                                                <div class="form-check form-switch">
+                                                    <input class="form-check-input" type="checkbox" id="depositToggle" th:field="*{deposit}" onchange="toggleDepositInput()">
+                                                    <label class="form-check-label fw-medium" for="depositToggle">Wymagana kaucja zwrotna</label>
+                                                </div>
+                                                <div class="mt-2" id="depositInputWrapper" style="display: none;">
+                                                    <label class="form-label small text-muted">Kwota kaucji</label>
+                                                    <div class="input-group">
+                                                        <input type="number" step="0.01" min="0" class="form-control" th:field="*{depositPrice}" placeholder="np. 500.00">
+                                                        <span class="input-group-text">PLN</span>
+                                                    </div>
+                                                    <div class="text-danger small mt-1" th:if="${#fields.hasErrors('depositPrice')}" th:errors="*{depositPrice}">Błąd kaucji</div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-12 mt-4"><h6 class="border-bottom pb-2">Logistyka i Status</h6></div>
+
+                                        <div class="col-md-6">
+                                            <div class="border rounded-3 p-3 h-100">
+                                                <div class="form-check form-switch mb-2">
+                                                    <input class="form-check-input" type="checkbox" id="shippingToggle" th:field="*{canBeShipped}" onchange="toggleShippingInput()">
+                                                    <label class="form-check-label fw-medium" for="shippingToggle">Możliwa wysyłka</label>
+                                                </div>
+                                                <div id="shippingInputWrapper" style="display: none;">
+                                                    <div class="input-group input-group-sm">
+                                                        <span class="input-group-text border-0 bg-white ps-0">Koszt:</span>
+                                                        <input type="number" step="0.01" min="0" class="form-control" th:field="*{shippingPrice}" placeholder="0.00">
+                                                        <span class="input-group-text">PLN</span>
+                                                    </div>
+                                                    <div class="text-danger small mt-1" th:if="${#fields.hasErrors('shippingPrice')}" th:errors="*{shippingPrice}">Błąd wysyłki</div>
+                                                </div>
                                             </div>
                                         </div>
 
                                         <div class="col-md-6">
-                                            <label for="available" class="form-label small text-muted text-uppercase fw-bold">Status dostępności</label>
+                                            <div class="border rounded-3 p-3 h-100 d-flex align-items-center">
+                                                <div class="form-check form-switch">
+                                                    <input class="form-check-input" type="checkbox" id="pickupToggle" th:field="*{canBePickedUp}">
+                                                    <label class="form-check-label fw-medium" for="pickupToggle">Odbiór osobisty</label>
+                                                </div>
+                                            </div>
+                                        </div>
 
-                                            <select class="form-select rounded-3" id="available" name="available">
-
-                                                <option value="true" th:selected="${item.available == true}">Dostępny dla klientów</option>
-                                                <option value="false" th:selected="${item.available == false}">Ukryty / W serwisie</option>
-
+                                        <div class="col-md-6">
+                                            <label for="available" class="form-label small text-muted text-uppercase fw-bold">Widoczność</label>
+                                            <select class="form-select" id="available" th:field="*{available}">
+                                                <option value="true">Dostępny (Widoczny)</option>
+                                                <option value="false">Ukryty (Niedostępny)</option>
                                             </select>
                                         </div>
 
                                         <div class="col-md-6">
-                                            <label for="sku" class="form-label small text-muted text-uppercase fw-bold">Kod SKU / Seryjny</label>
-                                            <input type="text" class="form-control rounded-3" id="sku" th:field="*{sku}" placeholder="np. DRON-DJI-001">
+                                            <label class="form-label small text-muted text-uppercase fw-bold">Stan przedmiotu</label>
+                                            <div class="d-flex gap-3">
+                                                <div class="form-check">
+                                                    <input class="form-check-input" type="radio" name="isNew" id="statusNew" value="true" th:checked="${item.isNew}">
+                                                    <label class="form-check-label" for="statusNew">Nowy</label>
+                                                </div>
+                                                <div class="form-check">
+                                                    <input class="form-check-input" type="radio" name="isNew" id="statusUsed" value="false" th:checked="${!item.isNew}">
+                                                    <label class="form-check-label" for="statusUsed">Używany</label>
+                                                </div>
+                                            </div>
                                         </div>
 
-                                        <div class="col-12">
-                                            <label for="description" class="form-label small text-muted text-uppercase fw-bold">Opis techniczny</label>
-                                            <textarea class="form-control rounded-3" id="description" th:field="*{description}" rows="5"
-                                                      placeholder="Szczegółowy opis..."></textarea>
+                                        <div class="col-12 mt-3">
+                                            <label for="description" class="form-label small text-muted text-uppercase fw-bold">Opis techniczny *</label>
+                                            <textarea class="form-control rounded-3" id="description" th:field="*{description}" rows="6"
+                                                      placeholder="Szczegółowy opis przedmiotu..." required
+                                                      th:classappend="${#fields.hasErrors('description')} ? 'is-invalid' : ''"></textarea>
+                                            <div class="invalid-feedback" th:errors="*{description}">Błąd opisu</div>
+                                            <div class="form-text text-end" id="charCount">0 / 5000</div>
                                         </div>
                                     </div>
                                 </div>
@@ -102,7 +192,7 @@
 
                         <div class="card-footer bg-white border-top border-light py-4 px-4 px-lg-5">
                             <div class="d-flex flex-column flex-sm-row justify-content-end gap-3">
-                                <a th:href="@{/admin/magazyn}" class="btn btn-light rounded-pill px-4">Anuluj</a>
+                                <a th:href="@{/admin/inventory}" class="btn btn-light rounded-pill px-4">Anuluj</a>
                                 <button type="submit" class="btn btn-primary rounded-pill px-5 shadow-sm fw-medium">
                                     <i class="fa-solid fa-check me-2"></i> Zapisz Przedmiot
                                 </button>
@@ -117,6 +207,7 @@
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script>
+    // Podgląd zdjęcia
     function previewImage(input) {
         const preview = document.getElementById('imagePreview');
         const placeholder = document.getElementById('placeholderIcon');
@@ -130,6 +221,25 @@
             reader.readAsDataURL(input.files[0]);
         }
     }
+
+    // Dynamiczne pokazywanie inputów (Kaucja / Wysyłka)
+    function toggleDepositInput() {
+        const checkbox = document.getElementById('depositToggle');
+        const wrapper = document.getElementById('depositInputWrapper');
+        wrapper.style.display = checkbox.checked ? 'block' : 'none';
+    }
+
+    function toggleShippingInput() {
+        const checkbox = document.getElementById('shippingToggle');
+        const wrapper = document.getElementById('shippingInputWrapper');
+        wrapper.style.display = checkbox.checked ? 'block' : 'none';
+    }
+
+    // Inicjalizacja stanu formularza przy ładowaniu strony (ważne przy edycji/błędach walidacji)
+    document.addEventListener("DOMContentLoaded", function() {
+        toggleDepositInput();
+        toggleShippingInput();
+    });
 </script>
 </body>
 </html>

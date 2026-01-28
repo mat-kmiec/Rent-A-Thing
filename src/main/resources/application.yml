@@ -1,6 +1,10 @@
 spring:
   application:
-    name: Rent-A-Thin
+    name: Rent-A-Thing
+  servlet:
+    multipart:
+      max-file-size: 5MB
+      max-request-size: 5MB
 
   datasource:
     url: jdbc:h2:mem:test;DB_CLOSE_DELAY=-1
@@ -22,3 +26,7 @@ spring:
     console:
       enabled: true
       path: /h2-console
+
+app:
+  upload:
+    dir: ./uploads
