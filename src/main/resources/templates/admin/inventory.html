@@ -1,493 +1,355 @@
 <!DOCTYPE html>
 <html lang="pl" xmlns:th="http://www.thymeleaf.org">
-  <head th:replace="~{fragments/head-admin :: admin-head('Magazyn')}"></head>
-  <body class="bg-light d-flex flex-column min-vh-100">
-  <nav th:replace="~{fragments/nav-admin :: admin-nav('inventory')}"></nav>
+<head th:replace="~{fragments/head-admin :: admin-head('Magazyn')}"></head>
+<body class="bg-light d-flex flex-column min-vh-100">
+<nav th:replace="~{fragments/nav-admin :: admin-nav('inventory')}"></nav>
 
-    <main class="py-4 flex-grow-1">
-      <div class="container-fluid px-4">
-        <div
-          class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center mb-4 gap-3"
-        >
-          <div>
-            <h2 class="fw-bold mb-0 text-dark">Zarządzanie Magazynem</h2>
-            <p class="text-muted small mb-0">
-              Przeglądaj asortyment, edytuj ceny i zarządzaj kategoriami.
-            </p>
-          </div>
-          <div
-            class="d-flex gap-2 w-100 w-md-auto ms-md-auto justify-content-end"
-          >
-            <button
-              class="btn btn-white border shadow-sm rounded-pill flex-fill flex-md-grow-0"
-              data-bs-toggle="modal"
-              data-bs-target="#addCategoryModal"
-            >
-              <i class="fa-solid fa-folder-plus me-2 text-muted"></i> Kategoria
-            </button>
-            <a
-              href="/admin/inventory/add"
-              class="btn btn-primary rounded-pill shadow-sm flex-fill flex-md-grow-0"
-            >
-              <i class="fa-solid fa-box-open me-2"></i> Nowy Przedmiot
-            </a>
-          </div>
+<main class="py-4 flex-grow-1">
+    <div class="container-fluid px-4">
+        <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center mb-4 gap-3">
+            <div>
+                <h2 class="fw-bold mb-0 text-dark">Zarządzanie Magazynem</h2>
+                <p class="text-muted small mb-0">Przeglądaj asortyment, edytuj ceny i zarządzaj kategoriami.</p>
+            </div>
+            <div class="d-flex gap-2 w-100 w-md-auto ms-md-auto justify-content-end">
+                <button class="btn btn-white border shadow-sm rounded-pill flex-fill flex-md-grow-0"
+                        data-bs-toggle="modal" data-bs-target="#addCategoryModal">
+                    <i class="fa-solid fa-folder-plus me-2 text-muted"></i> Kategoria
+                </button>
+                <a href="/admin/inventory/add" class="btn btn-primary rounded-pill shadow-sm flex-fill flex-md-grow-0">
+                    <i class="fa-solid fa-box-open me-2"></i> Nowy Przedmiot
+                </a>
+            </div>
         </div>
 
         <div class="card border-0 shadow-sm rounded-4 overflow-hidden">
-          <div class="card-header bg-white border-0 px-4 pt-4 pb-0 border-bottom">
-            <ul
-              class="nav nav-tabs card-header-tabs"
-              id="inventoryTabs"
-              role="tablist"
-            >
-              <li class="nav-item" role="presentation">
-                <button
-                  class="nav-link active fw-medium text-dark py-2 px-3"
-                  id="items-tab"
-                  data-bs-toggle="tab"
-                  data-bs-target="#items"
-                  type="button"
-                >
-                  <i class="fa-solid fa-list me-2"></i> Lista Przedmiotów
-                </button>
-              </li>
-              <li class="nav-item" role="presentation">
-                <button
-                  class="nav-link fw-medium text-muted py-2 px-3"
-                  id="categories-tab"
-                  data-bs-toggle="tab"
-                  data-bs-target="#categories"
-                  type="button"
-                >
-                  <i class="fa-solid fa-tags me-2"></i> Kategorie
-                </button>
-              </li>
-            </ul>
-          </div>
-
-          <div class="card-body p-0">
-            <div class="tab-content" id="inventoryTabsContent">
-              <div class="tab-pane fade show active" id="items" role="tabpanel">
-                <div
-                  class="p-3 p-md-4 border-bottom border-light bg-light bg-opacity-25"
-                >
-                  <div class="row g-2">
-                    <div class="col-12 col-md-4">
-                      <div class="input-group">
-                        <span
-                          class="input-group-text bg-white border-end-0 rounded-start-pill ps-3"
-                        >
-                          <i
-                            class="fa-solid fa-magnifying-glass text-muted"
-                          ></i>
-                        </span>
-                        <input
-                          type="text"
-                          class="form-control bg-white border-start-0 rounded-end-pill shadow-none"
-                          placeholder="Szukaj przedmiotu..."
-                        />
-                      </div>
-                    </div>
-                    <div class="col-6 col-md-3">
-                      <select
-                        class="form-select rounded-pill bg-white border shadow-none cursor-pointer"
-                      >
-                        <option selected>Kategoria: Wszystkie</option>
-                        <option value="1">Pojazdy</option>
-                        <option value="2">Elektronika</option>
-                        <option value="3">Narzędzia</option>
-                      </select>
-                    </div>
-                    <div class="col-6 col-md-3">
-                      <select
-                        class="form-select rounded-pill bg-white border shadow-none cursor-pointer"
-                      >
-                        <option selected>Status: Dostępne</option>
-                        <option value="rented">Wypożyczone</option>
-                        <option value="deleted" class="text-danger fw-bold">
-                          Usunięte (Archiwum)
-                        </option>
-                      </select>
-                    </div>
-                    <div class="col-12 col-md-2 d-grid">
-                      <button class="btn btn-outline-primary rounded-pill">
-                        Filtruj
-                      </button>
-                    </div>
-                  </div>
-                </div>
-
-                <div class="table-responsive">
-                  <table
-                    class="table table-hover align-middle mb-0 text-nowrap"
-                  >
-                    <thead class="bg-light text-uppercase small text-muted">
-                      <tr>
-                        <th class="ps-4">Nazwa & Opis</th>
-                        <th class="d-none d-md-table-cell">Kategoria</th>
-                        <th>Cena / Doba</th>
-                        <th>Status</th>
-                        <th class="text-end pe-4">Akcje</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <tr>
-                        <td class="ps-4">
-                          <div class="d-flex align-items-center">
-                            <div
-                              class="avatar-md bg-light rounded-3 d-flex align-items-center justify-content-center me-3 border flex-shrink-0"
-                            >
-                              <i class="fa-solid fa-image text-muted fs-5"></i>
-                            </div>
-                            <div>
-                              <span
-                                class="fw-bold d-block text-dark text-wrap"
-                                style="max-width: 250px"
-                                >Wiertarka Bosch PRO</span
-                              >
-                              <small
-                                class="text-muted d-block text-truncate"
-                                style="max-width: 200px"
-                                >Model udarowy, 800W.</small
-                              >
-                              <small class="d-md-none text-primary"
-                                >Narzędzia</small
-                              >
-                            </div>
-                          </div>
-                        </td>
-                        <td class="d-none d-md-table-cell">
-                          <span
-                            class="badge bg-light text-dark border fw-normal"
-                            >Narzędzia</span
-                          >
-                        </td>
-                        <td class="fw-bold text-dark">45.00 zł</td>
-                        <td>
-                          <span
-                            class="badge bg-success bg-opacity-10 text-success rounded-pill px-2"
-                            >Dostępny</span
-                          >
-                        </td>
-                        <td class="text-end pe-4">
-                          <div class="btn-group">
-                            <a
-                              href="#"
-                              class="btn btn-sm btn-white border shadow-sm rounded-start-pill"
-                              ><i class="fa-solid fa-pen text-muted"></i
-                            ></a>
-                            <button
-                              class="btn btn-sm btn-white border shadow-sm rounded-end-pill text-danger"
-                            >
-                              <i class="fa-solid fa-trash-can"></i>
-                            </button>
-                          </div>
-                        </td>
-                      </tr>
-                      <tr>
-                        <td class="ps-4">
-                          <div class="d-flex align-items-center">
-                            <div
-                              class="avatar-md bg-light rounded-3 d-flex align-items-center justify-content-center me-3 border flex-shrink-0"
-                            >
-                              <i
-                                class="fa-solid fa-camera text-primary fs-5"
-                              ></i>
-                            </div>
-                            <div>
-                              <span
-                                class="fw-bold d-block text-dark text-wrap"
-
-                                style="max-width: 250px"
-                                >Sony Alpha a7 III</span
-                              >
-                              <small class="text-muted">Body + Obiektyw</small>
-                              <small class="d-md-none text-primary d-block"
-                                >Elektronika</small
-                              >
-                            </div>
-                          </div>
-                        </td>
-                        <td class="d-none d-md-table-cell">
-                          <span
-                            class="badge bg-light text-dark border fw-normal"
-                            >Elektronika</span
-                          >
-                        </td>
-                        <td class="fw-bold text-dark">120.00 zł</td>
-                        <td>
-                          <span
-                            class="badge bg-warning bg-opacity-10 text-warning text-dark rounded-pill px-2"
-                            >Wypożyczony</span
-                          >
-                        </td>
-                        <td class="text-end pe-4">
-                          <div class="btn-group">
-                            <a
-                              href="#"
-                              class="btn btn-sm btn-white border shadow-sm rounded-start-pill"
-                              ><i class="fa-solid fa-pen text-muted"></i
-                            ></a>
-                            <button
-                              class="btn btn-sm btn-white border shadow-sm rounded-end-pill text-muted"
-                              disabled
-                            >
-                              <i class="fa-solid fa-trash-can"></i>
-                            </button>
-                          </div>
-                        </td>
-                      </tr>
-                    </tbody>
-                  </table>
-                </div>
-
-                <div
-                  class="card-footer bg-white border-top border-light py-3 px-4"
-                >
-                  <div
-                    class="d-flex flex-column flex-md-row justify-content-between align-items-center gap-3"
-                  >
-                    <small class="text-muted">Strona 1 z 5</small>
-                    <nav>
-                      <ul class="pagination pagination-sm mb-0">
-                        <li class="page-item disabled">
-                          <a class="page-link" href="#"
-                            ><i class="fa-solid fa-chevron-left"></i
-                          ></a>
-                        </li>
-                        <li class="page-item active">
-                          <a class="page-link" href="#">1</a>
-                        </li>
-                        <li class="page-item">
-                          <a class="page-link" href="#">2</a>
-                        </li>
-                        <li class="page-item">
-                          <a class="page-link" href="#"
-                            ><i class="fa-solid fa-chevron-right"></i
-                          ></a>
-                        </li>
-                      </ul>
-                    </nav>
-                  </div>
-                </div>
-              </div>
-
-              <div class="tab-pane fade" id="categories" role="tabpanel">
-                <div class="p-3 p-md-4 border-bottom border-light bg-light bg-opacity-25">
-                  <div class="row g-2 align-items-center">
-                    <div class="col-12 col-md-6">
-                      <form th:action="@{/admin/magazyn}" method="get">
-                        <div class="input-group">
-        <span class="input-group-text bg-white border-end-0 rounded-start-pill ps-3">
-            <i class="fa-solid fa-magnifying-glass text-muted"></i>
-        </span>
-                          <input type="text"
-                                 name="category"
-                                 th:value="${searchQuery}"
-                                 class="form-control bg-white border-start-0 rounded-end-pill shadow-none"
-                                 placeholder="Szukaj kategorii..."/>
-                          <button type="submit" style="display: none;"></button>
-                        </div>
-                      </form>
-                    </div>
-                    <div class="col-6 col-md-4">
-                      <select class="form-select border-0 shadow-none bg-light rounded-pill ps-3"
-                              style="width: 180px;"
-                              onchange="applyFilters()">
-                        <option value="idDesc" th:selected="${currentSort == 'idDesc'}">Najnowsze</option>
-                        <option value="idAsc" th:selected="${currentSort == 'idAsc'}">Najstarsze</option>
-                        <option value="nameAsc" th:selected="${currentSort == 'nameAsc'}">Nazwa A-Z</option>
-                        <option value="nameDesc" th:selected="${currentSort == 'nameDesc'}">Nazwa Z-A</option>
-                      </select>
-                    </div>
-                    <div class="col-6 col-md-2 text-end">
-    <span class="text-muted small fw-medium">
-        Łącznie: <span th:text="${categories != null ? categories.size() : 0}">0</span>
-    </span>
-                    </div>
-                  </div>
-                </div>
-
-                <div class="table-responsive">
-                  <table class="table table-hover align-middle mb-0 text-nowrap">
-                    <thead class="bg-light text-uppercase small text-muted">
-                    <tr>
-                      <th class="ps-4" style="width: 100px">Ikona</th>
-                      <th>Nazwa</th>
-                      <th class="d-none d-md-table-cell">Opis</th>
-                      <th class="text-center">Przedmiotów</th>
-                      <th class="text-end pe-4">Akcje</th>
-                    </tr>
-                    </thead>
-                    <tbody id="category-table-body">
-                    <tr th:each="cat : ${categories}">
-
-                      <td class="ps-4">
-                        <div class="category-img-wrapper border rounded-3 bg-light d-flex align-items-center justify-content-center" style="width: 45px; height: 45px;">
-                          <i class="fa-solid text-primary" th:classappend="${cat.iconClass != null ? cat.iconClass : 'fa-folder'}"></i>
-                        </div>
-                      </td>
-
-                      <td>
-                        <div class="d-flex align-items-center">
-                          <span class="fw-bold text-dark" th:text="${cat.name}">Nazwa Kategorii</span>
-                        </div>
-                      </td>
-
-                      <td class="d-none d-md-table-cell">
-            <span class="text-muted small text-wrap d-block" style="max-width: 350px"
-                  th:text="${cat.description != null ? cat.description : 'Brak opisu'}">
-                Przykładowy opis...
-            </span>
-                      </td>
-
-                      <td class="text-center">
-            <span class="badge bg-light text-dark border rounded-pill px-3"
-                  th:text="${cat.itemCount}">0</span>
-                      </td>
-
-                      <td class="text-end pe-4">
-                        <div class="btn-group">
-                          <button class="btn btn-sm btn-white border shadow-sm rounded-start-pill"
-                                  data-bs-toggle="modal"
-                                  data-bs-target="#editCategoryModal"
-                                  th:data-id="${cat.id}"
-                                  th:data-name="${cat.name}"
-                                  th:data-icon="${cat.iconClass}"
-                                  th:data-desc="${cat.description}"
-                                  onclick="fillEditModal(this)">
-                            <i class="fa-solid fa-pen text-muted"></i>
-                          </button>
-                          <form th:action="@{/admin/magazyn/delete/{id}(id=${cat.id})}" method="post"
-                                style="display: inline;"
-                                onsubmit="return confirm('Czy na pewno chcesz usunąć tę kategorię?')">
-                            <button type="submit" class="btn btn-sm btn-white border shadow-sm rounded-end-pill text-danger">
-                              <i class="fa-solid fa-trash-can"></i>
-                            </button>
-                          </form>
-                        </div>
-                      </td>
-                    </tr>
-                    </tbody>
-                  </table>
-                </div>
-              </div>
-
+            <div class="card-header bg-white border-0 px-4 pt-4 pb-0 border-bottom">
+                <ul class="nav nav-tabs card-header-tabs" id="inventoryTabs" role="tablist">
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link active fw-medium text-dark py-2 px-3" id="items-tab"
+                                data-bs-toggle="tab" data-bs-target="#items" type="button">
+                            <i class="fa-solid fa-list me-2"></i> Lista Przedmiotów
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link fw-medium text-muted py-2 px-3" id="categories-tab"
+                                data-bs-toggle="tab" data-bs-target="#categories" type="button">
+                            <i class="fa-solid fa-tags me-2"></i> Kategorie
+                        </button>
+                    </li>
+                </ul>
             </div>
-          </div>
-        </div>
-      </div>
-    </main>
 
-    <div th:replace="~{fragments/toast :: toast}"></div>
+            <div class="card-body p-0">
+                <div class="tab-content" id="inventoryTabsContent">
+                    <div class="tab-pane fade show active" id="items" role="tabpanel">
+                        <div class="p-3 p-md-4 border-bottom border-light bg-light bg-opacity-25">
+                            <form th:action="@{/admin/inventory}" method="get">
+                                <div class="row g-2">
+                                    <div class="col-12 col-md-4">
+                                        <div class="input-group">
+                                            <span class="input-group-text bg-white border-end-0 rounded-start-pill ps-3">
+                                                <i class="fa-solid fa-magnifying-glass text-muted"></i>
+                                            </span>
+                                            <input type="text" name="query" th:value="${criteria.query()}"
+                                                   class="form-control bg-white border-start-0 rounded-end-pill shadow-none"
+                                                   placeholder="Szukaj przedmiotu..."/>
+                                        </div>
+                                    </div>
+                                    <div class="col-6 col-md-3">
+                                        <select name="categoryId" class="form-select rounded-pill bg-white border shadow-none cursor-pointer">
+                                            <option value="">Kategoria: Wszystkie</option>
+                                            <option th:each="c : ${allCategories}"
+                                                    th:value="${c.id}"
+                                                    th:text="${c.name}"
+                                                    th:selected="${c.id == criteria.categoryId()}"></option>
+                                        </select>
+                                    </div>
+                                    <div class="col-6 col-md-3">
+                                        <div class="col-6 col-md-3">
+                                            <select name="availableOnly" class="form-select rounded-pill bg-white border shadow-none cursor-pointer">
+                                                <option value="" th:selected="${criteria.availableOnly() == null}">Status: Wszystkie</option>
 
-    <footer th:replace="~{fragments/footer-admin :: footer-admin}"></footer>
+                                                <option value="true" th:selected="${criteria.availableOnly() == true}">Dostępne</option>
 
-    <div
-      class="modal fade"
-      id="addCategoryModal"
-      tabindex="-1"
-      aria-hidden="true"
-    >
-      <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content border-0 shadow rounded-4">
-          <div class="modal-header border-0 pb-0">
-            <h5 class="modal-title fw-bold">Nowa Kategoria</h5>
-            <button
-              type="button"
-              class="btn-close"
-              data-bs-dismiss="modal"
-              aria-label="Close"
-            ></button>
-          </div>
-          <div class="modal-body">
-            <form th:action="@{/admin/magazyn/add}" method="post">
-              <div class="mb-3">
-                <label class="form-label small text-muted text-uppercase fw-bold">Nazwa Kategorii</label>
-                <input type="text" name="name" class="form-control rounded-3" placeholder="np. Sprzęt Wodny" required />
-              </div>
+                                                <option value="false" th:selected="${criteria.availableOnly() == false}">Niedostępne</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-12 col-md-2 d-grid">
+                                        <button type="submit" class="btn btn-outline-primary rounded-pill">Filtruj</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
 
-              <div class="mb-3">
-                <label class="form-label small text-muted text-uppercase fw-bold">Ikona (FontAwesome)</label>
-                <div class="input-group">
-                  <span class="input-group-text bg-light border-end-0"><i class="fa-solid fa-icons"></i></span>
-                  <input type="text" name="iconClass" class="form-control rounded-end-3" placeholder="np. fa-water" />
+                        <div class="table-responsive">
+                            <table class="table table-hover align-middle mb-0 text-nowrap">
+                                <thead class="bg-light text-uppercase small text-muted">
+                                <tr>
+                                    <th class="ps-4">Nazwa & Opis</th>
+                                    <th class="d-none d-md-table-cell">Kategoria</th>
+                                    <th>Cena / Doba</th>
+                                    <th>Status</th>
+                                    <th class="text-end pe-4">Akcje</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr th:each="item : ${items}">
+                                    <td class="ps-4">
+                                        <div class="d-flex align-items-center">
+                                            <div class="avatar-md bg-light rounded-3 d-flex align-items-center justify-content-center me-3 border flex-shrink-0" style="width: 48px; height: 48px; overflow: hidden;">
+                                                <img th:if="${item.imageUrl}" th:src="${item.imageUrl}" class="img-fluid" alt="item">
+                                                <i th:unless="${item.imageUrl}" class="fa-solid fa-image text-muted fs-5"></i>
+                                            </div>
+                                            <div>
+                                                <span class="fw-bold d-block text-dark text-wrap" style="max-width: 250px" th:text="${item.title}">Nazwa</span>
+                                                <small class="text-muted d-block text-truncate" style="max-width: 200px" th:text="${item.description}">Opis</small>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="d-none d-md-table-cell">
+                                        <span class="badge bg-light text-dark border fw-normal" th:text="${item.categoryName}">Kategoria</span>
+                                    </td>
+                                    <td class="fw-bold text-dark" th:text="${#numbers.formatDecimal(item.pricePerDay, 1, 2) + ' zł'}">0.00 zł</td>
+                                    <td>
+                                        <span th:if="${item.available}" class="badge bg-success bg-opacity-10 text-success rounded-pill px-2">Dostępny</span>
+                                        <span th:unless="${item.available}" class="badge bg-danger bg-opacity-10 text-danger rounded-pill px-2">Niedostępny</span>
+                                    </td>
+                                    <td class="text-end pe-4">
+                                        <div class="btn-group">
+                                            <a th:href="@{/admin/inventory/edit/{id}(id=${item.id})}" class="btn btn-sm btn-white border shadow-sm rounded-pill me-1">
+                                                <i class="fa-solid fa-pen text-muted"></i>
+                                            </a>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr th:if="${#lists.isEmpty(items)}">
+                                    <td colspan="5" class="text-center py-5 text-muted">Nie znaleziono przedmiotów spełniających kryteria.</td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div class="card-footer bg-white border-top border-light py-3 px-4" th:if="${itemsPage.totalPages > 1}">
+                            <div class="d-flex flex-column flex-md-row justify-content-between align-items-center gap-3">
+                                <small class="text-muted">
+                                    Strona <span th:text="${itemsPage.number + 1}">1</span> z <span th:text="${itemsPage.totalPages}">1</span>
+                                </small>
+                                <nav>
+                                    <ul class="pagination pagination-sm mb-0">
+                                        <li class="page-item" th:classappend="${!itemsPage.hasPrevious()} ? 'disabled'">
+                                            <a class="page-link" th:href="@{/admin/inventory(page=${itemsPage.number - 1}, query=${criteria.query()}, categoryId=${criteria.categoryId()}, availableOnly=${criteria.availableOnly()})}">
+                                                <i class="fa-solid fa-chevron-left"></i>
+                                            </a>
+                                        </li>
+                                        <li class="page-item" th:each="i : ${#numbers.sequence(0, itemsPage.totalPages - 1)}"
+                                            th:classappend="${i == itemsPage.number} ? 'active'">
+                                            <a class="page-link" th:href="@{/admin/inventory(page=${i}, query=${criteria.query()}, categoryId=${criteria.categoryId()}, availableOnly=${criteria.availableOnly()})}"
+                                               th:text="${i + 1}">1</a>
+                                        </li>
+                                        <li class="page-item" th:classappend="${!itemsPage.hasNext()} ? 'disabled'">
+                                            <a class="page-link" th:href="@{/admin/inventory(page=${itemsPage.number + 1}, query=${criteria.query()}, categoryId=${criteria.categoryId()}, availableOnly=${criteria.availableOnly()})}">
+                                                <i class="fa-solid fa-chevron-right"></i>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </nav>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="tab-pane fade" id="categories" role="tabpanel">
+                        <div class="p-3 p-md-4 border-bottom border-light bg-light bg-opacity-25">
+                            <div class="row g-2 align-items-center">
+                                <div class="col-12 col-md-6">
+                                    <form th:action="@{/admin/inventory}" method="get" id="categorySearchForm">
+                                        <div class="input-group">
+                                            <span class="input-group-text bg-white border-end-0 rounded-start-pill ps-3">
+                                                <i class="fa-solid fa-magnifying-glass text-muted"></i>
+                                            </span>
+                                            <input type="text" name="category" th:value="${searchQuery}"
+                                                   class="form-control bg-white border-start-0 rounded-end-pill shadow-none"
+                                                   placeholder="Szukaj kategorii..."/>
+                                            <input type="hidden" name="sortCat" th:value="${currentSort}">
+                                            <button type="submit" style="display: none;"></button>
+                                        </div>
+                                    </form>
+                                </div>
+                                <div class="col-6 col-md-4">
+                                    <select class="form-select border-0 shadow-none bg-light rounded-pill ps-3"
+                                            style="width: 180px;" onchange="applyFilters(this.value)">
+                                        <option value="idDesc" th:selected="${currentSort == 'idDesc'}">Najnowsze</option>
+                                        <option value="idAsc" th:selected="${currentSort == 'idAsc'}">Najstarsze</option>
+                                        <option value="nameAsc" th:selected="${currentSort == 'nameAsc'}">Nazwa A-Z</option>
+                                        <option value="nameDesc" th:selected="${currentSort == 'nameDesc'}">Nazwa Z-A</option>
+                                    </select>
+                                </div>
+                                <div class="col-6 col-md-2 text-end">
+                                    <span class="text-muted small fw-medium">
+                                        Łącznie: <span th:text="${categories != null ? categories.size() : 0}">0</span>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="table-responsive">
+                            <table class="table table-hover align-middle mb-0 text-nowrap">
+                                <thead class="bg-light text-uppercase small text-muted">
+                                <tr>
+                                    <th class="ps-4" style="width: 100px">Ikona</th>
+                                    <th>Nazwa</th>
+                                    <th class="d-none d-md-table-cell">Opis</th>
+                                    <th class="text-center">Przedmiotów</th>
+                                    <th class="text-end pe-4">Akcje</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr th:each="cat : ${categories}">
+                                    <td class="ps-4">
+                                        <div class="category-img-wrapper border rounded-3 bg-light d-flex align-items-center justify-content-center" style="width: 45px; height: 45px;">
+                                            <i class="fa-solid text-primary" th:classappend="${cat.iconClass != null ? cat.iconClass : 'fa-folder'}"></i>
+                                        </div>
+                                    </td>
+                                    <td><span class="fw-bold text-dark" th:text="${cat.name}">Nazwa</span></td>
+                                    <td class="d-none d-md-table-cell">
+                                        <span class="text-muted small text-wrap d-block" style="max-width: 350px"
+                                              th:text="${cat.description != null ? cat.description : 'Brak opisu'}">Opis</span>
+                                    </td>
+                                    <td class="text-center">
+                                        <span class="badge bg-light text-dark border rounded-pill px-3" th:text="${cat.itemCount}">0</span>
+                                    </td>
+                                    <td class="text-end pe-4">
+                                        <div class="btn-group">
+                                            <button class="btn btn-sm btn-white border shadow-sm rounded-start-pill"
+                                                    data-bs-toggle="modal" data-bs-target="#editCategoryModal"
+                                                    th:data-id="${cat.id}" th:data-name="${cat.name}"
+                                                    th:data-icon="${cat.iconClass}" th:data-desc="${cat.description}"
+                                                    onclick="fillEditModal(this)">
+                                                <i class="fa-solid fa-pen text-muted"></i>
+                                            </button>
+                                            <form th:action="@{/admin/inventory/category/delete/{id}(id=${cat.id})}" method="post"
+                                                  style="display: inline;" onsubmit="return confirm('Czy na pewno chcesz usunąć tę kategorię?')">
+                                                <button type="submit" class="btn btn-sm btn-white border shadow-sm rounded-end-pill text-danger">
+                                                    <i class="fa-solid fa-trash-can"></i>
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
                 </div>
-              </div>
-
-              <div class="mb-3">
-                <label class="form-label small text-muted text-uppercase fw-bold">Opis</label>
-                <textarea name="description" class="form-control rounded-3" rows="2" placeholder="Krótki opis..."></textarea>
-              </div>
-
-              <div class="modal-footer border-0 pt-3 px-0 pb-0">
-                <button type="button" class="btn btn-light rounded-pill px-4" data-bs-dismiss="modal">Anuluj</button>
-                <button type="submit" class="btn btn-primary rounded-pill px-4">Utwórz</button>
-              </div>
-            </form>
-          </div>
+            </div>
         </div>
-      </div>
     </div>
-    <div class="modal fade" id="editCategoryModal" tabindex="-1" aria-hidden="true">
-      <div class="modal-dialog modal-dialog-centered">
+</main>
+
+<div class="modal fade" id="addCategoryModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content border-0 shadow rounded-4">
-          <div class="modal-header border-0 pb-0">
-            <h5 class="modal-title fw-bold">Edytuj Kategorię</h5>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-          </div>
-          <form th:action="@{/admin/magazyn/edit}" method="post">
+            <div class="modal-header border-0 pb-0">
+                <h5 class="modal-title fw-bold">Nowa Kategoria</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
             <div class="modal-body">
-              <input type="hidden" name="id" id="edit-id">
-
-              <div class="mb-3">
-                <label class="form-label small text-muted text-uppercase fw-bold">Nazwa</label>
-                <input type="text" name="name" id="edit-name" class="form-control rounded-3" required />
-              </div>
-              <div class="mb-3">
-                <label class="form-label small text-muted text-uppercase fw-bold">Ikona (FontAwesome)</label>
-                <input type="text" name="iconClass" id="edit-icon" class="form-control rounded-3" />
-              </div>
-              <div class="mb-3">
-                <label class="form-label small text-muted text-uppercase fw-bold">Opis</label>
-                <textarea name="description" id="edit-desc" class="form-control rounded-3" rows="2"></textarea>
-              </div>
+                <form th:action="@{/admin/inventory/category/add}" method="post">
+                    <div class="mb-3">
+                        <label class="form-label small text-muted text-uppercase fw-bold">Nazwa Kategorii</label>
+                        <input type="text" name="name" class="form-control rounded-3" placeholder="np. Sprzęt Wodny" required />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label small text-muted text-uppercase fw-bold">Ikona (FontAwesome)</label>
+                        <input type="text" name="iconClass" class="form-control rounded-3" placeholder="np. fa-water" />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label small text-muted text-uppercase fw-bold">Opis</label>
+                        <textarea name="description" class="form-control rounded-3" rows="2"></textarea>
+                    </div>
+                    <div class="modal-footer border-0 px-0 pb-0">
+                        <button type="button" class="btn btn-light rounded-pill px-4" data-bs-dismiss="modal">Anuluj</button>
+                        <button type="submit" class="btn btn-primary rounded-pill px-4">Utwórz</button>
+                    </div>
+                </form>
             </div>
-            <div class="modal-footer border-0 pt-0">
-              <button type="button" class="btn btn-light rounded-pill px-4" data-bs-dismiss="modal">Anuluj</button>
-              <button type="submit" class="btn btn-primary rounded-pill px-4">Zapisz zmiany</button>
-            </div>
-          </form>
         </div>
-      </div>
     </div>
-    <script>
-      function fillEditModal(btn) {
-          document.getElementById('edit-id').value = btn.getAttribute('data-id');
-          document.getElementById('edit-name').value = btn.getAttribute('data-name');
-          document.getElementById('edit-icon').value = btn.getAttribute('data-icon');
-          document.getElementById('edit-desc').value = btn.getAttribute('data-desc');
-      }
-    </script>
-    <script>
-      function applyFilters() {
-          const sortSelect = document.querySelector('select[onchange="applyFilters()"]');
-          const sortValue = sortSelect.value;
+</div>
 
-          const searchInput = document.querySelector('input[name="category"]');
-          const searchValue = searchInput ? searchInput.value : '';
+<div class="modal fade" id="editCategoryModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow rounded-4">
+            <div class="modal-header border-0 pb-0">
+                <h5 class="modal-title fw-bold">Edytuj Kategorię</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form th:action="@{/admin/inventory/category/edit}" method="post">
+                <div class="modal-body">
+                    <input type="hidden" name="id" id="edit-id">
+                    <div class="mb-3">
+                        <label class="form-label small text-muted text-uppercase fw-bold">Nazwa</label>
+                        <input type="text" name="name" id="edit-name" class="form-control rounded-3" required />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label small text-muted text-uppercase fw-bold">Ikona (FontAwesome)</label>
+                        <input type="text" name="iconClass" id="edit-icon" class="form-control rounded-3" />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label small text-muted text-uppercase fw-bold">Opis</label>
+                        <textarea name="description" id="edit-desc" class="form-control rounded-3" rows="2"></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer border-0 pt-0">
+                    <button type="button" class="btn btn-light rounded-pill px-4" data-bs-dismiss="modal">Anuluj</button>
+                    <button type="submit" class="btn btn-primary rounded-pill px-4">Zapisz zmiany</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
 
-          let url = window.location.pathname + '?sort=' + sortValue;
+<div th:replace="~{fragments/toast :: toast}"></div>
+<footer th:replace="~{fragments/footer-admin :: footer-admin}"></footer>
 
-          if (searchValue) {
-              url += '&category=' + encodeURIComponent(searchValue);
-          }
+<script>
+    function fillEditModal(btn) {
+        document.getElementById('edit-id').value = btn.getAttribute('data-id');
+        document.getElementById('edit-name').value = btn.getAttribute('data-name');
+        document.getElementById('edit-icon').value = btn.getAttribute('data-icon');
+        document.getElementById('edit-desc').value = btn.getAttribute('data-desc');
+    }
 
-          window.location.href = url + '#categories';
-      }
-    </script>
-  </body>
+    function applyFilters(sortValue) {
+        const searchInput = document.querySelector('input[name="category"]');
+        const searchValue = searchInput ? searchInput.value : '';
+        let url = window.location.pathname + '?sortCat=' + sortValue;
+        if (searchValue) {
+            url += '&category=' + encodeURIComponent(searchValue);
+        }
+        window.location.href = url + '#categories';
+    }
 
+    document.addEventListener("DOMContentLoaded", function() {
+        // Obsługa kotwic URL dla zakładek
+        const hash = window.location.hash;
+        if (hash) {
+            const targetTab = document.querySelector(`button[data-bs-target="${hash}"]`);
+            if (targetTab) {
+                new bootstrap.Tab(targetTab).show();
+            }
+        }
 
+        // Aktualizacja URL przy zmianie tabu bez przeładowania
+        const tabButtons = document.querySelectorAll('button[data-bs-toggle="tab"]');
+        tabButtons.forEach(btn => {
+            btn.addEventListener('shown.bs.tab', function(e) {
+                const targetId = e.target.getAttribute('data-bs-target');
+                history.replaceState(null, null, targetId);
+            });
+        });
+    });
+</script>
+</body>
 </html>
