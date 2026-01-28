@@ -147,4 +147,18 @@ public interface RentalMapper {
                 item.getCanBeShipped() != null ? item.getCanBeShipped() : false
         );
     }
+
+    @Mapping(target = "id", source = "id")
+    @Mapping(target = "itemTitle", source = "item.title")
+    @Mapping(target = "imageUrl", source = "item.imageUrl")
+    @Mapping(target = "requestNumber", expression = "java(\"#REQ-\" + rental.getId())")
+    @Mapping(target = "returnDeadline", source = "endDateTime")
+    @Mapping(target = "remainingTimeText", expression = "java(calculateTimeDiff(rental))")
+    @Mapping(target = "returnNote", ignore = true)
+    ActiveRentalDTO toActiveDto(Rental rental);
+
+    List<ActiveRentalDTO> toActiveDtoList(List<Rental> rentals);
+
+
+    List<RentalHistoryDto> toHistoryDtoList(List<Rental> rentals);
 }

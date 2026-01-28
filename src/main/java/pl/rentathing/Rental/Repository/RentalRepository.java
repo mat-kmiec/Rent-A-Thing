@@ -16,8 +16,9 @@ import java.util.List;
 import java.util.Optional;
 
 /**
- * Repository interface for managing Rental entities. Provides methods
- * for querying and performing CRUD operations on Rental data.
+ * RentalRepository is a Spring Data JPA repository interface for managing Rental entities.
+ * It provides methods to perform CRUD operations and custom query methods for retrieving
+ * rentals based on filters and specific criteria.
  */
 @Repository
 public interface RentalRepository extends JpaRepository<Rental, Long> {
@@ -136,6 +137,40 @@ public interface RentalRepository extends JpaRepository<Rental, Long> {
             @Param("start") LocalDateTime start,
             @Param("end") LocalDateTime end
     );
+
+    /**
+     * Retrieves a list of Rental entities for the specified user ID and rental status,
+     * sorted in ascending order by the end date and time.
+     *
+     * @param userId the ID of the user whose rentals are to be retrieved
+     * @param status the status of the rentals to filter the results
+     * @return a list of Rental entities matching the provided user ID and status,
+     *         sorted in ascending order by the end date and time
+     */
+    List<Rental> findByUserIdAndStatusOrderByEndDateTimeAsc(Long userId, RentalStatus status);
+
+    /**
+     * Retrieves a list of recent rental history for a specific user and status, ordered by end date and time
+     * in descending order. The results are paginated based on the provided Pageable object.
+     *
+     * @param userId the ID of the user for whom the rental history is to be retrieved
+     * @param status the status of rentals to filter by
+     * @param pageable the pagination information, including page size and page number
+     * @return a list of Rental entities matching the user ID and status, ordered by the end date and time in descending order
+     */
+    @Query("SELECT r FROM Rental r WHERE r.user.id = :userId AND r.status = :status ORDER BY r.endDateTime DESC")
+    List<Rental> findRecentHistory(@Param("userId") Long userId,
+                                   @Param("status") RentalStatus status,
+                                   Pageable pageable);
+
+    /**
+     * Counts the number of rentals associated with a specific user and having a specific status.
+     *
+     * @param userId the ID of the user whose rentals are to be counted
+     * @param status the status of the rentals to filter by
+     * @return the total number of rentals that match the given user ID and status
+     */
+    long countByUserIdAndStatus(Long userId, RentalStatus status);
 
 
 }
