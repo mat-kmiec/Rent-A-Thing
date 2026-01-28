@@ -37,8 +37,10 @@ public class ItemSpecifications {
 
     private static Specification<Item> isAvailable(Boolean availableOnly) {
         return (root, q, cb) -> {
-            if (availableOnly == null) return null;
-            return cb.equal(root.get("available"), availableOnly);
+            if (availableOnly == null || !availableOnly) {
+                return null;
+            }
+            return cb.isTrue(root.get("available"));
         };
     }
 }
