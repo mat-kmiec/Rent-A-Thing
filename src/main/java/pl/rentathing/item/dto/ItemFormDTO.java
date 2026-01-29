@@ -6,6 +6,14 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.math.BigDecimal;
 
+/**
+ * Represents a Data Transfer Object (DTO) for handling item form submissions.
+ *
+ * This class is used to transfer user-provided data for creating or updating an item.
+ * It encapsulates various fields required for item management, including item details,
+ * pricing, rental options, and image handling. The class also includes validation
+ * annotations to ensure data integrity.
+ */
 @Getter
 @Setter
 @NoArgsConstructor

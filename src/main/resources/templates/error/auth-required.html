@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="pl" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/head :: head('Wymagane logowanie')}"></head>
+<body class="d-flex flex-column min-vh-100 bg-light">
+
+<nav th:replace="~{fragments/nav :: nav}"></nav>
+
+<main class="flex-grow-1 d-flex align-items-center justify-content-center py-5">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-8 col-lg-6">
+                <div class="card border-0 shadow-lg rounded-4 overflow-hidden">
+                    <div class="card-body p-5 text-center">
+
+                        <div class="mb-4 text-warning bg-warning bg-opacity-10 rounded-circle d-inline-flex align-items-center justify-content-center" style="width: 100px; height: 100px;">
+                            <i class="fa-solid fa-user-lock fa-3x"></i>
+                        </div>
+
+                        <h2 class="fw-bold mb-3 text-dark">Wymagane konto</h2>
+
+                        <p class="text-muted mb-4 fs-5">
+                            Aby zarezerwować ten przedmiot i przejść do formularza zamówienia, musisz być zalogowany.
+                        </p>
+
+                        <div class="d-grid gap-3 col-lg-10 mx-auto">
+                            <a th:href="@{/logowanie}" class="btn btn-primary rounded-pill py-3 fw-bold shadow-sm">
+                                <i class="fa-solid fa-right-to-bracket me-2"></i> Zaloguj się
+                            </a>
+
+                            <a th:href="@{/rejestracja}" class="btn btn-outline-secondary rounded-pill py-3 fw-bold">
+                                <i class="fa-solid fa-user-plus me-2"></i> Załóż darmowe konto
+                            </a>
+                        </div>
+
+                        <div class="mt-4 pt-3 border-top">
+                            <a href="/katalog" class="text-decoration-none small text-muted">
+                                <i class="fa-solid fa-arrow-left me-1"></i> Wróć do katalogu
+                            </a>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<footer th:replace="~{fragments/footer :: footer}"></footer>
+</body>
+</html>

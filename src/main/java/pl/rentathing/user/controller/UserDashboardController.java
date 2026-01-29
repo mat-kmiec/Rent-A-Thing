@@ -13,6 +13,10 @@ import pl.rentathing.user.service.UserService;
 
 import java.util.Optional;
 
+/**
+ * Controller responsible for managing and handling the user dashboard functionality.
+ * Provides endpoints for rendering user-specific views and data for the client dashboard.
+ */
 @Controller
 @RequiredArgsConstructor
 public class UserDashboardController {
@@ -20,6 +24,13 @@ public class UserDashboardController {
     private final UserDashboardService dashboardService;
     private final UserService userService;
 
+    /**
+     * Displays the client dashboard view populated with user-specific dashboard data.
+     *
+     * @param model the model object used to pass attributes to the view
+     * @param userDetails the details of the currently authenticated user
+     * @return the name of the view template to render the dashboard
+     */
     @GetMapping("/moje-konto")
     public String showDashboard(Model model, @AuthenticationPrincipal UserDetails userDetails) {
         Optional<User> user = userService.findByEmail(userDetails.getUsername());

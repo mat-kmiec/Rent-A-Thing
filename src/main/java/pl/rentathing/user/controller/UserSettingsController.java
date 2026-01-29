@@ -17,6 +17,11 @@ import java.util.Optional;
 
 import jakarta.validation.Valid;
 
+/**
+ * Controller responsible for managing user settings and preferences.
+ * Provides endpoints for displaying and updating user profile information,
+ * address details, password, and notification preferences.
+ */
 @Controller
 @RequestMapping("/moje-konto/ustawienia")
 @RequiredArgsConstructor
@@ -24,6 +29,9 @@ public class UserSettingsController {
 
     private final UserService userService;
 
+    /**
+     *
+     */
     @GetMapping
     public String getSettings(Authentication authentication, Model model) {
         User principal = (User) authentication.getPrincipal();
@@ -57,6 +65,9 @@ public class UserSettingsController {
         return "client/settings";
     }
 
+    /**
+     *
+     */
     @PostMapping("/profile")
     public String updateSettings(
             @Valid @ModelAttribute("settings") UserSettingsDTO settingsDTO,
@@ -87,6 +98,22 @@ public class UserSettingsController {
         return "redirect:/moje-konto/ustawienia#profile-card";
     }
 
+    /**
+     * Handles the update of a user's address settings. Validates the input data,
+     * fills in any missing information, and updates the user's settings in the system.
+     * Redirects the user to the settings page with a success message upon successful update.
+     *
+     * @param settingsDTO the user settings data transfer object holding address-related data
+     *                    to be updated
+     * @param bindingResult the result of the validation for the provided user settings data
+     * @param authentication the security authentication object holding details of
+     *                       the currently logged-in user
+     * @param redirectAttributes the redirect attributes used to pass flash messages
+     *                           to the redirected page
+     * @return a string representing the view or redirection URL. If there are validation
+     *         errors, it returns the view for the settings page; otherwise, it redirects
+     *         to the user settings overview page.
+     */
     @PostMapping("/address")
     public String updateAddress(
             @Valid @ModelAttribute("settings") UserSettingsDTO settingsDTO,
@@ -108,6 +135,17 @@ public class UserSettingsController {
         return "redirect:/moje-konto/ustawienia";
     }
 
+    /**
+     * Updates the password for the currently authenticated user.
+     *
+     * @param settingsDTO          an instance of {@code UserSettingsDTO} containing the current password, new password,
+     *                             and confirmation of the new password.
+     * @param bindingResult        an instance of {@code BindingResult} used to report validation errors for the form data.
+     * @param authentication       an instance of {@code Authentication} representing the authenticated user's details.
+     * @param redirectAttributes   an instance of {@code RedirectAttributes} used to add flash attributes for the redirect.
+     * @return                     a String representing the view name or a redirect URL. Returns "client/settings" if
+     *                             validation errors exist or an exception occurs. Otherwise, redirects to the settings page.
+     */
     @PostMapping("/password")
     public String updatePassword(
             @ModelAttribute("settings") UserSettingsDTO settingsDTO,
@@ -152,6 +190,14 @@ public class UserSettingsController {
         return "redirect:/moje-konto/ustawienia#password-card";
     }
 
+    /**
+     * Updates the notification settings for the currently authenticated user.
+     *
+     * @param settingsDTO the user settings data transfer object containing the notification preferences to be updated
+     * @param authentication the authentication object representing the currently authenticated user
+     * @param redirectAttributes the attributes used to pass messages or data during a redirect
+     * @return a redirect string pointing to the user's account settings page with the notifications card section displayed
+     */
     @PostMapping("/notifications")
     public String updateNotifications(
             @ModelAttribute("settings") UserSettingsDTO settingsDTO,
@@ -166,6 +212,14 @@ public class UserSettingsController {
         return "redirect:/moje-konto/ustawienia#notifications-card";
     }
 
+    /**
+     * Populates missing data in the provided UserSettingsDTO object with information retrieved from the corresponding
+     * user entity identified by the userId. If any property in the UserSettingsDTO is null, it is replaced with the
+     * value from the user entity.
+     *
+     * @param userId the ID of the user whose data will be fetched to fill in missing properties in the settingsDTO
+     * @param settingsDTO the UserSettingsDTO object that requires missing fields to be populated from the user's data
+     */
     private void fillMissingData(Long userId, UserSettingsDTO settingsDTO) {
         User user = userService.findById(userId).orElseThrow();
 

@@ -9,6 +9,22 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 
+/**
+ * The User class represents a user entity in the application.
+ * It is annotated with JPA annotations to map its properties to the "users" database table.
+ * This class implements the UserDetails interface to integrate with Spring Security.
+ *
+ * Key features include:
+ * - Unique email identifier for each user.
+ * - Attributes for user details such as first name, last name, email, password, and phone number.
+ * - Enum-based role management for user access control.
+ * - Boolean fields for account activation, lock status, and various notification preferences.
+ * - Implements methods required by the UserDetails interface for security configuration.
+ * - One-to-one relationship with the Address entity, representing the user's address.
+ *
+ * The builder pattern is supported for flexible instantiation.
+ * Additionally, this class overrides equals and hashCode methods for uniqueness based on email.
+ */
 @Entity
 @Table(name = "users")
 @Getter

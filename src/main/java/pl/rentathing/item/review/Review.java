@@ -10,6 +10,10 @@ import pl.rentathing.item.entity.Item;
 
 import java.time.LocalDateTime;
 
+/**
+ * Represents a review associated with an item.
+ * A review contains information about the reviewer, content of the review, rating, and the time it was created.
+ */
 @Entity
 @Table(name = "reviews")
 @Getter

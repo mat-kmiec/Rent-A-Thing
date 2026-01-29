@@ -5,6 +5,17 @@ import lombok.*;
 
 import java.util.List;
 
+/**
+ * Represents a category entity in the system. This class is designed to categorize
+ * items and manage their associations.
+ *
+ * Each category is uniquely identifiable by its ID and name. It includes additional
+ * properties such as a description and an icon class to represent the visual depiction
+ * when required.
+ *
+ * The entity maintains a one-to-many relationship with the Item entity, where a single
+ * category can manage and group multiple items.
+ */
 @Entity
 @Table(name = "categories")
 @Getter

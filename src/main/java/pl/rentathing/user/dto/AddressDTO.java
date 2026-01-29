@@ -8,6 +8,21 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+/**
+ * Data Transfer Object (DTO) for storing and transferring address-related data.
+ *
+ * This class serves as a simple container for address information and includes
+ * validation constraints to ensure the integrity of the data. It is typically
+ * used for communication between different layers of the application or as a
+ * part of other complex objects.
+ *
+ * Fields:
+ * - street: The name of the street. Must meet validation rules such as length and character constraints.
+ * - houseNumber: The number of the house. Subject to length validation rules.
+ * - apartmentNumber: The number of the apartment (optional). Limited by maximum length constraints.
+ * - city: The name of the city. Validated with length and character rules.
+ * - zipCode: The postal code, which must conform to a specific format (e.g., XX-XXX).
+ */
 @Data
 @Builder
 @NoArgsConstructor

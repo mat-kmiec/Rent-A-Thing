@@ -17,55 +17,71 @@ import java.time.temporal.ChronoUnit;
 import java.util.List;
 
 /**
- * RentalMapper is a MapStruct mapper interface designed to map between domain objects and
- * Data Transfer Objects (DTOs) in the rental management system. This mapper facilitates
- * seamless conversion of entity data into formats suitable for various use cases, such as
- * presenting rental details to users, exporting rental data, or listing rentals in administrative panels.
+ * RentalMapper is an interface responsible for defining mappings between entities and Data Transfer Objects (DTOs)
+ * related to the rental domain. It uses the MapStruct framework to automatically generate the implementation
+ * of mapping methods.
  *
- * The mapper defines mappings between the Rental domain object and different DTO representations,
- * tailoring the structure and content of each DTO to its intended purpose. It also supports
- * default methods for complex transformations.
+ * The mappings cover various aspects of the rental data transformations, including user, item, rental status,
+ * and other attributes. Custom mappings and transformations are also defined as default methods within the interface.
  *
- * Key Features:
- * - Converts Rental objects to multiple DTOs, such as RentalHistoryDto, RentalDetailsDto,
- *   RentalAdminListDto, RentalAdminDetailsDto, and RentalExportDto, using explicitly defined
- *   mappings.
- * - Handles conditional and computed fields using expressions within mappings to calculate
- *   values, such as time difference messages, user initials, or overdue status.
- * - Provides default methods for mapping nested objects and performing custom logic, such
- *   as address formatting or user and item search DTO generation.
- * - Utilizes MapStruct's mapping capabilities to enhance the readability and maintainability
- *   of transformation logic.
+ * Supported mappings include:
+ * - History DTO transformation for representing rental history data.
+ * - Details DTO transformation for presenting detailed rental information.
+ * - Admin List DTO transformation for summarizing rental data for administrative purposes.
+ * - Admin Details DTO transformation with expanded rental and user details for administrators.
+ * - Export DTO transformation for exporting rental data in a specified format.
+ * - Active Rental DTO transformation for ongoing or active rental data.
+ * - Search DTO transformation for simplifying user or item search functionality.
  *
- * Mapping Methods:
- * - toHistoryDto: Maps a Rental entity to RentalHistoryDto for representing historical rental information.
- * - toDetailsDto: Maps a Rental entity to RentalDetailsDto for detailed rental view purposes.
- * - toAdminListDto: Maps a Rental entity to RentalAdminListDto, used in administrative overviews of rentals.
- * - toAdminDetailsDto: Maps a Rental entity to RentalAdminDetailsDto, providing enhanced administrative insights.
- * - toExportDto: Maps a Rental entity to RentalExportDto, used for exporting rental data.
- * - toExportDtoList: Converts a list of Rental entities to a list of RentalExportDto.
- * - toUserSearchDto: Maps a User entity to UserSearchDto for user lookup purposes.
- * - toItemSearchDto: Maps an Item entity to ItemSearchDto for item lookup purposes.
+ * Custom logic methods such as `calculateTimeDiff` and `mapAddress` are defined to include specific computed
+ * values or custom string formatting, such as remaining time for overdue rentals or full address string creation.
  *
- * Default Methods:
- * - calculateTimeDiff: Computes a user-friendly message for the time difference between the
- *   current time and the rental's end date.
- * - mapAddress: Converts an Address entity into a formatted string for display, handling cases
- *   where parts of the address may be absent.
+ * This interface includes methods to handle single-entity transformations as well as bulk transformations
+ * for lists of objects.
  */
 @Mapper(componentModel = "spring", imports = {LocalDateTime.class, ChronoUnit.class})
 public interface RentalMapper {
 
+    /**
+     * Maps a Rental entity to a RentalHistoryDto object.
+     *
+     * This method is responsible for converting relevant fields of a Rental entity,
+     * such as the title and image URL of the rental item, into a RentalHistoryDto
+     * representation for use in scenarios involving rental history.
+     *
+     * @param rental the Rental entity to be mapped. Must not be null.
+     * @return a RentalHistoryDto containing the mapped data from the provided Rental entity.
+     */
     @Mapping(target = "itemTitle", source = "item.title")
     @Mapping(target = "itemImageUrl", source = "item.imageUrl")
     RentalHistoryDto toHistoryDto(Rental rental);
 
+    /**
+     * Maps a Rental entity to a RentalDetailsDto object.
+     *
+     * This method is responsible for converting relevant fields from a Rental entity,
+     * such as the item's title, image URL, and ID, into a RentalDetailsDto representation
+     * for use in scenarios requiring detailed rental information.
+     *
+     * @param rental the Rental entity to be mapped. Must not be null.
+     * @return a RentalDetailsDto containing the mapped data from the provided Rental entity.
+     */
     @Mapping(target = "itemTitle", source = "item.title")
     @Mapping(target = "itemImageUrl", source = "item.imageUrl")
     @Mapping(target = "itemId", source = "item.id")
     RentalDetailsDto toDetailsDto(Rental rental);
 
 
+    /**
+     * Maps a Rental entity to a RentalAdminListDto object.
+     *
+     * This method is responsible for converting relevant fields of a Rental entity into
+     * a RentalAdminListDto representation, which is used for administrative purposes such as
+     * listing rental entries in an admin interface.
+     *
+     * @param rental the Rental entity to be mapped. Must not be null.
+     * @return a RentalAdminListDto containing the mapped data from the provided Rental entity.
+     */
     @Mapping(target = "itemTitle", source = "item.title")
     @Mapping(target = "categoryIcon", source = "item.category.iconClass")
     @Mapping(target = "userFullName", expression = "java(rental.getUser().getFirstName() + \" \" + rental.getUser().getLastName())")
@@ -77,6 +93,18 @@ public interface RentalMapper {
     @Mapping(target = "isOverdue", expression = "java(rental.getEndDateTime().isBefore(LocalDateTime.now()) && rental.getReturnDateTime() == null)")
     RentalAdminListDto toAdminListDto(Rental rental);
 
+    /**
+     * Calculates the time difference between the current time and the rental's end date.
+     *
+     * This method determines whether the rental is still ongoing, close to its deadline,
+     * overdue, or completed. The return value provides a human-readable message indicating
+     * the state or time difference in days, hours, or minutes.
+     *
+     * @param rental the rental for which the time difference is to be calculated. Must not be null.
+     *               The rental must have a valid `endDateTime` value.
+     * @return a string indicating the time difference message. Returns null if the rental
+     *         has already been returned (i.e., `returnDateTime` is not null).
+     */
     default String calculateTimeDiff(Rental rental) {
         if (rental.getReturnDateTime() != null) return null;
         LocalDateTime now = LocalDateTime.now();
@@ -93,6 +121,22 @@ public interface RentalMapper {
         }
     }
 
+    /**
+     * Maps a Rental entity to a RentalAdminDetailsDto object.
+     *
+     * This method is responsible for converting the provided Rental entity
+     * into a detailed RentalAdminDetailsDto representation. Various properties
+     * of the entity, such as the user's full name, contact details, item details,
+     * rental status, and rental duration, are mapped to corresponding fields in
+     * the DTO. Additional computed properties, such as overdue status and duration
+     * in days, are also included.
+     *
+     * @param rental the Rental entity to be mapped. Must not be null. The rental
+     *               should contain associated user, item, and status objects with
+     *               valid data.
+     * @return a RentalAdminDetailsDto containing the mapped data from the provided
+     *         Rental entity, including computed and derived details.
+     */
     @Mapping(target = "userFullName", expression = "java(rental.getUser().getFirstName() + \" \" + rental.getUser().getLastName())")
     @Mapping(target = "userEmail", source = "user.email")
     @Mapping(target = "userPhone", source = "user.phoneNumber")
@@ -108,6 +152,19 @@ public interface RentalMapper {
     @Mapping(target = "durationDays", expression = "java(java.time.Duration.between(rental.getStartDateTime(), rental.getEndDateTime()).toDays())")
     RentalAdminDetailsDto toAdminDetailsDto(Rental rental);
 
+    /**
+     * Formats an address into a readable string representation.
+     *
+     * This method processes the provided Address object, verifying its fields,
+     * and constructs a formatted string. If the address is null, it returns
+     * a default message indicating the absence of the address.
+     *
+     * @param address the Address object containing street, house number,
+     *                optional apartment number, zip code, and city.
+     *                Can be null, in which case a default message is returned.
+     * @return a formatted string representing the address.
+     *         Returns "Brak adresu" if the address is null.
+     */
     @Named("mapAddress")
     default String mapAddress(Address address) {
         if (address == null) return "Brak adresu";
@@ -117,6 +174,13 @@ public interface RentalMapper {
                 address.getStreet(), address.getHouseNumber(), apt, address.getZipCode(), address.getCity());
     }
 
+    /**
+     * Maps a Rental entity to a RentalExportDto object with specified field mappings
+     * and custom formatting for certain attributes.
+     *
+     * @param rental the Rental entity to be mapped to a RentalExportDto
+     * @return a RentalExportDto object containing the mapped and formatted data from the input Rental entity
+     */
     @Mapping(target = "itemTitle", source = "item.title")
     @Mapping(target = "userFullName", expression = "java(rental.getUser().getFirstName() + \" \" + rental.getUser().getLastName())")
     @Mapping(target = "startDateTime", source = "startDateTime", dateFormat = "yyyy-MM-dd HH:mm")
@@ -127,6 +191,16 @@ public interface RentalMapper {
 
     List<RentalExportDto> toExportDtoList(List<Rental> rentals);
 
+    /**
+     * Maps a User entity to a UserSearchDto object.
+     *
+     * This method is responsible for converting relevant fields of a User entity,
+     * such as the user's ID, full name, and email, into a UserSearchDto representation
+     * for scenarios involving user search operations.
+     *
+     * @param user the User entity to be mapped. Must not be null.
+     * @return a UserSearchDto containing the mapped data from the provided User entity.
+     */
     default UserSearchDto toUserSearchDto(User user) {
         return new UserSearchDto(
                 user.getId(),
@@ -135,6 +209,12 @@ public interface RentalMapper {
         );
     }
 
+    /**
+     * Converts an {@link Item} object into an {@link ItemSearchDto} object.
+     *
+     * @param item the {@link Item} object to be converted
+     * @return the converted {@link ItemSearchDto} containing the relevant fields
+     */
     default ItemSearchDto toItemSearchDto(Item item) {
         return new ItemSearchDto(
                 item.getId(),
@@ -148,6 +228,14 @@ public interface RentalMapper {
         );
     }
 
+    /**
+     * Converts a Rental entity to an ActiveRentalDTO.
+     * Maps properties from the source entity to the target DTO, including specific transformations
+     * and expressions for calculated or formatted fields.
+     *
+     * @param rental the Rental entity to be converted. Must not be null.
+     * @return the ActiveRentalDTO containing mapped and transformed data from the input Rental entity.
+     */
     @Mapping(target = "id", source = "id")
     @Mapping(target = "itemTitle", source = "item.title")
     @Mapping(target = "imageUrl", source = "item.imageUrl")
@@ -157,8 +245,20 @@ public interface RentalMapper {
     @Mapping(target = "returnNote", ignore = true)
     ActiveRentalDTO toActiveDto(Rental rental);
 
+    /**
+     * Converts a list of Rental objects to a list of ActiveRentalDTO objects.
+     *
+     * @param rentals the list of Rental objects to be converted
+     * @return a list of ActiveRentalDTO objects corresponding to the input Rental objects
+     */
     List<ActiveRentalDTO> toActiveDtoList(List<Rental> rentals);
 
 
+    /**
+     * Converts a list of Rental objects into a list of RentalHistoryDto objects.
+     *
+     * @param rentals the list of Rental objects to be converted
+     * @return a list of RentalHistoryDto objects corresponding to the provided rentals
+     */
     List<RentalHistoryDto> toHistoryDtoList(List<Rental> rentals);
 }

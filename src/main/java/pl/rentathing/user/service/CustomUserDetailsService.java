@@ -21,6 +21,15 @@ import pl.rentathing.user.repository.UserRepository;
 public class CustomUserDetailsService implements UserDetailsService {
     private final UserRepository userRepository;
 
+    /**
+     * Loads the user details associated with the given email address.
+     * Retrieves user information from the database and returns a {@link UserDetails} object.
+     * If the user with the provided email is not found, a {@link UserNotFoundException} is thrown.
+     *
+     * @param email the email address of the user to be retrieved
+     * @return the {@link UserDetails} containing user information
+     * @throws UsernameNotFoundException if the user with the given email is not found
+     */
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         return userRepository.findByEmail(email)

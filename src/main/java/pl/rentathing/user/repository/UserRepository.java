@@ -12,6 +12,11 @@ import pl.rentathing.user.entity.User;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * Repository interface for managing User entities.
+ * Extends JpaRepository for standard CRUD operations and adds custom queries
+ * for managing and retrieving User entities based on various attributes.
+ */
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {
        Optional<User> findByEmail(String email);

@@ -61,12 +61,31 @@ public class AuthService {
         userRepository.save(user);
     }
 
+    /**
+     * Retrieves the currently authenticated user from the security context.
+     *
+     * This method fetches the email of the authenticated user from the security context
+     * and retrieves the corresponding User entity from the database. If no user is found
+     * with the provided email, a UserNotFoundException is thrown.
+     *
+     * @return the currently authenticated User entity
+     * @throws UserNotFoundException if no user with the authenticated email exists in the system
+     */
     public User getCurrentUser() {
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
         return userRepository.findByEmail(email)
                 .orElseThrow(() -> new UserNotFoundException(email));
     }
 
+    /**
+     * Retrieves the unique identifier of the currently authenticated user.
+     *
+     * This method fetches the current user from the authentication context,
+     * then retrieves and returns the user's ID as a Long value.
+     *
+     * @return the ID of the currently authenticated user
+     * @throws UserNotFoundException if no user is found for the current authentication context
+     */
     public Long getCurrentUserId() {
         return getCurrentUser().getId();
     }

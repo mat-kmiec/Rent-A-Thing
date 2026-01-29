@@ -13,6 +13,12 @@ import pl.rentathing.item.entity.Item;
 
 import java.util.List;
 
+/**
+ * Repository interface for managing {@link Item} entities.
+ * Provides CRUD operations and custom queries for interacting with Item data.
+ * Extends {@link JpaRepository} for basic CRUD operations and {@link JpaSpecificationExecutor}
+ * for supporting complex query specifications.
+ */
 @Repository
 public interface ItemRepository extends JpaRepository<Item, Long>, JpaSpecificationExecutor<Item> {
     @Override

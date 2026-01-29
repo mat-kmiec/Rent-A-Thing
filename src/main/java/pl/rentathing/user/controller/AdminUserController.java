@@ -1,4 +1,4 @@
-package pl.rentathing.admin.controller;
+package pl.rentathing.user.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -15,7 +15,6 @@ import pl.rentathing.user.service.CsvService;
 import pl.rentathing.user.dto.UserSettingsDTO;
 import pl.rentathing.user.dto.AddressDTO;
 import pl.rentathing.user.entity.User;
-import pl.rentathing.user.entity.Address;
 import org.springframework.validation.BindingResult;
 import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;

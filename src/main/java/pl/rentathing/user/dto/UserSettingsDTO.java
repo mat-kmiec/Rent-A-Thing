@@ -10,6 +10,29 @@ import jakarta.validation.constraints.Size;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.Valid;
 
+/**
+ * Data Transfer Object (DTO) for transferring and validating user-specific settings.
+ *
+ * This class encompasses information about user preferences and allows data validation
+ * through annotations for fields such as names, email, passwords, and contact information.
+ *
+ * Fields:
+ * - id: Unique identifier of the user settings record.
+ * - firstName: The user's first name. It must adhere to validation rules such as size
+ *   constraints and acceptable character patterns.
+ * - lastName: The user's last name. It is subject to validation for length and character rules.
+ * - email: The user's email address, which must be in a valid format and cannot exceed a
+ *   certain length.
+ * - newPassword: A new password that the user wishes to set. It must meet minimum length requirements.
+ * - currentPassword: The user's current password, used to authenticate changes to sensitive information.
+ * - confirmPassword: A confirmation of the new password to ensure consistency.
+ * - phoneNumber: The user's phone number, validated based on specific patterns for standard formats.
+ * - notifEmail: A flag indicating whether the user has opted in for email notifications.
+ * - notifSms: A flag indicating whether the user has opted in for SMS notifications.
+ * - newsletter: A flag indicating whether the user has subscribed to newsletters.
+ * - address: An instance of AddressDTO representing the user's address information.
+ *   This field is validated as an embedded object.
+ */
 @Data
 @Builder
 @NoArgsConstructor

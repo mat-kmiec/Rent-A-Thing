@@ -11,6 +11,16 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 
+/**
+ * Represents an item entity in the system. This class is used to store and manage rental item data.
+ * Each item is uniquely identifiable and associated with a category.
+ *
+ * Fields in this class define item properties including title, description, pricing, available rental options,
+ * and additional configuration details such as deposits and shipping preferences.
+ *
+ * The Item entity supports review associations and tracks information like review count and average ratings.
+ * Timestamps are maintained for creation and last modification.
+ */
 @Entity
 @Table(name = "items")
 @Getter

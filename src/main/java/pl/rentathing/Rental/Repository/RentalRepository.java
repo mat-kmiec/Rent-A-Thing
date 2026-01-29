@@ -10,7 +10,6 @@ import pl.rentathing.Rental.Entity.Rental;
 import pl.rentathing.Rental.Entity.RentalStatus;
 import pl.rentathing.user.entity.User;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
