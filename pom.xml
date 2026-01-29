@@ -137,6 +137,20 @@
                     </excludes>
                 </configuration>
             </plugin>
+
+            <plugin>
+                <groupId>org.liquibase</groupId>
+                <artifactId>liquibase-maven-plugin</artifactId>
+                <version>4.24.0</version>
+                <configuration>
+                    <changeLogFile>src/main/resources/db/changelog/changelog-master.xml</changeLogFile>
+
+                    <url>offline:mysql</url>
+                    <username></username>
+                    <password></password>
+                    <migrationSqlOutputFile>database_schema.sql</migrationSqlOutputFile>
+                </configuration>
+            </plugin>
         </plugins>
     </build>
 
